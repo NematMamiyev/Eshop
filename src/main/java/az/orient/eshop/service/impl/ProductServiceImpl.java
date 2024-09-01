@@ -67,7 +67,7 @@ public class ProductServiceImpl implements ProductService {
                     .brand(brand)
                     .gender(reqProduct.getGender())
                     .size(size)
-                    .count(count)
+                    .stock(count)
                     .price(price)
                     .build();
             productRepository.save(product);
@@ -178,7 +178,7 @@ public class ProductServiceImpl implements ProductService {
             product.setSize(size);
             product.setColor(color);
             product.setSubcategory(subcategory);
-            product.setCount(count);
+            product.setStock(count);
             productRepository.save(product);
             RespProduct respProduct = convert(product);
             response.setT(respProduct);
@@ -252,7 +252,7 @@ public class ProductServiceImpl implements ProductService {
                 .respBrand(respBrand)
                 .gender(product.getGender())
                 .respSize(respSize)
-                .count(product.getCount())
+                .count(product.getStock())
                 .price(product.getPrice())
                 .build();
     }

@@ -112,7 +112,7 @@ public class ShelfProductServiceImpl implements ShelfProductService {
         RespProduct respProduct = RespProduct.builder()
                 .id(shelfProduct.getProduct().getId())
                 .name(shelfProduct.getProduct().getName())
-                .count(shelfProduct.getProduct().getCount())
+                .count(shelfProduct.getProduct().getStock())
                 .productNumber(shelfProduct.getProduct().getProductNumber())
                 .expertionDate(shelfProduct.getProduct().getExpertionDate())
                 .build();

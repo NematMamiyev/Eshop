@@ -13,12 +13,12 @@ import org.springframework.web.bind.annotation.*;
 public class ShelfProductController {
     private final ShelfProductService shelfProductService;
 
-    @PostMapping("/addproductinshelf")
+    @PostMapping("/add")
     public Response<RespShelfProduct> addProductInShelf(@RequestBody ReqShelfProduct reqShelfProduct){
         return shelfProductService.addProductInShelf(reqShelfProduct);
     }
 
-    @PutMapping("/deleteproductinshelf")
+    @PutMapping("/delete")
     public Response<RespShelfProduct> deleteProductInShelf(@RequestBody ReqShelfProduct reqShelfProduct){
         return shelfProductService.deleteProductInShelf(reqShelfProduct);
     }

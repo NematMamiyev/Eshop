@@ -27,9 +27,6 @@ public class Cart {
     @JoinColumn(name = "product_id")
     private Product product;
     @ManyToOne
-    @JoinColumn(name = "payment_id")
-    private Payment payment;
-    @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;
     @CreationTimestamp

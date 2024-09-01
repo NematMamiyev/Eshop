@@ -16,4 +16,6 @@ public final class ExceptionConstants {
     public static final Integer SHELF_NOT_FOUND = 111;
     public static final Integer STATUS_NOT_FOUND = 112;
     public static final Integer WAREHOUSE_NOT_FOUND = 113;
+    public static final Integer WISHLIST_NOT_FOUND = 114;
+    public static final Integer CART_NOT_FOUND = 115;
 }

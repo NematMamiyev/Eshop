@@ -1,3 +1,4 @@
+/*
 package az.orient.eshop.entity;
 
 import jakarta.persistence.*;
@@ -24,3 +25,4 @@ public class User {
     private String fullName;
     
 }
+*/

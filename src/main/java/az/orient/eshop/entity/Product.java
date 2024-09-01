@@ -53,7 +53,7 @@ public class Product {
     @JoinColumn(name = "subcategory_id")
     private Subcategory subcategory;
     @Column(nullable = false)
-    private Integer count;
+    private Integer stock;
     @CreationTimestamp
     private Date dataDate;
     @ColumnDefault(value = "1")
