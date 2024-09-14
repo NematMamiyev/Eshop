@@ -20,4 +20,5 @@ public class RespCustomer {
     private Float height;
     private Float weight;
     private Gender gender;
+    private RespCart respCart;
 }

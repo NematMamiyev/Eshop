@@ -1,25 +1,27 @@
 package az.orient.eshop.enums;
 
+import az.orient.eshop.exception.EshopException;
+import az.orient.eshop.exception.ExceptionConstants;
+
 public enum Gender {
 
     MALE(0), FEMALE(1), CHILD(2);
 
-    private final int value;
+    private final Integer value;
 
-    Gender(int value) {
+    Gender(Integer value) {
         this.value = value;
     }
 
-    public int getValue() {
+    public Integer getValue() {
         return value;
     }
-
-    public static Gender fromValue(int value) {
+    public static Gender fromValue(Integer value) {
         for (Gender gender : values()) {
             if (gender.getValue() == value) {
                 return gender;
             }
         }
-        throw new IllegalArgumentException("Invalid value: " + value);
+        throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA,"Invalid value");
     }
 }

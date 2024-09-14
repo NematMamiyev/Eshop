@@ -1,5 +1,6 @@
 package az.orient.eshop.entity;
 
+import az.orient.eshop.enums.Position;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,8 +32,8 @@ public class Employee {
     private String email;
     @Column(nullable = false, length = 30, unique = true)
     private String phone;
-    @Column(nullable = false, length = 50)
-    private String position;
+    @Enumerated(EnumType.STRING)
+    private Position position;
     @Column(nullable = false, length = 20)
     private String password;
     @CreationTimestamp

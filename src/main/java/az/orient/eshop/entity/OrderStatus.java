@@ -1,5 +1,6 @@
 package az.orient.eshop.entity;
 
+import az.orient.eshop.enums.Status;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,19 +13,22 @@ import org.hibernate.annotations.DynamicInsert;
 import java.util.Date;
 
 @Entity
-@Table(name = "orderStatus")
 @Data
-@DynamicInsert
+@Table(name = "order_status")
 @Builder
+@DynamicInsert
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderStatus {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "order_status_seq")
-    @SequenceGenerator(name = "order_status_seq", sequenceName = "ORDER_STATUS_SEQ", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "order_status_seq")
+    @SequenceGenerator(name = "order_status_seq",sequenceName = "ORDER_STATUS_SEQ",allocationSize = 1)
     private Long id;
-    @Column(nullable = false, length = 50,unique = true)
-    private String name;
+    @Enumerated(EnumType.STRING)
+    private Status status;
+    @ManyToOne
+    @JoinColumn(name = "order_id")
+    private Order order;
     @CreationTimestamp
     private Date dataDate;
     @ColumnDefault(value = "1")

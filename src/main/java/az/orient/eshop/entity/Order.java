@@ -1,5 +1,6 @@
 package az.orient.eshop.entity;
 
+import az.orient.eshop.enums.Status;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +10,9 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Data
@@ -20,18 +23,20 @@ import java.util.Date;
 @AllArgsConstructor
 public class Order {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "order_seq")
-    @SequenceGenerator(name = "order_seq",sequenceName = "ORDER_SEQ",allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "product_order_seq")
+    @SequenceGenerator(name = "product_order_seq",sequenceName = "PRODUCT_ORDER_SEQ",allocationSize = 1)
     private Long id;
-    @ManyToOne
-    @JoinColumn(name = "product_id")
-    private Product product;
-    @ManyToOne
-    @JoinColumn(name = "order_status_id")
-    private OrderStatus orderStatus;
+    @ManyToMany
+    @JoinTable(
+            name = "order_product_details",
+            joinColumns = @JoinColumn(name = "product_order_id"),
+            inverseJoinColumns = @JoinColumn(name = "product_details_id")
+    )
+    private List<ProductDetails> productDetailsList  = new ArrayList<>();
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;
+    private Float amount;
     @CreationTimestamp
     private Date dataDate;
     @ColumnDefault(value = "1")

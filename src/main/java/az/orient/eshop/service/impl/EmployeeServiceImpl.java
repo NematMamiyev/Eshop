@@ -6,6 +6,7 @@ import az.orient.eshop.dto.response.RespStatus;
 import az.orient.eshop.dto.response.Response;
 import az.orient.eshop.entity.Employee;
 import az.orient.eshop.enums.EnumAvailableStatus;
+import az.orient.eshop.enums.Position;
 import az.orient.eshop.exception.EshopException;
 import az.orient.eshop.exception.ExceptionConstants;
 import az.orient.eshop.repository.EmployeeRepository;
@@ -29,8 +30,8 @@ public class EmployeeServiceImpl implements EmployeeService {
             String email = reqEmployee.getEmail();
             String phone = reqEmployee.getPhone();
             String password = reqEmployee.getPassword();
-            String position = reqEmployee.getPosition();
-            if (name == null || surname == null || email == null || phone == null || password == null || position == null) {
+            Position.fromValue(reqEmployee.getPosition().getValue());
+            if (name == null || surname == null || email == null || phone == null || password == null) {
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Invalid request data");
             }
             boolean uniqueEmail = employeeRepository.existsEmployeeByEmailIgnoreCaseAndActive(email, EnumAvailableStatus.ACTIVE.getValue());
@@ -45,7 +46,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                     .email(email)
                     .phone(phone)
                     .password(password)
-                    .position(position)
+                    .position(reqEmployee.getPosition())
                     .build();
             employeeRepository.save(employee);
             RespEmployee respEmployee = convert(employee);
@@ -116,8 +117,8 @@ public class EmployeeServiceImpl implements EmployeeService {
             String email = reqEmployee.getEmail();
             String phone = reqEmployee.getPhone();
             String password = reqEmployee.getPassword();
-            String position = reqEmployee.getPosition();
-            if (id == null || name == null || surname == null || email == null || phone == null || password == null || position == null) {
+            Position.fromValue(reqEmployee.getPosition().getValue());
+            if (id == null || name == null || surname == null || email == null || phone == null || password == null) {
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Invalid request data");
             }
             Employee employee = employeeRepository.findEmployeeByIdAndActive(id, EnumAvailableStatus.ACTIVE.getValue());
@@ -134,7 +135,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             employee.setEmail(email);
             employee.setPhone(phone);
             employee.setPassword(password);
-            employee.setPosition(position);
+            employee.setPosition(reqEmployee.getPosition());
             employeeRepository.save(employee);
             RespEmployee respEmployee = convert(employee);
             response.setT(respEmployee);

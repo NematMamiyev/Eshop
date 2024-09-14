@@ -12,19 +12,20 @@ import org.hibernate.annotations.DynamicInsert;
 import java.util.Date;
 
 @Entity
+@Table(name = "warehouse_work")
 @Data
 @Builder
-@Table(name = "payment_method")
 @DynamicInsert
 @NoArgsConstructor
 @AllArgsConstructor
-public class PaymentMethod {
+public class WarehouseWork {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "payment_method_seq")
-    @SequenceGenerator(name = "payment_method_seq", sequenceName = "PAYMENT_METHOD_SEQ", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "warehouse_work_seq")
+    @SequenceGenerator(name = "warehouse_work_seq", sequenceName = "WAREHOUSE_WORK_SEQ", allocationSize = 1)
     private Long id;
-    @Column(nullable = false, length = 50,unique = true)
-    private String name;
+    @ManyToOne
+    @JoinColumn(name = "order_id")
+    private Order order;
     @CreationTimestamp
     private Date dataDate;
     @ColumnDefault(value = "1")

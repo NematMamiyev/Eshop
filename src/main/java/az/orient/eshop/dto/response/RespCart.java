@@ -1,17 +1,15 @@
 package az.orient.eshop.dto.response;
 
-import az.orient.eshop.entity.Customer;
-import az.orient.eshop.entity.Payment;
-import az.orient.eshop.entity.Product;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+
+import az.orient.eshop.entity.ProductDetails;
 import lombok.Builder;
 import lombok.Data;
+
+import java.util.List;
 
 @Data
 @Builder
 public class RespCart {
-    private Long id;
-    private RespProduct respProduct;
-    private RespCustomer respCustomer;
+    private List<RespProductDetails> respProductDetailsList;
+    private Float amount;
 }

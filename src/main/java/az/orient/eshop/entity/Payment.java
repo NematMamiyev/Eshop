@@ -1,5 +1,6 @@
 package az.orient.eshop.entity;
 
+import az.orient.eshop.enums.PaymentMethod;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,9 +24,11 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "payment_seq")
     @SequenceGenerator(name = "payment_seq",sequenceName = "PAYMENT_SEQ",allocationSize = 1)
     private Long id;
-    @ManyToOne
-    @JoinColumn(name = "payment_method_id",nullable = false)
+    @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
+    @ManyToOne
+    @JoinColumn(name = "customer_id")
+    private Customer customer;
     @Column(nullable = false)
     private Float amount;
     @CreationTimestamp

@@ -6,6 +6,6 @@ import lombok.Data;
 public class ReqShelfProduct {
     private Long id;
     private Long shelfId;
-    private Long productId;
+    private Long productDetailsId;
     private Long warehouseId;
 }

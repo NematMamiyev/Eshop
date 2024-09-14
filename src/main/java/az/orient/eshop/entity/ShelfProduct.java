@@ -27,8 +27,8 @@ public class ShelfProduct {
     @JoinColumn(name = "shelf_id")
     private Shelf shelf;
     @ManyToOne
-    @JoinColumn(name = "product_id")
-    private Product product;
+    @JoinColumn(name = "product_details_id")
+    private ProductDetails productDetails;
     @ManyToOne
     @JoinColumn(name = "warehouse_id")
     private Warehouse warehouse;

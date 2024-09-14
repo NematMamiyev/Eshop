@@ -1,5 +1,6 @@
 package az.orient.eshop.dto.response;
 
+import az.orient.eshop.enums.Position;
 import lombok.Builder;
 import lombok.Data;
 
@@ -11,6 +12,6 @@ public class RespEmployee {
     private String surname;
     private String email;
     private String phone;
-    private String position;
+    private Position position;
     private String password;
 }

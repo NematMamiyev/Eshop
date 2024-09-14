@@ -4,7 +4,6 @@ import lombok.Data;
 
 @Data
 public class ReqWishlist {
-    private Long id;
-    private Long productId;
+    private Long productDetailsId;
     private Long customerId;
 }

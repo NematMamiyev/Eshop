@@ -1,25 +1,20 @@
 package az.orient.eshop.dto.request;
-
-
+import az.orient.eshop.entity.*;
 import az.orient.eshop.enums.Gender;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Data
 public class ReqProduct {
     private Long id;
     private String name;
-    private Float price;
     private String productInformation;
     private Date expertionDate;
     private Gender gender;
-    private String productNumber;
-    private byte[] image;
-    private byte[] video;
     private Long brandId;
-    private Long sizeId;
-    private Long colorId;
+    private List<ReqProductDetails> reqProductDetailsList = new ArrayList<>();
     private Long subcategoryId;
-    private Integer count;
 }

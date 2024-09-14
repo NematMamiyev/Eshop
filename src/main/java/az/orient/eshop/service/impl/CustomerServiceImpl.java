@@ -4,12 +4,16 @@ import az.orient.eshop.dto.request.ReqCustomer;
 import az.orient.eshop.dto.response.RespCustomer;
 import az.orient.eshop.dto.response.RespStatus;
 import az.orient.eshop.dto.response.Response;
+import az.orient.eshop.entity.Cart;
 import az.orient.eshop.entity.Customer;
+import az.orient.eshop.entity.Wishlist;
 import az.orient.eshop.enums.EnumAvailableStatus;
 import az.orient.eshop.enums.Gender;
 import az.orient.eshop.exception.EshopException;
 import az.orient.eshop.exception.ExceptionConstants;
+import az.orient.eshop.repository.CartRepository;
 import az.orient.eshop.repository.CustomerRepository;
+import az.orient.eshop.repository.WishlistRepository;
 import az.orient.eshop.service.CustomerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,6 +25,8 @@ import java.util.List;
 public class CustomerServiceImpl implements CustomerService {
 
     private final CustomerRepository customerRepository;
+    private final CartRepository cartRepository;
+    private final WishlistRepository wishlistRepository;
 
     @Override
     public Response<RespCustomer> addCustomer(ReqCustomer reqCustomer) {
@@ -52,6 +58,17 @@ public class CustomerServiceImpl implements CustomerService {
                     .phone(phone)
                     .password(password)
                     .build();
+            customerRepository.save(customer);
+            Cart cart = Cart.builder()
+                    .customer(customer)
+                    .build();
+            cartRepository.save(cart);
+            Wishlist wishlist = Wishlist.builder()
+                    .customer(customer)
+                    .build();
+            wishlistRepository.save(wishlist);
+            customer.setCart(cart);
+            customer.setWishlist(wishlist);
             customerRepository.save(customer);
             RespCustomer respCustomer = convert(customer);
             response.setT(respCustomer);

@@ -10,7 +10,9 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "product")
@@ -26,34 +28,20 @@ public class Product {
     private Long id;
     @Column(nullable = false,length = 50)
     private String name;
-    @Column(nullable = false)
-    private Float price;
     @Column(name = "product_information",length = 500)
     private String productInformation;
     @Column(name = "expertion_date")
     private Date expertionDate;
     @Enumerated(EnumType.STRING)
     private Gender gender;
-    @Column(nullable = false, length = 20,name = "product_number")
-    private String productNumber;
-    @Lob
-    private byte[] image;
-    @Lob
-    private byte[] video;
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProductDetails> productDetails = new ArrayList<>();
     @ManyToOne
     @JoinColumn(name = "brand_id")
     private Brand brand;
     @ManyToOne
-    @JoinColumn(name = "size_id")
-    private Size size;
-    @ManyToOne
-    @JoinColumn(name = "color_id")
-    private Color color;
-    @ManyToOne
     @JoinColumn(name = "subcategory_id")
     private Subcategory subcategory;
-    @Column(nullable = false)
-    private Integer stock;
     @CreationTimestamp
     private Date dataDate;
     @ColumnDefault(value = "1")

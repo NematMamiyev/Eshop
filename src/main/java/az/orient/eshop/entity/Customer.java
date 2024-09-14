@@ -48,5 +48,9 @@ public class Customer {
     private Date dataDate;
     @ColumnDefault(value = "1")
     private Integer active;
+    @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Cart cart;
+    @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Wishlist wishlist;
 
 }

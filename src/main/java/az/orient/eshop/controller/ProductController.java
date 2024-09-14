@@ -2,9 +2,11 @@ package az.orient.eshop.controller;
 
 import az.orient.eshop.dto.request.ReqProduct;
 import az.orient.eshop.dto.response.RespProduct;
+import az.orient.eshop.dto.response.RespProductDetails;
 import az.orient.eshop.dto.response.Response;
 import az.orient.eshop.service.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,7 +18,7 @@ public class ProductController {
 
     private final ProductService productService;
 
-    @PostMapping("/create")
+    @PostMapping("/add")
     public Response<RespProduct> addProduct(@RequestBody ReqProduct reqProduct){
         return productService.addProduct(reqProduct);
     }
@@ -40,4 +42,5 @@ public class ProductController {
     public Response deleteProduct(@PathVariable Long id){
         return productService.deleteProduct(id);
     }
+
 }

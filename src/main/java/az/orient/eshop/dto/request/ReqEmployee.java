@@ -1,5 +1,6 @@
 package az.orient.eshop.dto.request;
 
+import az.orient.eshop.enums.Position;
 import lombok.Data;
 
 @Data
@@ -9,6 +10,6 @@ public class ReqEmployee {
     private String surname;
     private String email;
     private String phone;
-    private String position;
+    private Position position;
     private String password;
 }

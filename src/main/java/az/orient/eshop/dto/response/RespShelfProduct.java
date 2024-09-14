@@ -8,6 +8,6 @@ import lombok.Data;
 public class RespShelfProduct {
     private Long id;
     private RespShelf respShelf;
-    private RespProduct respProduct;
+    private RespProductDetails respProductDetails;
     private RespWarehouse respWarehouse;
 }
