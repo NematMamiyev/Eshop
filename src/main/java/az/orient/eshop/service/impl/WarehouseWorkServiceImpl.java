@@ -77,22 +77,15 @@ public class WarehouseWorkServiceImpl implements WarehouseWorkService {
 
     private RespWareHouseWork convert(WarehouseWork warehouseWork) {
         List<RespProductDetails> respProductDetailsList = warehouseWork.getOrder().getProductDetailsList().stream().map(this::convertToRespProductDetails).toList();
-        RespCustomer respCustomer = RespCustomer.builder()
-                .id(warehouseWork.getOrder().getCustomer().getId())
-                .name(warehouseWork.getOrder().getCustomer().getName())
-                .surname(warehouseWork.getOrder().getCustomer().getSurname())
-                .address(warehouseWork.getOrder().getCustomer().getAddress())
-                .phone(warehouseWork.getOrder().getCustomer().getPhone())
-                .build();
         RespOrder respOrder = RespOrder.builder()
                 .id(warehouseWork.getOrder().getId())
-                .respCustomer(respCustomer)
                 .respProductDetailsList(respProductDetailsList)
                 .amount(warehouseWork.getOrder().getAmount())
                 .build();
         return RespWareHouseWork.builder()
                 .id(warehouseWork.getId())
                 .respOrder(respOrder)
+                .dataDate(warehouseWork.getDataDate())
                 .build();
     }
     private RespProductDetails convertToRespProductDetails(ProductDetails productDetails) {

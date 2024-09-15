@@ -211,7 +211,6 @@ public class CustomerServiceImpl implements CustomerService {
                 .height(customer.getHeight())
                 .weight(customer.getWeight())
                 .phone(customer.getPhone())
-                .password(customer.getPassword())
                 .build();
     }
 }

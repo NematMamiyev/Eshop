@@ -13,6 +13,7 @@ import az.orient.eshop.exception.EshopException;
 import az.orient.eshop.exception.ExceptionConstants;
 import az.orient.eshop.repository.*;
 import az.orient.eshop.service.ProductService;
+import az.orient.eshop.utilty.Util;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +31,7 @@ public class ProductServiceImpl implements ProductService {
     private final ProductDetailsRepository productDetailsRepository;
     private final ProductVideoRepository productVideoRepository;
     private final ProductImageRepository productImageRepository;
+    private final Util util = new Util();
 
     @Override
     public Response<RespProduct> addProduct(ReqProduct reqProduct) {
@@ -152,7 +154,7 @@ public class ProductServiceImpl implements ProductService {
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Product details id is null");
             }
             ProductDetails productDetails = productDetailsRepository.findProductDetailsByIdAndActive(productDetailsId, EnumAvailableStatus.ACTIVE.getValue());
-            RespProductDetails respProductDetails = convertToRespProductDetails(productDetails);
+            RespProductDetails respProductDetails = util.convertToRespProductDetails(productDetails);
             response.setT(respProductDetails);
             response.setStatus(RespStatus.getSuccessMessage());
         } catch (EshopException ex) {
@@ -173,7 +175,7 @@ public class ProductServiceImpl implements ProductService {
             if (productDetailsList.isEmpty()) {
                 throw new EshopException(ExceptionConstants.PRODUCT_DETAILS_NOT_FOUND, "Product Details not found");
             }
-            List<RespProductDetails> respProductDetailsList = productDetailsList.stream().map(this::convertToRespProductDetails).toList();
+            List<RespProductDetails> respProductDetailsList = productDetailsList.stream().map(util::convertToRespProductDetails).toList();
             response.setT(respProductDetailsList);
             response.setStatus(RespStatus.getSuccessMessage());
         } catch (EshopException ex) {
@@ -537,55 +539,8 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-    private RespProductDetails convertToRespProductDetails(ProductDetails productDetails) {
-        Set<RespProductImage> respProductImageList = Optional.ofNullable(productDetails.getImages())
-                .orElse(Collections.emptySet())
-                .stream()
-                .map(this::convertToRespProductImage)
-                .collect(Collectors.toSet());
-        Set<RespProductVideo> respProductVideoList = Optional.ofNullable(productDetails.getVideos())
-                .orElse(Collections.emptySet())
-                .stream()
-                .map(this::convertToRespProductVideo)
-                .collect(Collectors.toSet());
-        RespSize respSize = RespSize.builder()
-                .id(productDetails.getSize().getId())
-                .name(productDetails.getSize().getName())
-                .build();
-        RespColor respColor = RespColor.builder()
-                .id(productDetails.getColor().getId())
-                .name(productDetails.getColor().getName())
-                .build();
-        return RespProductDetails.builder()
-                .id(productDetails.getId())
-                .respSize(respSize)
-                .respColor(respColor)
-                .currency(productDetails.getCurrency())
-                .price(productDetails.getPrice())
-                .stock(productDetails.getStock())
-                .respProductVideoList(respProductVideoList)
-                .respProductImageList(respProductImageList)
-                .build();
-    }
-
-    private RespProductImage convertToRespProductImage(ProductImage productImage) {
-        return RespProductImage.builder()
-                .data(productImage.getData())
-                .fileName(productImage.getFileName())
-                .fileType(productImage.getFileType())
-                .build();
-    }
-
-    private RespProductVideo convertToRespProductVideo(ProductVideo productVideo) {
-        return RespProductVideo.builder()
-                .data(productVideo.getData())
-                .fileName(productVideo.getFileName())
-                .fileType(productVideo.getFileType())
-                .build();
-    }
-
     private RespProduct convertToRespProduct(Product product) {
-        List<RespProductDetails> respProductDetailsList = product.getProductDetails().stream().map(this::convertToRespProductDetails).toList();
+        List<RespProductDetails> respProductDetailsList = product.getProductDetails().stream().map(util::convertToRespProductDetails).toList();
         RespCategory respCategory = RespCategory.builder()
                 .id(product.getSubcategory().getCategory().getId())
                 .name(product.getSubcategory().getCategory().getName())

@@ -20,4 +20,5 @@ public final class ExceptionConstants {
     public static final Integer CART_NOT_FOUND = 115;
     public static final Integer WAREHOUSE_WORK_NOT_FOUND = 116;
     public static final Integer PRODUCT_VIDEO_NOT_FOUND = 117;
+    public static final Integer ORDER_NOT_FOUND = 118;
 }

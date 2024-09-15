@@ -7,6 +7,5 @@ import java.util.List;
 import java.util.Set;
 
 public interface ProductImageRepository extends JpaRepository<ProductImage, Long> {
-    ProductImage findProductImageByIdAndActive(Long productImageId, Integer active);
     Set<ProductImage> findProductImageByProductDetailsIdAndActive(Long productDetailsId, Integer active);
 }

@@ -16,7 +16,6 @@ public class RespCustomer {
     private String email;
     private String phone;
     private String address;
-    private String password;
     private Float height;
     private Float weight;
     private Gender gender;

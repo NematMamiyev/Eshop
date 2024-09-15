@@ -10,6 +10,5 @@ import java.util.Date;
 public class RespOrderStatus {
     private Long id;
     private Status status;
-    private RespOrder respOrder;
     private Date dataDate;
 }

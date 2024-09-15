@@ -11,6 +11,5 @@ import java.util.List;
 public class RespOrder {
     private Long id;
     private List<RespProductDetails> respProductDetailsList;
-    private RespCustomer respCustomer;
     private Float amount;
 }
