@@ -2,23 +2,24 @@ package az.orient.eshop.service.impl;
 
 import az.orient.eshop.dto.request.ReqProduct;
 import az.orient.eshop.dto.request.ReqProductDetails;
-import az.orient.eshop.dto.request.ReqProductImage;
-import az.orient.eshop.dto.request.ReqProductVideo;
 import az.orient.eshop.dto.response.*;
 import az.orient.eshop.entity.*;
 import az.orient.eshop.enums.Currency;
 import az.orient.eshop.enums.EnumAvailableStatus;
 import az.orient.eshop.enums.Gender;
+import az.orient.eshop.enums.MediaTypeEnum;
 import az.orient.eshop.exception.EshopException;
 import az.orient.eshop.exception.ExceptionConstants;
 import az.orient.eshop.repository.*;
 import az.orient.eshop.service.ProductService;
-import az.orient.eshop.utilty.Util;
+import az.orient.eshop.util.Utility;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +32,7 @@ public class ProductServiceImpl implements ProductService {
     private final ProductDetailsRepository productDetailsRepository;
     private final ProductVideoRepository productVideoRepository;
     private final ProductImageRepository productImageRepository;
-    private final Util util = new Util();
+    private final Utility utility = new Utility();
 
     @Override
     public Response<RespProduct> addProduct(ReqProduct reqProduct) {
@@ -43,7 +44,7 @@ public class ProductServiceImpl implements ProductService {
             Long subcategoryId = reqProduct.getSubcategoryId();
             Gender.fromValue(reqProduct.getGender().getValue());
             if (name == null || brandId == null || subcategoryId == null) {
-                throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Invalid request dataa");
+                throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Invalid request data");
             }
             Brand brand = brandRepository.findByIdAndActive(brandId, EnumAvailableStatus.ACTIVE.getValue());
             if (brand == null) {
@@ -154,7 +155,7 @@ public class ProductServiceImpl implements ProductService {
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Product details id is null");
             }
             ProductDetails productDetails = productDetailsRepository.findProductDetailsByIdAndActive(productDetailsId, EnumAvailableStatus.ACTIVE.getValue());
-            RespProductDetails respProductDetails = util.convertToRespProductDetails(productDetails);
+            RespProductDetails respProductDetails = utility.convertToRespProductDetails(productDetails);
             response.setT(respProductDetails);
             response.setStatus(RespStatus.getSuccessMessage());
         } catch (EshopException ex) {
@@ -175,7 +176,7 @@ public class ProductServiceImpl implements ProductService {
             if (productDetailsList.isEmpty()) {
                 throw new EshopException(ExceptionConstants.PRODUCT_DETAILS_NOT_FOUND, "Product Details not found");
             }
-            List<RespProductDetails> respProductDetailsList = productDetailsList.stream().map(util::convertToRespProductDetails).toList();
+            List<RespProductDetails> respProductDetailsList = productDetailsList.stream().map(utility::convertToRespProductDetails).toList();
             response.setT(respProductDetailsList);
             response.setStatus(RespStatus.getSuccessMessage());
         } catch (EshopException ex) {
@@ -287,16 +288,6 @@ public class ProductServiceImpl implements ProductService {
                     .color(color)
                     .build();
             productDetailsRepository.save(productDetails);
-            Set<ReqProductImage> reqProductImageList = reqProductDetails.getReqProductImageList();
-            if (reqProductImageList != null && !reqProductImageList.isEmpty()) {
-                addProductImages(reqProductImageList, productDetails.getId());
-            }
-            Set<ReqProductVideo> reqProductVideoList = reqProductDetails.getReqProductVideoList();
-            if (reqProductVideoList != null && !reqProductVideoList.isEmpty()) {
-                addProductVideos(reqProductVideoList, productDetails.getId());
-            }
-            productDetailsRepository.save(productDetails);
-            productDetailsList.add(productDetails);
         }
         return productDetailsList;
     }
@@ -335,21 +326,11 @@ public class ProductServiceImpl implements ProductService {
             productDetails.setStock(stock);
             productDetails.setColor(color);
             productDetailsRepository.save(productDetails);
-            Set<ReqProductImage> reqProductImageList = reqProductDetails.getReqProductImageList();
-            if (reqProductImageList != null && !reqProductImageList.isEmpty()) {
-                updateProductImages(reqProductImageList, productDetails.getId());
-            }
-            Set<ReqProductVideo> reqProductVideoList = reqProductDetails.getReqProductVideoList();
-            if (reqProductVideoList != null && !reqProductVideoList.isEmpty()) {
-                updateProductVideos(reqProductVideoList, productDetails.getId());
-            }
-
-            updatedProductDetailsList.add(productDetails);
         }
         return updatedProductDetailsList;
     }
 
-    private void addProductImages(Set<ReqProductImage> reqProductImageList, Long productDetailsId) {
+    private void addProductMedia(Set<MultipartFile> files, Long productDetailsId, MediaTypeEnum mediaTypeEnum) throws IOException {
         if (productDetailsId == null) {
             throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Product details id is null");
         }
@@ -357,91 +338,22 @@ public class ProductServiceImpl implements ProductService {
         if (productDetails == null) {
             throw new EshopException(ExceptionConstants.PRODUCT_NOT_FOUND, "Product details not found");
         }
-        for (ReqProductImage reqProductImage : reqProductImageList) {
-            byte[] data = reqProductImage.getData();
-            String fileName = reqProductImage.getFileName();
-            String fileType = reqProductImage.getFileType();
-
-            if (data == null || data.length == 0) {
-                throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Data is null or empty");
+        for (MultipartFile file : files) {
+            String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+            if (fileName.contains("..")){
+                throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA,"Filename contains invalid path sequence");
             }
-            if (fileName == null || fileName.trim().isEmpty()) {
-                throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "File name is null or empty");
-            }
-            if (fileType == null || fileType.trim().isEmpty()) {
-                throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "File type is null or empty");
-            }
-            ProductImage productImage = ProductImage.builder()
-                    .data(data)
-                    .productDetails(productDetails)
-                    .fileName(fileName)
-                    .fileType(fileType)
-                    .build();
-            productImageRepository.save(productImage);
-        }
-    }
-
-    private void updateProductImages(Set<ReqProductImage> reqProductImageSet, Long productDetailsId) {
-        if (productDetailsId == null) {
-            throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Product details id is null");
-        }
-        ProductDetails productDetails = productDetailsRepository.findProductDetailsByIdAndActive(productDetailsId, EnumAvailableStatus.ACTIVE.getValue());
-        if (productDetails == null) {
-            throw new EshopException(ExceptionConstants.PRODUCT_NOT_FOUND, "Product details not found");
-        }
-        Set<ProductImage> existingImages = productImageRepository.findProductImageByProductDetailsIdAndActive(productDetailsId, EnumAvailableStatus.ACTIVE.getValue());
-        Set<Long> existingImageIds = existingImages.stream()
-                .map(ProductImage::getId)
-                .collect(Collectors.toSet());
-        Set<Long> newImageIds = reqProductImageSet.stream()
-                .map(ReqProductImage::getId)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
-        for (ReqProductImage reqProductImage : reqProductImageSet) {
-            byte[] data = reqProductImage.getData();
-            String fileName = reqProductImage.getFileName();
-            String fileType = reqProductImage.getFileType();
-            Long imageId = reqProductImage.getId();
-
-            if (data == null || data.length == 0) {
-                throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Data is null or empty");
-            }
-            if (fileName == null || fileName.trim().isEmpty()) {
-                throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "File name is null or empty");
-            }
-            if (fileType == null || fileType.trim().isEmpty()) {
-                throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "File type is null or empty");
-            }
-            if (imageId == null) {
-                ProductImage productImage = ProductImage.builder()
-                        .data(data)
-                        .productDetails(productDetails)
-                        .fileName(fileName)
-                        .fileType(fileType)
-                        .build();
+            if (mediaTypeEnum == MediaTypeEnum.IMAGE){
+                ProductImage productImage = new ProductImage(fileName,file.getContentType(),file.getBytes(),productDetails);
                 productImageRepository.save(productImage);
-            } else if (existingImageIds.contains(imageId)) {
-                ProductImage productImage = existingImages.stream()
-                        .filter(img -> img.getId().equals(imageId))
-                        .findFirst()
-                        .orElseThrow(() -> new EshopException(ExceptionConstants.PRODUCT_IMAGE_NOT_FOUND, "Product image not found"));
+            } else if  (mediaTypeEnum == MediaTypeEnum.VIDEO) {
 
-                productImage.setData(data);
-                productImage.setFileName(fileName);
-                productImage.setFileType(fileType);
-                productImageRepository.save(productImage);
-            } else {
-                throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Product image ID is invalid");
             }
-        }
-        for (ProductImage existingImage : existingImages) {
-            if (!newImageIds.contains(existingImage.getId())) {
-                productImageRepository.delete(existingImage);
-            }
+
         }
     }
 
-    private void addProductVideos(Set<ReqProductVideo> reqProductVideoList, Long productDetailsId) {
+    private void updateProductMedia(Set<MultipartFile> files, Long productDetailsId, MediaTypeEnum mediaTypeEnum) throws IOException {
         if (productDetailsId == null) {
             throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Product details id is null");
         }
@@ -449,98 +361,17 @@ public class ProductServiceImpl implements ProductService {
         if (productDetails == null) {
             throw new EshopException(ExceptionConstants.PRODUCT_NOT_FOUND, "Product details not found");
         }
-
-        for (ReqProductVideo reqProductVideo : reqProductVideoList) {
-            byte[] data = reqProductVideo.getData();
-            String fileName = reqProductVideo.getFileName();
-            String fileType = reqProductVideo.getFileType();
-            if (data == null || data.length == 0) {
-                throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Data is null or empty");
-            }
-            if (fileName == null || fileName.trim().isEmpty()) {
-                throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "File name is null or empty");
-            }
-            if (fileType == null || fileType.trim().isEmpty()) {
-                throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "File type is null or empty");
-            }
-            ProductVideo productVideo = ProductVideo.builder()
-                    .data(data)
-                    .productDetails(productDetails)
-                    .fileName(fileName)
-                    .fileType(fileType)
-                    .build();
-            productVideoRepository.save(productVideo);
-        }
-
-    }
-
-    private void updateProductVideos(Set<ReqProductVideo> reqProductVideoSet, Long productDetailsId) {
-        if (productDetailsId == null) {
-            throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Product details id is null");
-        }
-
-        ProductDetails productDetails = productDetailsRepository.findProductDetailsByIdAndActive(productDetailsId, EnumAvailableStatus.ACTIVE.getValue());
-        if (productDetails == null) {
-            throw new EshopException(ExceptionConstants.PRODUCT_NOT_FOUND, "Product details not found");
-        }
-
-        Set<ProductVideo> existingVideos = productVideoRepository.findProductVideoByProductDetailsIdAndActive(productDetailsId, EnumAvailableStatus.ACTIVE.getValue());
-        Set<Long> existingVideoIds = existingVideos.stream()
-                .map(ProductVideo::getId)
-                .collect(Collectors.toSet());
-        Set<Long> newVideoIds = reqProductVideoSet.stream()
-                .map(ReqProductVideo::getId)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
-
-        for (ReqProductVideo reqProductVideo : reqProductVideoSet) {
-            byte[] data = reqProductVideo.getData();
-            String fileName = reqProductVideo.getFileName();
-            String fileType = reqProductVideo.getFileType();
-            Long videoId = reqProductVideo.getId();
-
-            if (data == null || data.length == 0) {
-                throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Data is null or empty");
-            }
-            if (fileName == null || fileName.trim().isEmpty()) {
-                throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "File name is null or empty");
-            }
-            if (fileType == null || fileType.trim().isEmpty()) {
-                throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "File type is null or empty");
-            }
-
-            if (videoId == null) {
-                ProductVideo productVideo = ProductVideo.builder()
-                        .data(data)
-                        .productDetails(productDetails)
-                        .fileName(fileName)
-                        .fileType(fileType)
-                        .build();
-                productVideoRepository.save(productVideo);
-            } else if (existingVideoIds.contains(videoId)) {
-                ProductVideo productVideo = existingVideos.stream()
-                        .filter(video -> video.getId().equals(videoId))
-                        .findFirst()
-                        .orElseThrow(() -> new EshopException(ExceptionConstants.PRODUCT_VIDEO_NOT_FOUND, "Product video not found"));
-
-                productVideo.setData(data);
-                productVideo.setFileName(fileName);
-                productVideo.setFileType(fileType);
-                productVideoRepository.save(productVideo);
-            } else {
-                throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Product video ID is invalid");
-            }
-        }
-
-        for (ProductVideo existingVideo : existingVideos) {
-            if (!newVideoIds.contains(existingVideo.getId())) {
-                productVideoRepository.delete(existingVideo);
-            }
+        if (mediaTypeEnum == MediaTypeEnum.IMAGE){
+            productImageRepository.deactivateProductImagesByProductDetailsId(productDetailsId);
+            addProductMedia(files,productDetailsId, MediaTypeEnum.IMAGE);
+        } else if (mediaTypeEnum == MediaTypeEnum.VIDEO) {
+            productVideoRepository.deactivateProductVideoByProductDetailsId(productDetailsId);
+            addProductMedia(files,productDetailsId, MediaTypeEnum.VIDEO);
         }
     }
 
     private RespProduct convertToRespProduct(Product product) {
-        List<RespProductDetails> respProductDetailsList = product.getProductDetails().stream().map(util::convertToRespProductDetails).toList();
+        List<RespProductDetails> respProductDetailsList = product.getProductDetails().stream().map(utility::convertToRespProductDetails).toList();
         RespCategory respCategory = RespCategory.builder()
                 .id(product.getSubcategory().getCategory().getId())
                 .name(product.getSubcategory().getCategory().getName())

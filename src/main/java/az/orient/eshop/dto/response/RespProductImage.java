@@ -7,7 +7,6 @@ import lombok.Data;
 @Builder
 public class RespProductImage {
     private Long id;
-    private byte[] data;
     private String fileName;
     private String fileType;
     private RespProductDetails respProductDetailsProduct;

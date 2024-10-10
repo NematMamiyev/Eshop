@@ -11,11 +11,11 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/cart")
+@RequestMapping("/carts")
 public class CartController {
     private final CartService cartService;
 
-    @GetMapping("/list/{customerId}")
+    @GetMapping("/{customerId}")
     public Response<RespCart> listByCustomerId(@PathVariable Long customerId){
         return cartService.listByCustomerId(customerId);
     }
@@ -25,7 +25,7 @@ public class CartController {
         return cartService.addCart(reqCart);
     }
 
-    @PutMapping("delete")
+    @DeleteMapping("delete")
     public Response deleteCart(@RequestBody ReqCart reqCart){
         return cartService.deleteCart(reqCart);
     }

@@ -1,5 +1,10 @@
 package az.orient.eshop.enums;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+@Getter
+@RequiredArgsConstructor
 public enum Status {
     ORDERED("Sifariş verildi"),
     CONFIRMED("Sifariş təsdiqləndi"),
@@ -12,11 +17,4 @@ public enum Status {
 
     private final String description;
 
-    Status(String description) {
-        this.description = description;
-    }
-
-    public String getDescription() {
-        return description;
-    }
 }

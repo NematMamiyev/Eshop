@@ -5,20 +5,18 @@ import az.orient.eshop.exception.ExceptionConstants;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
-@Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public enum Position {
-    SUPER_ADMIN(0), ADMIN(1), OPERATOR(2);
+@Getter
+public enum MediaTypeEnum {
+    IMAGE(0) , VIDEO(1);
 
-    private Integer value;
-
-    public static Position fromValue(Integer value) {
-        for (Position position : values()) {
-            if (position.getValue().equals(value)) {
-                return position;
+    private int value;
+    public static void fromValue(String mediaType) {
+        for (MediaTypeEnum mediaTypeEnum : values()) {
+            if (mediaTypeEnum.name().equals(mediaType)) {
+                return;
             }
         }
         throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA,"Invalid value");

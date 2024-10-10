@@ -17,7 +17,7 @@ import java.util.List;
 public class OrderStatusController {
     private final OrderStatusService orderStatusService;
 
-    @GetMapping("/list/{orderId}")
+    @GetMapping("/{orderId}")
     public Response<List<RespOrderStatus>> getOrderStatusList(@PathVariable Long orderId){
         return orderStatusService.getOrderStatusList(orderId);
     }

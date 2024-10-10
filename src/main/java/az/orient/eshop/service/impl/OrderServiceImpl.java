@@ -9,7 +9,7 @@ import az.orient.eshop.exception.ExceptionConstants;
 import az.orient.eshop.repository.CustomerRepository;
 import az.orient.eshop.repository.OrderRepository;
 import az.orient.eshop.service.OrderService;
-import az.orient.eshop.utilty.Util;
+import az.orient.eshop.util.Utility;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -19,7 +19,7 @@ import java.util.List;
 public class OrderServiceImpl implements OrderService {
     private final CustomerRepository customerRepository;
     private final OrderRepository orderRepository;
-    private final Util util = new Util();
+    private final Utility util = new Utility();
 
     @Override
     public Response<List<RespOrder>> getList(Long customerId) {

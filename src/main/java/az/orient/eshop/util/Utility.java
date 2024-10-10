@@ -1,4 +1,4 @@
-package az.orient.eshop.utilty;
+package az.orient.eshop.util;
 
 import az.orient.eshop.dto.response.*;
 import az.orient.eshop.entity.ProductDetails;
@@ -10,10 +10,10 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class Util {
+public class Utility {
     public RespProductImage convertToRespProductImage(ProductImage productImage) {
         return RespProductImage.builder()
-                .data(productImage.getData())
+                .id(productImage.getId())
                 .fileName(productImage.getFileName())
                 .fileType(productImage.getFileType())
                 .build();
@@ -21,11 +21,12 @@ public class Util {
 
     public RespProductVideo convertToRespProductVideo(ProductVideo productVideo) {
         return RespProductVideo.builder()
-                .data(productVideo.getData())
+                .id(productVideo.getId())
                 .fileName(productVideo.getFileName())
                 .fileType(productVideo.getFileType())
                 .build();
     }
+
     public RespProductDetails convertToRespProductDetails(ProductDetails productDetails) {
         Set<RespProductImage> respProductImages = Optional.ofNullable(productDetails.getImages())
                 .orElse(Collections.emptySet())

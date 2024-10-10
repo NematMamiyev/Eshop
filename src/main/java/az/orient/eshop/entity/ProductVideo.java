@@ -15,9 +15,7 @@ import java.util.Date;
 @Table(name = "product_video")
 @Data
 @DynamicInsert
-@Builder
 @NoArgsConstructor
-@AllArgsConstructor
 public class ProductVideo {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "product_video_seq")
@@ -35,4 +33,10 @@ public class ProductVideo {
     private Date dataDate;
     @ColumnDefault(value = "1")
     private Integer active;
+    public ProductVideo(String fileName,String fileType,byte[] data,ProductDetails productDetails){
+        this.fileName=fileName;
+        this.fileType=fileType;
+        this.data=data;
+        this.productDetails=productDetails;
+    }
 }

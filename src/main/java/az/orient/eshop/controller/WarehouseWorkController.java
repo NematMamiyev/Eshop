@@ -10,11 +10,11 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/warehousework")
+@RequestMapping("/warehouseworks")
 public class WarehouseWorkController {
     private final WarehouseWorkService warehouseWorkService;
 
-    @GetMapping("/works")
+    @GetMapping
     public Response<List<RespWareHouseWork>> works(){
         return warehouseWorkService.works();
     }

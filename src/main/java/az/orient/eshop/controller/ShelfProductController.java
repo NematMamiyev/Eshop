@@ -9,16 +9,16 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/shelfproduct")
+@RequestMapping("/shelfproducts")
 public class ShelfProductController {
     private final ShelfProductService shelfProductService;
 
-    @PostMapping("/add")
+    @PostMapping
     public Response<RespShelfProduct> addProductInShelf(@RequestBody ReqShelfProduct reqShelfProduct){
         return shelfProductService.addProductInShelf(reqShelfProduct);
     }
 
-    @PutMapping("/delete")
+    @DeleteMapping
     public Response<RespShelfProduct> deleteProductInShelf(@RequestBody ReqShelfProduct reqShelfProduct){
         return shelfProductService.deleteProductInShelf(reqShelfProduct);
     }

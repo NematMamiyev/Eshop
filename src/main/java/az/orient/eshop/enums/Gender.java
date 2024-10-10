@@ -2,7 +2,9 @@ package az.orient.eshop.enums;
 
 import az.orient.eshop.exception.EshopException;
 import az.orient.eshop.exception.ExceptionConstants;
+import lombok.Getter;
 
+@Getter
 public enum Gender {
 
     MALE(0), FEMALE(1), CHILD(2);
@@ -13,12 +15,9 @@ public enum Gender {
         this.value = value;
     }
 
-    public Integer getValue() {
-        return value;
-    }
     public static Gender fromValue(Integer value) {
         for (Gender gender : values()) {
-            if (gender.getValue() == value) {
+            if (gender.getValue().equals(value)) {
                 return gender;
             }
         }

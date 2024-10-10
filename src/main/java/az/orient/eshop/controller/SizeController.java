@@ -16,27 +16,27 @@ public class SizeController {
 
     private final SizeService sizeService;
 
-    @PostMapping("/create")
+    @PostMapping
     public Response<RespSize> addSize(@RequestBody ReqSize reqSize){
         return sizeService.addSize(reqSize);
     }
 
-    @GetMapping("/list")
+    @GetMapping
     public Response<List<RespSize>> getSizeList(){
         return sizeService.getSizeList();
     }
 
-    @GetMapping("/getbyid/{id}")
+    @GetMapping("/{id}")
     public Response<RespSize> getSizeById(@PathVariable Long id){
         return sizeService.getSizeById(id);
     }
 
-    @PutMapping("/update")
+    @PutMapping
     public Response<RespSize> updateSize(@RequestBody ReqSize reqSize){
         return sizeService.updateSize(reqSize);
     }
 
-    @PutMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public Response deleteSize(@PathVariable Long id){
         return sizeService.deleteSize(id);
     }

@@ -15,9 +15,7 @@ import java.util.Date;
 @Table(name = "product_image")
 @Data
 @DynamicInsert
-@Builder
 @NoArgsConstructor
-@AllArgsConstructor
 public class ProductImage {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "product_image_seq")
@@ -35,4 +33,11 @@ public class ProductImage {
     private Date dataDate;
     @ColumnDefault(value = "1")
     private Integer active;
+
+    public ProductImage(String fileName,String fileType,byte[] data,ProductDetails productDetails){
+        this.fileName=fileName;
+        this.fileType=fileType;
+        this.data=data;
+        this.productDetails=productDetails;
+    }
 }

@@ -11,6 +11,7 @@ import az.orient.eshop.repository.CustomerRepository;
 import az.orient.eshop.repository.ProductDetailsRepository;
 import az.orient.eshop.repository.ProductRepository;
 import az.orient.eshop.service.CartService;
+import az.orient.eshop.util.Utility;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +27,7 @@ public class CartServiceImpl implements CartService {
     private final CartRepository cartRepository;
     private final ProductDetailsRepository productDetailsRepository;
     private final CustomerRepository customerRepository;
+    private final Utility utility= new Utility();
 
     @Override
     public Response addCart(ReqCart reqCart) {
@@ -89,6 +91,9 @@ public class CartServiceImpl implements CartService {
                 throw new EshopException(ExceptionConstants.CART_NOT_FOUND, "Cart not found");
             }
             List<ProductDetails> productDetailsList = cart.getProductDetailsList();
+            if (productDetailsList.isEmpty()){
+                throw new EshopException(ExceptionConstants.PRODUCT_IS_NOT_IN_CART,"The product is not in the cart");
+            }
             Float amount = cart.getAmount();
             amount-=productDetails.getPrice();
             productDetailsList.removeIf(product1 -> product1.equals(productDetails));
@@ -122,7 +127,7 @@ public class CartServiceImpl implements CartService {
                 throw new EshopException(ExceptionConstants.CART_NOT_FOUND, "Cart not found");
             }
             List<ProductDetails> productDetailsList = cart.getProductDetailsList();
-            List<RespProductDetails> respProductDetailsList = productDetailsList.stream().map(this::convertToRespProductDetails).toList();
+            List<RespProductDetails> respProductDetailsList = productDetailsList.stream().map(utility::convertToRespProductDetails).toList();
             RespCart respCart = RespCart.builder()
                     .respProductDetailsList(respProductDetailsList)
                     .amount(cart.getAmount())
@@ -137,49 +142,5 @@ public class CartServiceImpl implements CartService {
             response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
         }
         return response;
-    }
-    private RespProductImage convertToRespProductImage(ProductImage productImage) {
-        return RespProductImage.builder()
-                .data(productImage.getData())
-                .fileName(productImage.getFileName())
-                .fileType(productImage.getFileType())
-                .build();
-    }
-
-    private RespProductVideo convertToRespProductVideo(ProductVideo productVideo) {
-        return RespProductVideo.builder()
-                .data(productVideo.getData())
-                .fileName(productVideo.getFileName())
-                .fileType(productVideo.getFileType())
-                .build();
-    }
-    private RespProductDetails convertToRespProductDetails(ProductDetails productDetails) {
-        Set<RespProductImage> respProductImages = Optional.ofNullable(productDetails.getImages())
-                .orElse(Collections.emptySet())
-                .stream()
-                .map(this::convertToRespProductImage)
-                .collect(Collectors.toSet());
-        Set<RespProductVideo> respProductVideos = Optional.ofNullable(productDetails.getVideos())
-                .orElse(Collections.emptySet())
-                .stream()
-                .map(this::convertToRespProductVideo)
-                .collect(Collectors.toSet()); RespSize respSize = RespSize.builder()
-                .id(productDetails.getSize().getId())
-                .name(productDetails.getSize().getName())
-                .build();
-        RespColor respColor = RespColor.builder()
-                .id(productDetails.getColor().getId())
-                .name(productDetails.getColor().getName())
-                .build();
-        return RespProductDetails.builder()
-                .id(productDetails.getId())
-                .respSize(respSize)
-                .respColor(respColor)
-                .currency(productDetails.getCurrency())
-                .price(productDetails.getPrice())
-                .stock(productDetails.getStock())
-                .respProductVideoList(respProductVideos)
-                .respProductImageList(respProductImages)
-                .build();
     }
 }

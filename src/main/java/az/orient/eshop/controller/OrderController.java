@@ -13,10 +13,10 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/order")
+@RequestMapping("/orders")
 public class OrderController {
     private final OrderService orderService;
-    @GetMapping("/list/{customerId}")
+    @GetMapping("/{customerId}")
     public Response<List<RespOrder>>  getList(@PathVariable Long customerId){
         return orderService.getList(customerId);
     }

@@ -2,7 +2,9 @@ package az.orient.eshop.enums;
 
 import az.orient.eshop.exception.EshopException;
 import az.orient.eshop.exception.ExceptionConstants;
+import lombok.Getter;
 
+@Getter
 public enum PaymentMethod {
     ONLINE("Online ödəniş edilib",0),
     CASH_ON_DELIVERY("Qapıda nağd ödəniş ediləcək",1),
@@ -16,16 +18,10 @@ public enum PaymentMethod {
         this.value = value;
     }
 
-    public String getDescription() {
-        return description;
-    }
-    public Integer getValue(){
-        return value;
-    }
-    public static PaymentMethod fromValue(Integer value) {
+    public static void fromValue(Integer value) {
         for (PaymentMethod paymentMethod : values()) {
             if (paymentMethod.getValue() == value) {
-                return paymentMethod;
+                return;
             }
         }
         throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA,"Invalid value");

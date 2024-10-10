@@ -3,6 +3,7 @@ package az.orient.eshop.dto.request;
 
 import az.orient.eshop.enums.Currency;
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -16,6 +17,4 @@ public class ReqProductDetails {
     private Float price;
     private Currency currency;
     private Integer stock;
-    private Set<ReqProductImage> reqProductImageList = new HashSet<>();
-    private Set<ReqProductVideo> reqProductVideoList = new HashSet<>();
 }

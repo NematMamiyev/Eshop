@@ -11,21 +11,21 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/wishlist")
+@RequestMapping("/wishlists")
 public class WishlistController {
     private final WishlistService wishlistService;
 
-    @GetMapping("/list/customer{customerId}")
+    @GetMapping("/{customerId}")
     public Response<RespWishlist> listByCustomerId(@PathVariable Long customerId){
         return wishlistService.listByCustomerId(customerId);
     }
 
-    @PostMapping("/add")
+    @PostMapping
     public Response addWishlist(@RequestBody ReqWishlist reqWishlist){
         return wishlistService.addWishlist(reqWishlist);
     }
 
-    @PutMapping("/delete")
+    @DeleteMapping
     public Response deleteWishlist(@RequestBody ReqWishlist reqWishlist){
         return wishlistService.deleteWishlist(reqWishlist);
     }

@@ -30,6 +30,7 @@ public class PaymentServiceImpl implements PaymentService {
     private final OrderStatusRepository orderStatusRepository;
     private final WarehouseWorkRepository warehouseWorkRepository;
     private final EmailServiceImpl emailService;
+    private final ProductDetailsRepository productDetailsRepository;
 
     @Override
     public Response payment(ReqPayment reqPayment) {
@@ -48,7 +49,22 @@ public class PaymentServiceImpl implements PaymentService {
             if (cart == null) {
                 throw new EshopException(ExceptionConstants.CART_NOT_FOUND, "Cart is empty");
             }
-            List<ProductDetails> productDetailsListCopy = new ArrayList<>(cart.getProductDetailsList());
+            if (cart.getProductDetailsList().isEmpty()){
+                throw new EshopException(ExceptionConstants.CART_IS_EMPTY,"Cart is empty");
+            }
+            List<ProductDetails> productDetailsList = new ArrayList<>(cart.getProductDetailsList());
+            for (ProductDetails productDetails : productDetailsList) {
+                int currentStock = productDetails.getStock();
+                if (currentStock == 0) {
+                    throw new EshopException(ExceptionConstants.OUT_OF_STOCK,"Out of stock");
+                }else {
+                    productDetails.setStock(currentStock - 1);
+                    if (productDetails.getStock() == 0){
+                        productDetails.setActive(EnumAvailableStatus.DEACTIVE.getValue());
+                    }
+                    productDetailsRepository.save(productDetails);
+                }
+            }
             Payment payment = Payment.builder()
                     .paymentMethod(reqPayment.getPaymentMethod())
                     .customer(customer)
@@ -58,7 +74,7 @@ public class PaymentServiceImpl implements PaymentService {
             Order order = Order.builder()
                     .customer(customer)
                     .amount(cart.getAmount())
-                    .productDetailsList(productDetailsListCopy)
+                    .productDetailsList(productDetailsList)
                     .build();
             orderRepository.save(order); //Sifarişi yaradır
             OrderStatus orderStatus = OrderStatus.builder()

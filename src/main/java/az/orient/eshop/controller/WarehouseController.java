@@ -11,31 +11,31 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/warehouse")
+@RequestMapping("/warehouses")
 public class WarehouseController {
     private final WarehouseService warehouseService;
 
-    @PostMapping("/create")
+    @PostMapping
     public Response<RespWarehouse> addWarehouse(@RequestBody ReqWarehouse reqWarehouse){
         return warehouseService.addWarehouse(reqWarehouse);
     }
 
-    @GetMapping("/list")
+    @GetMapping
     public Response<List<RespWarehouse>> getWarehouseList(){
         return warehouseService.getWarehouseList();
     }
 
-    @GetMapping("/getbyid/{id}")
+    @GetMapping("/{id}")
     public Response<RespWarehouse>  getWarehouseById(@PathVariable Long id){
         return warehouseService.getWarehouseById(id);
     }
 
-    @PutMapping("/update")
+    @PutMapping
     public Response<RespWarehouse> updateWarehouse(@RequestBody ReqWarehouse reqWarehouse){
         return warehouseService.updateWarehouse(reqWarehouse);
     }
 
-    @PutMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public Response deleteWarehouse(@PathVariable Long id){
         return warehouseService.deleteWarehouse(id);
     }

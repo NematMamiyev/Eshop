@@ -11,31 +11,31 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/employee")
+@RequestMapping("/employees")
 public class EmployeeController {
     private final EmployeeService employeeService;
 
-    @PostMapping("/create")
+    @PostMapping
     public Response<RespEmployee> addEmployee(@RequestBody ReqEmployee reqEmployee){
         return employeeService.addEmployee(reqEmployee);
     }
 
-    @GetMapping("/list")
+    @GetMapping
     public Response<List<RespEmployee>> getEmployeeList(){
         return employeeService.getEmployeeList();
     }
 
-    @GetMapping("/getbyid/{id}")
+    @GetMapping("/{id}")
     public Response<RespEmployee> getEmployeeById(@PathVariable Long id){
         return employeeService.getEmployeeById(id);
     }
 
-    @PutMapping("/update")
+    @PutMapping
     public Response<RespEmployee> updateEmployee(@RequestBody ReqEmployee reqEmployee){
         return employeeService.updateEmployee(reqEmployee);
     }
 
-    @PutMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public Response deleteEmployee(@PathVariable Long id){
         return employeeService.deleteEmployee(id);
     }

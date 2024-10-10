@@ -10,15 +10,11 @@ import az.orient.eshop.repository.CustomerRepository;
 import az.orient.eshop.repository.ProductDetailsRepository;
 import az.orient.eshop.repository.WishlistRepository;
 import az.orient.eshop.service.WishlistService;
-import az.orient.eshop.utilty.Util;
+import az.orient.eshop.util.Utility;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +23,7 @@ public class WishlistServiceImpl implements WishlistService {
     private final WishlistRepository wishlistRepository;
     private final ProductDetailsRepository productDetailsRepository;
     private final CustomerRepository customerRepository;
-    private final Util util = new Util();
+    private final Utility util = new Utility();
 
     @Override
     public Response addWishlist(ReqWishlist reqWishlist) {

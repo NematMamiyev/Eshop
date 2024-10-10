@@ -11,31 +11,31 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/category")
+@RequestMapping("/categoryes")
 public class CategoryController {
     private final CategoryService categoryService;
 
-    @PostMapping("/create")
+    @PostMapping
     public Response<RespCategory> addCategory(@RequestBody ReqCategory reqCategory) {
         return categoryService.addCategory(reqCategory);
     }
 
-    @GetMapping("/list")
+    @GetMapping
     public Response<List<RespCategory>> categoryList(){
         return categoryService.categoryList();
     }
 
-    @GetMapping("getbyid/{id}")
+    @GetMapping("/{id}")
     public Response<RespCategory> getCategoryById(@PathVariable Long id){
         return categoryService.getCategoryById(id);
     }
 
-    @PutMapping("/update")
+    @PutMapping
     public Response<RespCategory> updateCategory(@RequestBody ReqCategory reqCategory){
         return categoryService.updateCategory(reqCategory);
     }
 
-    @PutMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public Response deleteCategory(@PathVariable Long id){
         return categoryService.deleteCategory(id);
     }

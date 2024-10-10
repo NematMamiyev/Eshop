@@ -2,7 +2,9 @@ package az.orient.eshop.enums;
 
 import az.orient.eshop.exception.EshopException;
 import az.orient.eshop.exception.ExceptionConstants;
+import lombok.Getter;
 
+@Getter
 public enum Currency {
     AZN(0), USD(1), EURO(2);
 
@@ -12,12 +14,9 @@ public enum Currency {
         this.value = value;
     }
 
-    public Integer getValue() {
-        return value;
-    }
     public static Currency fromValue(Integer value) {
         for (Currency currency : values()) {
-            if (currency.getValue() == value) {
+            if (currency.getValue().equals(value)) {
                 return currency;
             }
         }

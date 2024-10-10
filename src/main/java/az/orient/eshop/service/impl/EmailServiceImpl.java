@@ -16,7 +16,7 @@ public class EmailServiceImpl {
         message.setTo(toEmail);
         message.setSubject(subject);
         message.setText(body);
-        message.setFrom("eshopprojectazerbaijan@gmail.com");
+        message.setFrom("nemet.memiyev1@gmail.com");
         javaMailSender.send(message);
     }
 

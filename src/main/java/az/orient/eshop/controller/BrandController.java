@@ -11,31 +11,31 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/brand")
+@RequestMapping("/brands")
 public class BrandController {
     private final BrandService brandService;
 
-    @PostMapping("/create")
+    @PostMapping
     public Response<RespBrand> addBrand(@RequestBody ReqBrand reqBrand){
         return brandService.addBrand(reqBrand);
     }
 
-    @GetMapping("/list")
+    @GetMapping
     public Response<List<RespBrand>> brandList(){
         return brandService.brandList();
     }
 
-    @GetMapping("/getbyid/{id}")
+    @GetMapping("/{id}")
     public Response<RespBrand> getBrandById(@PathVariable Long id){
         return brandService.getBrandById(id);
     }
 
-    @PutMapping("/update")
+    @PutMapping
     public Response<RespBrand> updateBrand(@RequestBody ReqBrand reqBrand){
         return brandService.updateBrand(reqBrand);
     }
 
-    @PutMapping("/delete/{id}")
+    @PutMapping("/{id}")
     public Response deleteBrand(@PathVariable Long id){
         return brandService.deleteBrand(id);
     }

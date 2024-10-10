@@ -11,31 +11,31 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/color")
+@RequestMapping("/colors")
 public class ColorController {
     private final ColorService colorService;
 
-    @PostMapping("/create")
+    @PostMapping
     public Response<RespColor> addColor(@RequestBody ReqColor reqColor){
         return colorService.addColor(reqColor);
     }
 
-    @GetMapping("/list")
+    @GetMapping
     public Response<List<RespColor>> colorList(){
         return colorService.colorList();
     }
 
-    @GetMapping("/getbyid/{id}")
+    @GetMapping("/{id}")
     public Response<RespColor> getColorById(@PathVariable Long id){
         return colorService.getColorById(id);
     }
 
-    @PutMapping("/update")
+    @PutMapping
     public Response<RespColor> updateColor(@RequestBody ReqColor reqColor){
         return colorService.updateColor(reqColor);
     }
 
-    @PutMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public Response deleteColor(@PathVariable Long id){
         return colorService.deleteColor(id);
     }
