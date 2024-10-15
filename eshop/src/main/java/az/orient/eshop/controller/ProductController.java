@@ -52,27 +52,4 @@ public class ProductController {
         return productService.deleteProduct(id);
     }
 
-
-    @PostMapping("/image/{id}")
-    public Response addImages(@RequestParam("file") Set<MultipartFile> files, @PathVariable Long id) throws Exception {
-        Response response = new Response<>();
-
-        for (MultipartFile file : files) {
-            String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-
-            // Fayl adı düzgünlüyünü yoxlamaq
-            if (fileName.contains("..")) {
-                throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Filename contains invalid path sequence");
-            }
-
-            // Məhsul detalları tapılır
-            ProductDetails productDetails = productDetailsRepository.findProductDetailsByIdAndActive(id, 1);
-
-            // Fayl məlumatları ilə ProductImage yaradılması və saxlanılması
-            ProductImage productImage = new ProductImage(fileName, file.getContentType(), file.getBytes(), productDetails);
-            productImageRepository.save(productImage);
-        }
-
-        return response;
-    }
 }

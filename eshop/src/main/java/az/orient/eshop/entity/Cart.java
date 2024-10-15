@@ -25,6 +25,7 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cart_customer_seq")
     @SequenceGenerator(name = "cart_customer_seq", sequenceName = "CART_CUSTOMER_SEQ", allocationSize = 1)
     private Long id;
+    @Builder.Default
     @ManyToMany
     @JoinTable(
             name = "cart_products",

@@ -16,6 +16,4 @@ public class RespProductDetails {
     private Float price;
     private Currency currency;
     private Integer stock;
-    private Set<RespProductImage> respProductImageList;
-    private Set<RespProductVideo> respProductVideoList;
 }

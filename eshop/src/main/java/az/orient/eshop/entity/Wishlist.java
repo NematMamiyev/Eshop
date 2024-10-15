@@ -25,6 +25,7 @@ public class Wishlist {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "wishlist_seq")
     @SequenceGenerator(name = "wishlist_seq", sequenceName = "WISHLIST_SEQ", allocationSize = 1)
     private Long id;
+    @Builder.Default
     @ManyToMany
     @JoinTable(
             name = "wishlist_products",
