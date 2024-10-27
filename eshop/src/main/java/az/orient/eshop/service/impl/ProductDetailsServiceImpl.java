@@ -21,6 +21,7 @@ import az.orient.eshop.util.Utility;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -48,7 +49,7 @@ public class ProductDetailsServiceImpl implements ProductDetailsService {
             Long colorId = reqProductDetails.getColorId();
             Integer stock = reqProductDetails.getStock();
             Currency currency = Currency.fromValue(reqProductDetails.getCurrency().getValue());
-            Float price = reqProductDetails.getPrice();
+            BigDecimal price = reqProductDetails.getPrice();
             if (sizeId == null || stock == null || colorId == null || price == null) {
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Invalid request data");
             }
@@ -98,7 +99,7 @@ public class ProductDetailsServiceImpl implements ProductDetailsService {
             Long colorId = reqProductDetails.getColorId();
             Integer stock = reqProductDetails.getStock();
             Currency currency = Currency.fromValue(reqProductDetails.getCurrency().getValue());
-            Float price = reqProductDetails.getPrice();
+            BigDecimal price = reqProductDetails.getPrice();
             if (sizeId == null || stock == null || colorId == null || price == null) {
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Invaild request data");
             }

@@ -15,6 +15,7 @@ import az.orient.eshop.service.PaymentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -84,7 +85,7 @@ public class PaymentServiceImpl implements PaymentService {
             orderStatusRepository.save(orderStatus);//Sifarişin statusun yaradır
             emailService.sendSimpleEmail(customer.getEmail(), "Mehsul", Email.ORDERED.getDescription());
             cart.getProductDetailsList().clear();
-            cart.setAmount(0F);
+            cart.setAmount(BigDecimal.ZERO);
             WarehouseWork warehouseWork = WarehouseWork.builder()
                     .order(order)
                     .build();
