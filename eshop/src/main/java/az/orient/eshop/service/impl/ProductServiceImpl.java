@@ -25,8 +25,6 @@ public class ProductServiceImpl implements ProductService {
     private final ColorRepository colorRepository;
     private final SubcategoryRepository subcategoryRepository;
     private final ProductDetailsRepository productDetailsRepository;
-    private final ProductVideoRepository productVideoRepository;
-    private final ProductImageRepository productImageRepository;
     private final Utility utility = new Utility();
 
     @Override
@@ -131,48 +129,6 @@ public class ProductServiceImpl implements ProductService {
             }
             RespProduct respProduct = convertToRespProduct(product);
             response.setT(respProduct);
-            response.setStatus(RespStatus.getSuccessMessage());
-        } catch (EshopException ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
-        }
-        return response;
-    }
-
-    @Override
-    public Response<RespProductDetails> getProductDetailsId(Long productDetailsId) {
-        Response<RespProductDetails> response = new Response<>();
-        try {
-            if (productDetailsId == null) {
-                throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Product details id is null");
-            }
-            ProductDetails productDetails = productDetailsRepository.findProductDetailsByIdAndActive(productDetailsId, EnumAvailableStatus.ACTIVE.getValue());
-            RespProductDetails respProductDetails = utility.convertToRespProductDetails(productDetails);
-            response.setT(respProductDetails);
-            response.setStatus(RespStatus.getSuccessMessage());
-        } catch (EshopException ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
-        }
-        return response;
-    }
-
-    @Override
-    public Response<List<RespProductDetails>> getProductDetailsList() {
-        Response<List<RespProductDetails>> response = new Response<>();
-        try {
-            List<ProductDetails> productDetailsList = productDetailsRepository.findProductDetailsByActive(EnumAvailableStatus.ACTIVE.getValue());
-            if (productDetailsList.isEmpty()) {
-                throw new EshopException(ExceptionConstants.PRODUCT_DETAILS_NOT_FOUND, "Product Details not found");
-            }
-            List<RespProductDetails> respProductDetailsList = productDetailsList.stream().map(utility::convertToRespProductDetails).toList();
-            response.setT(respProductDetailsList);
             response.setStatus(RespStatus.getSuccessMessage());
         } catch (EshopException ex) {
             ex.printStackTrace();
