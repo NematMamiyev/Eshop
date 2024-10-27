@@ -61,7 +61,6 @@ public class ProductServiceImpl implements ProductService {
             List<ReqProductDetails> reqProductDetailsList = reqProduct.getReqProductDetailsList();
             List<ProductDetails> productDetailsList = addProductDetails(reqProductDetailsList, product.getId());
             product.setProductDetails(productDetailsList);
-            productRepository.save(product);
             RespProduct respProduct = convertToRespProduct(product);
             response.setT(respProduct);
             response.setStatus(RespStatus.getSuccessMessage());
@@ -166,15 +165,15 @@ public class ProductServiceImpl implements ProductService {
             if (subcategory == null) {
                 throw new EshopException(ExceptionConstants.SUBCATEGORY_NOT_FOUND, "Subcategory not found");
             }
-            List<ProductDetails> productDetailsList = updateProductDetails(reqProduct.getReqProductDetailsList(), productId);
             product.setName(name);
             product.setProductInformation(reqProduct.getProductInformation());
             product.setExpertionDate(reqProduct.getExpertionDate());
             product.setBrand(brand);
             product.setSubcategory(subcategory);
-            product.setProductDetails(productDetailsList);
             product.setGender(reqProduct.getGender());
             productRepository.save(product);
+            List<ProductDetails> productDetailsList = updateProductDetails(reqProduct.getReqProductDetailsList(), productId);
+            product.setProductDetails(productDetailsList);
             RespProduct respProduct = convertToRespProduct(product);
             response.setT(respProduct);
             response.setStatus(RespStatus.getSuccessMessage());
@@ -240,13 +239,14 @@ public class ProductServiceImpl implements ProductService {
                     .stock(stock)
                     .color(color)
                     .build();
+            productDetailsList.add(productDetails);
             productDetailsRepository.save(productDetails);
         }
         return productDetailsList;
     }
 
     private List<ProductDetails> updateProductDetails(List<ReqProductDetails> reqProductDetailsList, Long productId) {
-        List<ProductDetails> updatedProductDetailsList = new ArrayList<>();
+        List<ProductDetails> productDetailsList = new ArrayList<>();
         Product product = productRepository.findProductByIdAndActive(productId, EnumAvailableStatus.ACTIVE.getValue());
         if (product == null) {
             throw new EshopException(ExceptionConstants.PRODUCT_NOT_FOUND, "Product not found");
@@ -279,8 +279,9 @@ public class ProductServiceImpl implements ProductService {
             productDetails.setStock(stock);
             productDetails.setColor(color);
             productDetailsRepository.save(productDetails);
+            productDetailsList.add(productDetails);
         }
-        return updatedProductDetailsList;
+        return productDetailsList;
     }
 
     private RespProduct convertToRespProduct(Product product) {
