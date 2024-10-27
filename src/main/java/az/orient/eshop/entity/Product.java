@@ -34,6 +34,7 @@ public class Product {
     private Date expertionDate;
     @Enumerated(EnumType.STRING)
     private Gender gender;
+    @Builder.Default
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductDetails> productDetails = new ArrayList<>();
     @ManyToOne

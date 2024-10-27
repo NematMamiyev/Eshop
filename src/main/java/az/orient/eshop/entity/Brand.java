@@ -25,6 +25,7 @@ public class Brand {
     private Long id;
     @Column(nullable = false, length = 50,unique = true)
     private String name;
+    @Builder.Default
     @CreationTimestamp
     private Date dataDate = new Date();
     @ColumnDefault(value = "1")

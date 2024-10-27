@@ -7,7 +7,6 @@ import az.orient.eshop.entity.*;
 import az.orient.eshop.enums.Currency;
 import az.orient.eshop.enums.EnumAvailableStatus;
 import az.orient.eshop.enums.Gender;
-import az.orient.eshop.enums.MediaTypeEnum;
 import az.orient.eshop.exception.EshopException;
 import az.orient.eshop.exception.ExceptionConstants;
 import az.orient.eshop.repository.*;
@@ -15,10 +14,6 @@ import az.orient.eshop.service.ProductService;
 import az.orient.eshop.util.Utility;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
 import java.util.*;
 
 @Service
@@ -328,46 +323,6 @@ public class ProductServiceImpl implements ProductService {
             productDetailsRepository.save(productDetails);
         }
         return updatedProductDetailsList;
-    }
-
-    private void addProductMedia(Set<MultipartFile> files, Long productDetailsId, MediaTypeEnum mediaTypeEnum) throws IOException {
-        if (productDetailsId == null) {
-            throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Product details id is null");
-        }
-        ProductDetails productDetails = productDetailsRepository.findProductDetailsByIdAndActive(productDetailsId, EnumAvailableStatus.ACTIVE.getValue());
-        if (productDetails == null) {
-            throw new EshopException(ExceptionConstants.PRODUCT_NOT_FOUND, "Product details not found");
-        }
-        for (MultipartFile file : files) {
-            String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-            if (fileName.contains("..")){
-                throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA,"Filename contains invalid path sequence");
-            }
-            if (mediaTypeEnum == MediaTypeEnum.IMAGE){
-                ProductImage productImage = new ProductImage(fileName,file.getContentType(),file.getBytes(),productDetails);
-                productImageRepository.save(productImage);
-            } else if  (mediaTypeEnum == MediaTypeEnum.VIDEO) {
-
-            }
-
-        }
-    }
-
-    private void updateProductMedia(Set<MultipartFile> files, Long productDetailsId, MediaTypeEnum mediaTypeEnum) throws IOException {
-        if (productDetailsId == null) {
-            throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Product details id is null");
-        }
-        ProductDetails productDetails = productDetailsRepository.findProductDetailsByIdAndActive(productDetailsId, EnumAvailableStatus.ACTIVE.getValue());
-        if (productDetails == null) {
-            throw new EshopException(ExceptionConstants.PRODUCT_NOT_FOUND, "Product details not found");
-        }
-        if (mediaTypeEnum == MediaTypeEnum.IMAGE){
-            productImageRepository.deactivateProductImagesByProductDetailsId(productDetailsId);
-            addProductMedia(files,productDetailsId, MediaTypeEnum.IMAGE);
-        } else if (mediaTypeEnum == MediaTypeEnum.VIDEO) {
-            productVideoRepository.deactivateProductVideoByProductDetailsId(productDetailsId);
-            addProductMedia(files,productDetailsId, MediaTypeEnum.VIDEO);
-        }
     }
 
     private RespProduct convertToRespProduct(Product product) {

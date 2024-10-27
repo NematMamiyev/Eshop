@@ -7,16 +7,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 public interface ProductImageRepository extends JpaRepository<ProductImage, Long> {
     Set<ProductImage> findProductImageByProductDetailsIdAndActive(Long productDetailsId, Integer active);
     ProductImage findProductImageByIdAndActive(Long imageId, Integer active);
-    List<ProductImage> findAllByProductDetailsIdAndActive(Long productDetailsId,Integer active);
-
     @Transactional
     @Modifying
     @Query("UPDATE ProductImage pi SET pi.active = 0 WHERE pi.productDetails.id = :productDetailsId")

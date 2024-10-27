@@ -39,9 +39,11 @@ public class ProductDetails {
     private Currency currency;
     @Column(nullable = false)
     private Integer stock;
+    @Builder.Default
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "product_details_id")
     private Set<ProductImage> images = new HashSet<>();
+    @Builder.Default
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "product_details_id")
     private Set<ProductVideo> videos = new HashSet<>();

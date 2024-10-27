@@ -26,6 +26,7 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "product_order_seq")
     @SequenceGenerator(name = "product_order_seq",sequenceName = "PRODUCT_ORDER_SEQ",allocationSize = 1)
     private Long id;
+    @Builder.Default
     @ManyToMany
     @JoinTable(
             name = "order_product_details",
