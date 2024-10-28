@@ -10,7 +10,6 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
 
-import java.math.BigDecimal;
 import java.util.Date;
 
 @Entity
@@ -31,7 +30,7 @@ public class Payment {
     @JoinColumn(name = "customer_id")
     private Customer customer;
     @Column(nullable = false)
-    private BigDecimal amount;
+    private Float amount;
     @CreationTimestamp
     private Date dataDate;
     @ColumnDefault(value = "1")

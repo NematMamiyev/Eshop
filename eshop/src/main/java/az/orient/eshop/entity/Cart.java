@@ -9,7 +9,6 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -39,7 +38,7 @@ public class Cart {
     @JoinColumn(name = "customer_id", referencedColumnName = "id")
     private Customer customer;
 
-    private BigDecimal amount;
+    private Float amount;
 
     @CreationTimestamp
     private Date dataDate;

@@ -4,7 +4,6 @@ import az.orient.eshop.entity.Product;
 import lombok.Builder;
 import lombok.Data;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @Data
@@ -12,5 +11,5 @@ import java.util.List;
 public class RespOrder {
     private Long id;
     private List<RespProductDetails> respProductDetailsList;
-    private BigDecimal amount;
+    private Float amount;
 }

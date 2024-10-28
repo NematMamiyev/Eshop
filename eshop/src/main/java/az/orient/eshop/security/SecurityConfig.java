@@ -1,3 +1,4 @@
+/*
 package az.orient.eshop.security;
 
 
@@ -23,3 +24,4 @@ public class SecurityConfig {
         return http.build();
     }
 }
+*/

@@ -9,6 +9,7 @@ import az.orient.eshop.enums.EnumAvailableStatus;
 import az.orient.eshop.exception.EshopException;
 import az.orient.eshop.exception.ExceptionConstants;
 import az.orient.eshop.repository.BrandRepository;
+import az.orient.eshop.securitytoken.TokenUtility;
 import az.orient.eshop.service.BrandService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,11 +20,13 @@ import java.util.List;
 @Service
 public class BrandServiceImpl implements BrandService {
     private final BrandRepository brandRepository;
+    private final TokenUtility tokenUtility;
 
     @Override
-    public Response<RespBrand> addBrand(ReqBrand reqBrand) {
+    public Response<RespBrand> addBrand(String token, ReqBrand reqBrand) {
         Response<RespBrand> response = new Response<>();
         try {
+            tokenUtility.checkToken(token);
             String name = reqBrand.getName();
             if (name == null) {
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Invalid request data");
@@ -51,9 +54,10 @@ public class BrandServiceImpl implements BrandService {
     }
 
     @Override
-    public Response<List<RespBrand>> brandList() {
+    public Response<List<RespBrand>> brandList(String token) {
         Response<List<RespBrand>> response = new Response<>();
         try {
+            tokenUtility.checkToken(token);
             List<Brand> brandList = brandRepository.findAllByActive(EnumAvailableStatus.ACTIVE.getValue());
             if (brandList.isEmpty()) {
                 throw new EshopException(ExceptionConstants.BRAND_NOT_FOUND, "Brand not found");
@@ -73,9 +77,10 @@ public class BrandServiceImpl implements BrandService {
     }
 
     @Override
-    public Response<RespBrand> getBrandById(Long id) {
+    public Response<RespBrand> getBrandById(String token, Long id) {
         Response<RespBrand> response = new Response<>();
         try {
+            tokenUtility.checkToken(token);
             if (id == null){
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA,"Invalid request data");
             }
@@ -97,9 +102,10 @@ public class BrandServiceImpl implements BrandService {
     }
 
     @Override
-    public Response<RespBrand> updateBrand(ReqBrand reqBrand) {
+    public Response<RespBrand> updateBrand(String token, ReqBrand reqBrand) {
         Response<RespBrand> response = new Response<>();
         try {
+            tokenUtility.checkToken(token);
             Long id = reqBrand.getId();
             String name = reqBrand.getName();
             if (id == null || name == null){
@@ -129,9 +135,10 @@ public class BrandServiceImpl implements BrandService {
     }
 
     @Override
-    public Response deleteBrand(Long id) {
+    public Response deleteBrand(String token, Long id) {
         Response response = new Response<>();
         try {
+            tokenUtility.checkToken(token);
             if (id == null){
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Id not found");
             }

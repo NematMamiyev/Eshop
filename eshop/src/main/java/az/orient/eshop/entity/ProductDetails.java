@@ -10,7 +10,6 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
 
-import java.math.BigDecimal;
 import java.util.*;
 
 @Entity
@@ -35,7 +34,7 @@ public class ProductDetails {
     @JoinColumn(name = "color_id")
     private Color color;
     @Column(nullable = false)
-    private BigDecimal price;
+    private Float price;
     @Enumerated(EnumType.STRING)
     private Currency currency;
     @Column(nullable = false)
