@@ -17,8 +17,4 @@ public interface ProductService {
     Response<RespProduct> updateProduct(ReqProduct reqProduct);
 
     Response deleteProduct(Long id);
-
-    Response<RespProductDetails> getProductDetailsId(Long productDetailsId);
-
-    Response<List<RespProductDetails>> getProductDetailsList();
 }

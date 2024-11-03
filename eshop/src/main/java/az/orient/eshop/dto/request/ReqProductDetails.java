@@ -5,6 +5,7 @@ import az.orient.eshop.enums.Currency;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,7 +15,7 @@ public class ReqProductDetails {
     private Long productId;
     private Long sizeId;
     private Long colorId;
-    private Float price;
+    private BigDecimal price;
     private Currency currency;
     private Integer stock;
 }

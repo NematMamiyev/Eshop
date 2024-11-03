@@ -36,7 +36,6 @@ public class BrandServiceImpl implements BrandService {
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Name available in the database");
             }
             Brand brand = Brand.builder()
-                    .id(reqBrand.getId())
                     .name(name)
                     .build();
             brandRepository.save(brand);

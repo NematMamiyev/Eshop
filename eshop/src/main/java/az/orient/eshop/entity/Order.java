@@ -1,6 +1,5 @@
 package az.orient.eshop.entity;
 
-import az.orient.eshop.enums.Status;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,6 +9,7 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -37,7 +37,7 @@ public class Order {
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;
-    private Float amount;
+    private BigDecimal amount;
     @CreationTimestamp
     private Date dataDate;
     @ColumnDefault(value = "1")
