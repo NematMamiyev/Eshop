@@ -4,6 +4,7 @@ import az.orient.eshop.enums.Currency;
 import lombok.Builder;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Set;
 
 @Data
@@ -13,7 +14,7 @@ public class RespProductDetails {
     private RespProduct respProduct;
     private RespSize respSize;
     private RespColor respColor;
-    private Float price;
+    private BigDecimal price;
     private Currency currency;
     private Integer stock;
 }

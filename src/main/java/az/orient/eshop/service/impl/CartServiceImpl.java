@@ -9,17 +9,13 @@ import az.orient.eshop.exception.ExceptionConstants;
 import az.orient.eshop.repository.CartRepository;
 import az.orient.eshop.repository.CustomerRepository;
 import az.orient.eshop.repository.ProductDetailsRepository;
-import az.orient.eshop.repository.ProductRepository;
 import az.orient.eshop.service.CartService;
 import az.orient.eshop.util.Utility;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
+import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -52,9 +48,9 @@ public class CartServiceImpl implements CartService {
             }
             List<ProductDetails> productDetailsList = cart.getProductDetailsList();
             productDetailsList.add(productDetails);
-            Float amount = 0F;
+            BigDecimal amount = BigDecimal.ZERO;
             for (ProductDetails product1 : productDetailsList){
-                amount+=product1.getPrice();
+                amount = amount.add(product1.getPrice());
             }
             cart.setAmount(amount );
             cartRepository.save(cart);
@@ -94,8 +90,8 @@ public class CartServiceImpl implements CartService {
             if (productDetailsList.isEmpty()){
                 throw new EshopException(ExceptionConstants.PRODUCT_IS_NOT_IN_CART,"The product is not in the cart");
             }
-            Float amount = cart.getAmount();
-            amount-=productDetails.getPrice();
+            BigDecimal amount = cart.getAmount();
+            amount = amount.subtract(productDetails.getPrice());
             productDetailsList.removeIf(product1 -> product1.equals(productDetails));
             cart.setAmount(amount);
             cart.setProductDetailsList(productDetailsList);

@@ -33,7 +33,6 @@ public class ColorServiceImpl implements ColorService {
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Name available in the database");
             }
             Color color = Color.builder()
-                    .id(reqColor.getId())
                     .name(name)
                     .build();
             colorRepository.save(color);

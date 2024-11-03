@@ -40,7 +40,6 @@ public class EmployeeServiceImpl implements EmployeeService {
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Email or phone number available in the database");
             }
             Employee employee = Employee.builder()
-                    .id(reqEmployee.getId())
                     .name(name)
                     .surname(surname)
                     .email(email)
