@@ -1,3 +1,4 @@
+/*
 package az.orient.eshop.securitytoken;
 
 
@@ -22,3 +23,4 @@ public class UserController {
         return userService.logout(token);
     }
 }
+*/

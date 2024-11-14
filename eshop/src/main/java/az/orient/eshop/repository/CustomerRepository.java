@@ -18,4 +18,6 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
     List<Customer> findAllByActive(Integer active);
 
     Customer findCustomerByIdAndActive(Long id, Integer active);
+
+    Customer findByEmailAndActive(String email, Integer active);
 }

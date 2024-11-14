@@ -1,3 +1,4 @@
+/*
 package az.orient.eshop.securitytoken;
 
 import az.orient.eshop.dto.response.RespStatus;
@@ -31,11 +32,11 @@ public class UserServiceImpl implements UserService {
             if (user == null) {
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "username or password incorrect");
             }
-            String token = UUID.randomUUID().toString();
             UserToken userToken = userTokenRepository.findUserTokenByUserAndActive(user, EnumAvailableStatus.ACTIVE.getValue());
             if (userToken != null) {
                 throw new EshopException(ExceptionConstants.SESSION_ALREADY_EXIST, "Session already exist");
             }
+            String token = UUID.randomUUID().toString();
             userToken = new UserToken();
             userToken.setUser(user);
             userToken.setToken(token);
@@ -74,3 +75,4 @@ public class UserServiceImpl implements UserService {
         return response;
     }
 }
+*/

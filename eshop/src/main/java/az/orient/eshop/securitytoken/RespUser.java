@@ -1,3 +1,4 @@
+/*
 package az.orient.eshop.securitytoken;
 
 import lombok.Data;
@@ -9,3 +10,4 @@ public class RespUser {
     private String fullName;
     private String token;
 }
+*/

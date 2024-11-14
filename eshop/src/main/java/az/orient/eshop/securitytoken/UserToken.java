@@ -1,3 +1,4 @@
+/*
 package az.orient.eshop.securitytoken;
 
 import az.orient.eshop.entity.Customer;
@@ -34,3 +35,4 @@ public class UserToken {
     @ColumnDefault(value = "1")
     private Integer active;
 }
+*/

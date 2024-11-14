@@ -1,3 +1,4 @@
+/*
 package az.orient.eshop.securitytoken;
 
 import lombok.Data;
@@ -7,3 +8,4 @@ public class ReqUser {
     private String username;
     private String password;
 }
+*/
