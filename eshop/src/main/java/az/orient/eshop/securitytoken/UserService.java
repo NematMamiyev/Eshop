@@ -1,3 +1,4 @@
+/*
 package az.orient.eshop.securitytoken;
 
 import az.orient.eshop.dto.response.Response;
@@ -7,3 +8,4 @@ public interface UserService {
 
     Response logout(String token);
 }
+*/

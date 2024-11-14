@@ -11,14 +11,19 @@ import az.orient.eshop.exception.ExceptionConstants;
 import az.orient.eshop.repository.ColorRepository;
 import az.orient.eshop.service.ColorService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
 
 @Service
 @RequiredArgsConstructor
 public class ColorServiceImpl implements ColorService {
     private final ColorRepository colorRepository;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ColorServiceImpl.class);
 
     @Override
     public Response<RespColor> addColor(ReqColor reqColor) {
@@ -74,6 +79,7 @@ public class ColorServiceImpl implements ColorService {
     public Response<RespColor> getColorById(Long id) {
         Response<RespColor> response = new Response<>();
         try {
+            LOGGER.info("getColorById request: " + id);
             if (id == null){
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Id not found");
             }
@@ -84,10 +90,13 @@ public class ColorServiceImpl implements ColorService {
             RespColor respColor = convert(color);
             response.setT(respColor);
             response.setStatus(RespStatus.getSuccessMessage());
+            LOGGER.info("getColorById response: "+ response);
         } catch (EshopException ex) {
+            LOGGER.error("getColorById eror: ",ex);
             ex.printStackTrace();
             response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
         } catch (Exception ex) {
+            LOGGER.error("getColorById eror: ",ex);
             ex.printStackTrace();
             response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
         }

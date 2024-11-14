@@ -1,6 +1,6 @@
 package az.orient.eshop.entity;
 
-import az.orient.eshop.enums.Position;
+import az.orient.eshop.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,7 +33,7 @@ public class Employee {
     @Column(nullable = false, length = 30, unique = true)
     private String phone;
     @Enumerated(EnumType.STRING)
-    private Position position;
+    private Role role;
     @Column(nullable = false, length = 20)
     private String password;
     @CreationTimestamp

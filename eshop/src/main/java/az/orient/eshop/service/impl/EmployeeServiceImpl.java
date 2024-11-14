@@ -6,7 +6,7 @@ import az.orient.eshop.dto.response.RespStatus;
 import az.orient.eshop.dto.response.Response;
 import az.orient.eshop.entity.Employee;
 import az.orient.eshop.enums.EnumAvailableStatus;
-import az.orient.eshop.enums.Position;
+import az.orient.eshop.enums.Role;
 import az.orient.eshop.exception.EshopException;
 import az.orient.eshop.exception.ExceptionConstants;
 import az.orient.eshop.repository.EmployeeRepository;
@@ -30,7 +30,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             String email = reqEmployee.getEmail();
             String phone = reqEmployee.getPhone();
             String password = reqEmployee.getPassword();
-            Position.fromValue(reqEmployee.getPosition().getValue());
+            Role.fromValue(reqEmployee.getRole().getValue());
             if (name == null || surname == null || email == null || phone == null || password == null) {
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Invalid request data");
             }
@@ -45,7 +45,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                     .email(email)
                     .phone(phone)
                     .password(password)
-                    .position(reqEmployee.getPosition())
+                    .role(reqEmployee.getRole())
                     .build();
             employeeRepository.save(employee);
             RespEmployee respEmployee = convert(employee);
@@ -116,7 +116,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             String email = reqEmployee.getEmail();
             String phone = reqEmployee.getPhone();
             String password = reqEmployee.getPassword();
-            Position.fromValue(reqEmployee.getPosition().getValue());
+            Role.fromValue(reqEmployee.getRole().getValue());
             if (id == null || name == null || surname == null || email == null || phone == null || password == null) {
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Invalid request data");
             }
@@ -134,7 +134,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             employee.setEmail(email);
             employee.setPhone(phone);
             employee.setPassword(password);
-            employee.setPosition(reqEmployee.getPosition());
+            employee.setRole(reqEmployee.getRole());
             employeeRepository.save(employee);
             RespEmployee respEmployee = convert(employee);
             response.setT(respEmployee);
@@ -181,7 +181,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .email(employee.getEmail())
                 .phone(employee.getPhone())
                 .password(employee.getPassword())
-                .position(employee.getPosition())
+                .role(employee.getRole())
                 .build();
     }
 }
