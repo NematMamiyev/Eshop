@@ -1,3 +1,4 @@
+/*
 package az.orient.eshop.securitytoken;
 
 import az.orient.eshop.enums.EnumAvailableStatus;
@@ -24,3 +25,4 @@ public class TokenUtility {
     }
 
 }
+*/

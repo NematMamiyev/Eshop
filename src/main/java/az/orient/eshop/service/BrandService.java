@@ -7,13 +7,13 @@ import az.orient.eshop.dto.response.Response;
 import java.util.List;
 
 public interface BrandService {
-    Response<RespBrand> addBrand(String token, ReqBrand reqBrand);
+    Response<RespBrand> addBrand(ReqBrand reqBrand);
 
-    Response<List<RespBrand>> brandList(String token);
+    Response<List<RespBrand>> brandList();
 
-    Response<RespBrand> getBrandById(String token, Long id);
+    Response<RespBrand> getBrandById(Long id);
 
-    Response<RespBrand> updateBrand(String token, ReqBrand reqBrand);
+    Response<RespBrand> updateBrand(ReqBrand reqBrand);
 
-    Response deleteBrand(String token, Long id);
+    Response deleteBrand(Long id);
 }
