@@ -1,21 +1,58 @@
-package az.orient.eshop.jwttoken;
+package az.orient.eshop.security;
 
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
-import javax.crypto.spec.SecretKeySpec;
-import java.security.Key;
 import java.util.Date;
 
 @Component
-public class JwtTokenProvider {
-    private final String jwtSecret = "yourSecretKeyhhfhiuehihfhweufuwf564564654w5f5444s6";
-    private final long jwtExpirationMs = 86400000; // 1 gün
+public class JwtGenerator {
 
-    public String generateJwtToken(Authentication auth) {
+    public String generateToken(Authentication authentication, String role) {
+        return  Jwts.builder()
+                .setSubject(authentication.getName())
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(new Date().getTime()+ SecurityConstants.JWT_EXPIRATION))
+                .signWith(SignatureAlgorithm.HS256, SecurityConstants.JWT_SECRET)
+                .claim("role", role)
+                .compact();
+    }
+
+    public String getUsernameFromJWT(String token) {
+        return Jwts.parser()
+                .setSigningKey(SecurityConstants.JWT_SECRET)
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
+    }
+
+    public String getRoleFromJWT(String token) {
+        return Jwts.parser()
+                .setSigningKey(SecurityConstants.JWT_SECRET)
+                .parseClaimsJws(token)
+                .getBody()
+                .get("role")
+                .toString();
+    }
+
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parser().setSigningKey(SecurityConstants.JWT_SECRET).parseClaimsJws(token);
+            return true;
+        }
+        catch (Exception ex) {
+            throw new AuthenticationCredentialsNotFoundException("JWT token is not valid " + token);
+        }
+    }
+
+
+
+
+
+    /*public String generateJwtToken(Authentication auth) {
         JwtUserDetails userDetails = (JwtUserDetails) auth.getPrincipal();
         Date expireDate = new Date(new Date().getTime() + jwtExpirationMs);
         Key secretKey = new SecretKeySpec(jwtSecret.getBytes(), SignatureAlgorithm.HS256.getJcaName());
@@ -42,7 +79,7 @@ public class JwtTokenProvider {
         try {
             Key secretKey = new SecretKeySpec(jwtSecret.getBytes(), SignatureAlgorithm.HS256.getJcaName());
             Jwts.parserBuilder()
-                    .setSigningKey(secretKey) // Tokeni yoxlamaq üçün şifrələnmiş açar istifadə olunur
+                    .setSigningKey(secretKey)
                     .build()
                     .parseClaimsJws(token);
             return !isTokenExpired(token);
@@ -61,5 +98,5 @@ public class JwtTokenProvider {
                 .getExpiration();
 
         return expiration.before(new Date());
-    }
+    }*/
 }
