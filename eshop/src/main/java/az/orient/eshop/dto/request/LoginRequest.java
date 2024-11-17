@@ -1,4 +1,4 @@
-package az.orient.eshop.jwttoken;
+package az.orient.eshop.dto.request;
 
 import lombok.Data;
 
