@@ -30,9 +30,9 @@ public class ColorController {
         return colorService.getColorById(id);
     }
 
-    @PutMapping
-    public Response<RespColor> updateColor(@RequestBody ReqColor reqColor){
-        return colorService.updateColor(reqColor);
+    @PutMapping("/{id}")
+    public Response<RespColor> updateColor(@PathVariable Long id,@RequestBody ReqColor reqColor){
+        return colorService.updateColor(id, reqColor);
     }
 
     @DeleteMapping("/{id}")

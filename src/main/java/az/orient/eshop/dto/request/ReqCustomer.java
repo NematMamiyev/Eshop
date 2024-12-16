@@ -2,12 +2,10 @@ package az.orient.eshop.dto.request;
 
 import az.orient.eshop.enums.Gender;
 import lombok.Data;
-
 import java.util.Date;
 
 @Data
 public class ReqCustomer {
-    private Long id;
     private String name;
     private String surname;
     private Date dob;

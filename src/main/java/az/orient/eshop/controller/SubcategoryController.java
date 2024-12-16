@@ -30,9 +30,9 @@ public class SubcategoryController {
         return subcategoryService.getSubcategoryById(id);
     }
 
-    @PutMapping
-    public Response<RespSubcategory> updateSubcategory(@RequestBody ReqSubcategory reqSubcategory){
-        return subcategoryService.updateSubcategory(reqSubcategory);
+    @PutMapping("/{id}")
+    public Response<RespSubcategory> updateSubcategory(@PathVariable Long id,@RequestBody ReqSubcategory reqSubcategory){
+        return subcategoryService.updateSubcategory(id,reqSubcategory);
     }
 
     @DeleteMapping("/{id}")

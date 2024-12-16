@@ -13,7 +13,7 @@ public interface WarehouseService {
 
     Response<RespWarehouse> getWarehouseById(Long id);
 
-    Response<RespWarehouse> updateWarehouse(ReqWarehouse reqWarehouse);
+    Response<RespWarehouse> updateWarehouse(Long id, ReqWarehouse reqWarehouse);
 
     Response deleteWarehouse(Long id);
 }

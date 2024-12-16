@@ -7,6 +7,7 @@ import az.orient.eshop.enums.EnumAvailableStatus;
 import az.orient.eshop.enums.Status;
 import az.orient.eshop.exception.EshopException;
 import az.orient.eshop.exception.ExceptionConstants;
+import az.orient.eshop.mapper.WarehouseWorkMapper;
 import az.orient.eshop.repository.OrderStatusRepository;
 import az.orient.eshop.repository.WarehouseWorkRepository;
 import az.orient.eshop.service.WarehouseWorkService;
@@ -22,8 +23,8 @@ public class WarehouseWorkServiceImpl implements WarehouseWorkService {
 
     private final WarehouseWorkRepository warehouseWorkRepository;
     private final OrderStatusRepository orderStatusRepository;
-    private final Utility utility = new Utility();
     private final EmailServiceImpl emailService;
+    private final WarehouseWorkMapper warehouseWorkMapper;
 
     @Override
     public Response<List<RespWareHouseWork>> works() {
@@ -33,7 +34,7 @@ public class WarehouseWorkServiceImpl implements WarehouseWorkService {
             if (warehouseWorkList.isEmpty()) {
                 throw new EshopException(ExceptionConstants.WAREHOUSE_WORK_NOT_FOUND, "Warehouse work not found");
             }
-            List<RespWareHouseWork> respWareHouseWorkList = warehouseWorkList.stream().map(this::convert).toList();
+            List<RespWareHouseWork> respWareHouseWorkList = warehouseWorkMapper.toRespWarehouseWorkList(warehouseWorkList);
             response.setT(respWareHouseWorkList);
             response.setStatus(RespStatus.getSuccessMessage());
         } catch (EshopException ex) {
@@ -63,7 +64,7 @@ public class WarehouseWorkServiceImpl implements WarehouseWorkService {
                     .status(Status.CONFIRMED)
                     .build();
             orderStatusRepository.save(orderStatus);
-            RespWareHouseWork respWareHouseWork = convert(warehouseWork);
+            RespWareHouseWork respWareHouseWork = warehouseWorkMapper.toRespWarehouseWork(warehouseWork);
             response.setT(respWareHouseWork);
             response.setStatus(RespStatus.getSuccessMessage());
             warehouseWork.setActive(EnumAvailableStatus.DEACTIVE.getValue());
@@ -77,19 +78,4 @@ public class WarehouseWorkServiceImpl implements WarehouseWorkService {
         }
         return response;
     }
-
-    private RespWareHouseWork convert(WarehouseWork warehouseWork) {
-        List<RespProductDetails> respProductDetailsList = warehouseWork.getOrder().getProductDetailsList().stream().map(utility::convertToRespProductDetails).toList();
-        RespOrder respOrder = RespOrder.builder()
-                .id(warehouseWork.getOrder().getId())
-                .respProductDetailsList(respProductDetailsList)
-                .amount(warehouseWork.getOrder().getAmount())
-                .build();
-        return RespWareHouseWork.builder()
-                .id(warehouseWork.getId())
-                .respOrder(respOrder)
-                .dataDate(warehouseWork.getDataDate())
-                .build();
-    }
-
 }

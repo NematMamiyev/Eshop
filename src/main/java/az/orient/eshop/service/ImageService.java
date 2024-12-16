@@ -8,13 +8,13 @@ import java.util.List;
 import java.util.Set;
 
 public interface ImageService {
-    Response addImages(Set<MultipartFile> files, Long productDetailsId);
+    Response addImages(List<MultipartFile> files, Long productDetailsId);
 
     Response deleteImagesByProductDetailsId(Long productDetailsId);
 
     Response deleteImage(Long imageId);
 
-    Set<ResponseEntity<byte[]>> getImages(Long productDetailsId);
+    List<ResponseEntity<byte[]>> getImages(Long productDetailsId);
 
     ResponseEntity<byte[]> getImage(Long imageId);
 }

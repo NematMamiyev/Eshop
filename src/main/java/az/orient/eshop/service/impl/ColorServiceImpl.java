@@ -8,6 +8,7 @@ import az.orient.eshop.entity.Color;
 import az.orient.eshop.enums.EnumAvailableStatus;
 import az.orient.eshop.exception.EshopException;
 import az.orient.eshop.exception.ExceptionConstants;
+import az.orient.eshop.mapper.ColorMapper;
 import az.orient.eshop.repository.ColorRepository;
 import az.orient.eshop.service.ColorService;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ColorServiceImpl implements ColorService {
     private final ColorRepository colorRepository;
-
+    private final ColorMapper colorMapper;
     private static final Logger LOGGER = LoggerFactory.getLogger(ColorServiceImpl.class);
 
     @Override
@@ -37,11 +38,9 @@ public class ColorServiceImpl implements ColorService {
             if (uniqueName){
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Name available in the database");
             }
-            Color color = Color.builder()
-                    .name(name)
-                    .build();
+            Color color = colorMapper.toColor(reqColor);
             colorRepository.save(color);
-            RespColor respColor = convert(color);
+            RespColor respColor = colorMapper.toRespColor(color);
             response.setT(respColor);
             response.setStatus(RespStatus.getSuccessMessage());
         } catch (EshopException ex) {
@@ -62,7 +61,7 @@ public class ColorServiceImpl implements ColorService {
             if (colorList.isEmpty()){
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Invalid request data");
             }
-            List<RespColor> respColorList = colorList.stream().map(this::convert).toList();
+            List<RespColor> respColorList = colorMapper.toRespColorList(colorList);
             response.setT(respColorList);
             response.setStatus(RespStatus.getSuccessMessage());
         } catch (EshopException ex) {
@@ -79,7 +78,7 @@ public class ColorServiceImpl implements ColorService {
     public Response<RespColor> getColorById(Long id) {
         Response<RespColor> response = new Response<>();
         try {
-            LOGGER.info("getColorById request: " + id);
+            LOGGER.info("getColorById request: {}", id);
             if (id == null){
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Id not found");
             }
@@ -87,16 +86,16 @@ public class ColorServiceImpl implements ColorService {
             if (color == null){
                 throw new EshopException(ExceptionConstants.COLOR_NOT_FOUND, "Color not found");
             }
-            RespColor respColor = convert(color);
+            RespColor respColor = colorMapper.toRespColor(color);
             response.setT(respColor);
             response.setStatus(RespStatus.getSuccessMessage());
-            LOGGER.info("getColorById response: "+ response);
+            LOGGER.info("getColorById response: {}", response);
         } catch (EshopException ex) {
-            LOGGER.error("getColorById eror: ",ex);
+            LOGGER.error("getColorById error: ",ex);
             ex.printStackTrace();
             response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
         } catch (Exception ex) {
-            LOGGER.error("getColorById eror: ",ex);
+            LOGGER.error("getColorById error: ",ex);
             ex.printStackTrace();
             response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
         }
@@ -104,10 +103,9 @@ public class ColorServiceImpl implements ColorService {
     }
 
     @Override
-    public Response<RespColor> updateColor(ReqColor reqColor) {
+    public Response<RespColor> updateColor(Long id, ReqColor reqColor) {
         Response<RespColor> response = new Response<>();
         try {
-            Long id = reqColor.getId();
             String name = reqColor.getName();
             if (id == null || name == null){
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Id or name is invalid");
@@ -117,9 +115,9 @@ public class ColorServiceImpl implements ColorService {
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Name available in the database");
             }
             Color color = colorRepository.findByIdAndActive(id,EnumAvailableStatus.ACTIVE.getValue());
-            color.setName(name);
+            colorMapper.updateColorFromReqColor(color,reqColor);
             colorRepository.save(color);
-            RespColor respColor = convert(color);
+            RespColor respColor = colorMapper.toRespColor(color);
             response.setT(respColor);
             response.setStatus(RespStatus.getSuccessMessage());
         }catch (EshopException ex) {
@@ -154,12 +152,5 @@ public class ColorServiceImpl implements ColorService {
             response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
         }
         return response;
-    }
-
-    private RespColor convert(Color color) {
-        return RespColor.builder()
-                .id(color.getId())
-                .name(color.getName())
-                .build();
     }
 }

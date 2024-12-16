@@ -8,9 +8,11 @@ import az.orient.eshop.entity.Category;
 import az.orient.eshop.enums.EnumAvailableStatus;
 import az.orient.eshop.exception.EshopException;
 import az.orient.eshop.exception.ExceptionConstants;
+import az.orient.eshop.mapper.CategoryMapper;
 import az.orient.eshop.repository.CategoryRepository;
 import az.orient.eshop.service.CategoryService;
 import lombok.RequiredArgsConstructor;
+import org.mapstruct.Named;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,6 +22,8 @@ import java.util.List;
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final CategoryMapper categoryMapper;
+
     @Override
     public Response<RespCategory> addCategory(ReqCategory reqCategory) {
         Response<RespCategory> response = new Response<>();
@@ -32,12 +36,9 @@ public class CategoryServiceImpl implements CategoryService {
             if (uniqueName){
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Name available in the database");
             }
-            Category category = Category.builder()
-                    .id(reqCategory.getId())
-                    .name(reqCategory.getName())
-                    .build();
+            Category category = categoryMapper.toCategory(reqCategory);
             categoryRepository.save(category);
-            RespCategory respCategory = convert(category);
+            RespCategory respCategory = categoryMapper.toRespCategory(category);
             response.setT(respCategory);
             response.setStatus(RespStatus.getSuccessMessage());
         }catch (EshopException ex) {
@@ -58,7 +59,7 @@ public class CategoryServiceImpl implements CategoryService {
             if (categoryList.isEmpty()){
                 throw new EshopException(ExceptionConstants.CATEGORY_NOT_FOUND, "Category not found");
             }
-            List<RespCategory> respBrandList = categoryList.stream().map(this::convert).toList();
+            List<RespCategory> respBrandList = categoryMapper.toRespCategoryList(categoryList);
             response.setT(respBrandList);
             response.setStatus(RespStatus.getSuccessMessage());
         }catch (EshopException ex) {
@@ -78,11 +79,8 @@ public class CategoryServiceImpl implements CategoryService {
             if (id == null){
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "id not found");
             }
-            Category category = categoryRepository.findByIdAndActive(id,EnumAvailableStatus.ACTIVE.getValue());
-            if (category == null){
-                throw new EshopException(ExceptionConstants.CATEGORY_NOT_FOUND, "Category not found");
-            }
-            RespCategory respCategory = convert(category);
+            Category category = getCategory(id);
+            RespCategory respCategory = categoryMapper.toRespCategory(category);
             response.setT(respCategory);
             response.setStatus(RespStatus.getSuccessMessage());
         }catch (EshopException ex) {
@@ -96,25 +94,21 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Response<RespCategory> updateCategory(ReqCategory reqCategory) {
+    public Response<RespCategory> updateCategory(Long id ,ReqCategory reqCategory) {
         Response<RespCategory> response = new Response<>();
         try {
-            Long id = reqCategory.getId();
             String name = reqCategory.getName();
             if (id == null || name == null){
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Id or name is invalid data");
             }
-            Category category = categoryRepository.findByIdAndActive(id,EnumAvailableStatus.ACTIVE.getValue());
-            if (category == null){
-                throw new EshopException(ExceptionConstants.CATEGORY_NOT_FOUND, "Category not found");
-            }
+            Category category = getCategory(id);
             boolean uniqueName = categoryRepository.existsCategoryByNameAndActiveAndIdNot(name,EnumAvailableStatus.ACTIVE.getValue(), id);
             if (uniqueName){
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Name available in the database");
             }
-            category.setName(reqCategory.getName());
+            categoryMapper.updateCategoryFromReqCategory(category,reqCategory);
             categoryRepository.save(category);
-            RespCategory respCategory = convert(category);
+            RespCategory respCategory = categoryMapper.toRespCategory(category);
             response.setT(respCategory);
             response.setStatus(RespStatus.getSuccessMessage());
         }catch (EshopException ex) {
@@ -134,10 +128,7 @@ public class CategoryServiceImpl implements CategoryService {
             if (id == null){
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA,"Id is invalid data");
             }
-            Category category = categoryRepository.findByIdAndActive(id, EnumAvailableStatus.ACTIVE.getValue());
-            if (category == null){
-                throw new EshopException(ExceptionConstants.CATEGORY_NOT_FOUND, "Category not found");
-            }
+            Category category = getCategory(id);
             category.setActive(EnumAvailableStatus.DEACTIVE.getValue());
             categoryRepository.save(category);
             response.setStatus(RespStatus.getSuccessMessage());
@@ -151,10 +142,11 @@ public class CategoryServiceImpl implements CategoryService {
         return response;
     }
 
-    private RespCategory convert(Category category){
-        return RespCategory.builder()
-                .id(category.getId())
-                .name(category.getName())
-                .build();
+    public Category getCategory(Long categoryId){
+        Category category = categoryRepository.findByIdAndActive(categoryId, EnumAvailableStatus.ACTIVE.getValue());
+        if (category == null){
+            throw new EshopException(ExceptionConstants.CATEGORY_NOT_FOUND, "Category not found");
+        }
+        return category;
     }
 }

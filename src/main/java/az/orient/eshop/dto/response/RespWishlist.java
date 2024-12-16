@@ -1,13 +1,17 @@
 package az.orient.eshop.dto.response;
 
-import az.orient.eshop.entity.ProductDetails;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class RespWishlist {
-    private List<RespProductDetails> respProductDetailsList;
+    private List<RespProductDetails> respProductDetailsList =new ArrayList<>();
 }

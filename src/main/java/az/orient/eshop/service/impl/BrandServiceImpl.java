@@ -8,8 +8,8 @@ import az.orient.eshop.entity.Brand;
 import az.orient.eshop.enums.EnumAvailableStatus;
 import az.orient.eshop.exception.EshopException;
 import az.orient.eshop.exception.ExceptionConstants;
+import az.orient.eshop.mapper.BrandMapper;
 import az.orient.eshop.repository.BrandRepository;
-//import az.orient.eshop.securitytoken.TokenUtility;
 import az.orient.eshop.service.BrandService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,7 @@ import java.util.List;
 @Service
 public class BrandServiceImpl implements BrandService {
     private final BrandRepository brandRepository;
-
+    private final BrandMapper brandMapper;
     @Override
     public Response<RespBrand> addBrand(ReqBrand reqBrand) {
         Response<RespBrand> response = new Response<>();
@@ -33,11 +33,9 @@ public class BrandServiceImpl implements BrandService {
             if (uniqueName){
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Name available in the database");
             }
-            Brand brand = Brand.builder()
-                    .name(name)
-                    .build();
+            Brand brand = brandMapper.toBrand(reqBrand);
             brandRepository.save(brand);
-            RespBrand respBrand = convert(brand);
+            RespBrand respBrand = brandMapper.toRespBrand(brand);
             response.setT(respBrand);
             response.setStatus(RespStatus.getSuccessMessage());
         } catch (EshopException ex) {
@@ -58,7 +56,7 @@ public class BrandServiceImpl implements BrandService {
             if (brandList.isEmpty()) {
                 throw new EshopException(ExceptionConstants.BRAND_NOT_FOUND, "Brand not found");
             }
-            List<RespBrand> respBrandList = brandList.stream().map(this::convert).toList();
+            List<RespBrand> respBrandList = brandMapper.toRespBrandList(brandList);
             response.setT(respBrandList);
             response.setStatus(RespStatus.getSuccessMessage());
         } catch (EshopException ex) {
@@ -83,7 +81,7 @@ public class BrandServiceImpl implements BrandService {
             if (brand == null){
                 throw new EshopException(ExceptionConstants.BRAND_NOT_FOUND,"Brand not found");
             }
-            RespBrand respBrand = convert(brand);
+            RespBrand respBrand = brandMapper.toRespBrand(brand);
             response.setT(respBrand);
             response.setStatus(RespStatus.getSuccessMessage());
         }catch (EshopException ex) {
@@ -97,10 +95,9 @@ public class BrandServiceImpl implements BrandService {
     }
 
     @Override
-    public Response<RespBrand> updateBrand(ReqBrand reqBrand) {
+    public Response<RespBrand> updateBrand(Long id, ReqBrand reqBrand) {
         Response<RespBrand> response = new Response<>();
         try {
-            Long id = reqBrand.getId();
             String name = reqBrand.getName();
             if (id == null || name == null){
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Id or name is invalid");
@@ -113,9 +110,9 @@ public class BrandServiceImpl implements BrandService {
             if (uniqueName){
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Name available in the database");
             }
-            brand.setName(reqBrand.getName());
+            brandMapper.updateBrandFromReqBrand(brand,reqBrand);
             brandRepository.save(brand);
-            RespBrand respBrand = convert(brand);
+            RespBrand respBrand = brandMapper.toRespBrand(brand);
             response.setT(respBrand);
             response.setStatus(RespStatus.getSuccessMessage());
         }catch (EshopException ex) {
@@ -151,12 +148,4 @@ public class BrandServiceImpl implements BrandService {
         }
         return response;
     }
-
-    private RespBrand convert(Brand brand) {
-        return RespBrand.builder()
-                .id(brand.getId())
-                .name(brand.getName())
-                .build();
-    }
-
 }

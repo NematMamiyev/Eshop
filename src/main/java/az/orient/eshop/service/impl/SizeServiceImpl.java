@@ -8,6 +8,7 @@ import az.orient.eshop.entity.Size;
 import az.orient.eshop.enums.EnumAvailableStatus;
 import az.orient.eshop.exception.EshopException;
 import az.orient.eshop.exception.ExceptionConstants;
+import az.orient.eshop.mapper.SizeMapper;
 import az.orient.eshop.repository.SizeRepository;
 import az.orient.eshop.service.SizeService;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ import java.util.List;
 public class SizeServiceImpl implements SizeService {
 
     private final SizeRepository sizeRepository;
+    private final SizeMapper sizeMapper;
 
     @Override
     public Response<RespSize> addSize(ReqSize reqSize) {
@@ -33,11 +35,9 @@ public class SizeServiceImpl implements SizeService {
             if (uniqueName) {
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Name available in the database");
             }
-            Size size = Size.builder()
-                    .name(name)
-                    .build();
+            Size size = sizeMapper.toSize(reqSize);
             sizeRepository.save(size);
-            RespSize respSize = convert(size);
+            RespSize respSize = sizeMapper.toRespSize(size);
             response.setT(respSize);
             response.setStatus(RespStatus.getSuccessMessage());
         } catch (EshopException ex) {
@@ -58,7 +58,7 @@ public class SizeServiceImpl implements SizeService {
             if (sizeList.isEmpty()) {
                 throw new EshopException(ExceptionConstants.SIZE_NOT_FOUND, "Size is empty");
             }
-            List<RespSize> respSizeList = sizeList.stream().map(this::convert).toList();
+            List<RespSize> respSizeList = sizeMapper.toRespSizeList(sizeList);
             response.setT(respSizeList);
             response.setStatus(RespStatus.getSuccessMessage());
         } catch (EshopException ex) {
@@ -82,7 +82,7 @@ public class SizeServiceImpl implements SizeService {
             if (size == null){
                 throw new EshopException(ExceptionConstants.SIZE_NOT_FOUND, "Size not found");
             }
-            RespSize respSize = convert(size);
+            RespSize respSize = sizeMapper.toRespSize(size);
             response.setT(respSize);
             response.setStatus(RespStatus.getSuccessMessage());
         } catch (EshopException ex) {
@@ -96,10 +96,9 @@ public class SizeServiceImpl implements SizeService {
     }
 
     @Override
-    public Response<RespSize> updateSize(ReqSize reqSize) {
+    public Response<RespSize> updateSize(Long id, ReqSize reqSize) {
         Response<RespSize> response = new Response<>();
         try {
-            Long id = reqSize.getId();
             String name = reqSize.getName();
             if (id == null || name == null){
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Id or name is null");
@@ -112,9 +111,9 @@ public class SizeServiceImpl implements SizeService {
             if (uniqueSize){
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Name available in the database");
             }
-            size.setName(name);
+            sizeMapper.updateSizeFromReqSize(size,reqSize);
             sizeRepository.save(size);
-            RespSize respSize = convert(size);
+            RespSize respSize = sizeMapper.toRespSize(size);
             response.setT(respSize);
             response.setStatus(RespStatus.getSuccessMessage());
         }catch (EshopException ex) {
@@ -149,12 +148,5 @@ public class SizeServiceImpl implements SizeService {
             response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
         }
         return response;
-    }
-
-    private RespSize convert(Size size) {
-        return RespSize.builder()
-                .id(size.getId())
-                .name(size.getName())
-                .build();
     }
 }

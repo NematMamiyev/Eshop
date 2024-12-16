@@ -30,9 +30,9 @@ public class ShelfController {
         return shelfService.getShelfById(id);
     }
 
-    @PutMapping
-    public Response<RespShelf> updateShelf(@RequestBody ReqShelf reqShelf){
-        return shelfService.updateShelf(reqShelf);
+    @PutMapping("/{id}")
+    public Response<RespShelf> updateShelf(@PathVariable Long id,@RequestBody ReqShelf reqShelf){
+        return shelfService.updateShelf(id,reqShelf);
     }
 
     @DeleteMapping("/{id}")

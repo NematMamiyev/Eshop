@@ -3,13 +3,11 @@ package az.orient.eshop.service.impl;
 import az.orient.eshop.dto.response.RespStatus;
 import az.orient.eshop.dto.response.Response;
 import az.orient.eshop.entity.ProductDetails;
-import az.orient.eshop.entity.ProductImage;
 import az.orient.eshop.entity.ProductVideo;
 import az.orient.eshop.enums.EnumAvailableStatus;
 import az.orient.eshop.exception.EshopException;
 import az.orient.eshop.exception.ExceptionConstants;
 import az.orient.eshop.repository.ProductDetailsRepository;
-import az.orient.eshop.repository.ProductImageRepository;
 import az.orient.eshop.repository.ProductVideoRepository;
 import az.orient.eshop.service.VideoService;
 import lombok.RequiredArgsConstructor;
@@ -20,19 +18,16 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 public class VideoServiceImpl implements VideoService {
-    private final ProductImageRepository productImageRepository;
     private final ProductVideoRepository productVideoRepository;
     private final ProductDetailsRepository productDetailsRepository;
 
     @Override
-    public Response addVideos(Set<MultipartFile> files, Long productDetailsId) {
+    public Response addVideos(List<MultipartFile> files, Long productDetailsId) {
         Response response = new Response<>();
         try {
             if (files.isEmpty()) {
@@ -76,7 +71,7 @@ public class VideoServiceImpl implements VideoService {
                 throw new EshopException(ExceptionConstants.PRODUCT_DETAILS_NOT_FOUND, "Product details not found");
             }
 
-            Set<ProductVideo> videos = productVideoRepository.findProductVideoByProductDetailsIdAndActive(productDetailsId, EnumAvailableStatus.ACTIVE.getValue());
+            List<ProductVideo> videos = productVideoRepository.findProductVideoByProductDetailsIdAndActive(productDetailsId, EnumAvailableStatus.ACTIVE.getValue());
             if (videos.isEmpty()) {
                 throw new EshopException(ExceptionConstants.PRODUCT_VIDEO_NOT_FOUND, "Video is empty");
             }
@@ -118,8 +113,8 @@ public class VideoServiceImpl implements VideoService {
     }
 
     @Override
-    public Set<ResponseEntity<byte[]>> getVideos(Long productDetailsId) {
-        Set<ResponseEntity<byte[]>> response = new HashSet<>();
+    public List<ResponseEntity<byte[]>> getVideos(Long productDetailsId) {
+        List<ResponseEntity<byte[]>> response = new ArrayList<>();
         try {
             if (productDetailsId == null) {
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Id is null");
@@ -128,7 +123,7 @@ public class VideoServiceImpl implements VideoService {
             if (productDetails == null) {
                 throw new EshopException(ExceptionConstants.PRODUCT_DETAILS_NOT_FOUND, "Product details not found");
             }
-            Set<ProductVideo> productVideos = productVideoRepository.findProductVideoByProductDetailsIdAndActive(productDetailsId,EnumAvailableStatus.ACTIVE.getValue());
+            List<ProductVideo> productVideos = productVideoRepository.findProductVideoByProductDetailsIdAndActive(productDetailsId,EnumAvailableStatus.ACTIVE.getValue());
             for (ProductVideo productVideo: productVideos){
                 ResponseEntity<byte[]> responseEntity = ResponseEntity.ok()
                         .contentType(MediaType.valueOf(productVideo.getFileType()))

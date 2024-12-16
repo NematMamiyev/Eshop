@@ -6,11 +6,12 @@ import az.orient.eshop.entity.*;
 import az.orient.eshop.enums.EnumAvailableStatus;
 import az.orient.eshop.exception.EshopException;
 import az.orient.eshop.exception.ExceptionConstants;
+import az.orient.eshop.mapper.MapperHelper;
+import az.orient.eshop.mapper.ProductDetailsMapper;
 import az.orient.eshop.repository.CustomerRepository;
 import az.orient.eshop.repository.ProductDetailsRepository;
 import az.orient.eshop.repository.WishlistRepository;
 import az.orient.eshop.service.WishlistService;
-import az.orient.eshop.util.Utility;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +24,7 @@ public class WishlistServiceImpl implements WishlistService {
     private final WishlistRepository wishlistRepository;
     private final ProductDetailsRepository productDetailsRepository;
     private final CustomerRepository customerRepository;
-    private final Utility util = new Utility();
+    private final ProductDetailsMapper productDetailsMapper;
 
     @Override
     public Response addWishlist(ReqWishlist reqWishlist) {
@@ -98,8 +99,8 @@ public class WishlistServiceImpl implements WishlistService {
     }
 
     @Override
-    public Response<RespWishlist> listByCustomerId(Long customerId) {
-        Response<RespWishlist> response = new Response<>();
+    public Response<List<RespProductDetails>> listByCustomerId(Long customerId) {
+        Response<List<RespProductDetails>> response = new Response<>();
         try {
             if (customerId == null) {
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Customer id is null");
@@ -112,12 +113,7 @@ public class WishlistServiceImpl implements WishlistService {
             if (wishlist == null){
                 throw new EshopException(ExceptionConstants.WISHLIST_NOT_FOUND, "Wishlist not found");
             }
-            List<ProductDetails> productDetailsList = wishlist.getProductDetailsList();
-            List<RespProductDetails> respProductDetailsList = productDetailsList.stream().map(util::convertToRespProductDetails).toList();
-            RespWishlist respWishlist = RespWishlist.builder()
-                    .respProductDetailsList(respProductDetailsList)
-                    .build();
-            response.setT(respWishlist);
+            response.setT(productDetailsMapper.toRespProductDetailsList(wishlist.getProductDetailsList()));
             response.setStatus(RespStatus.getSuccessMessage());
         }  catch (EshopException ex) {
             ex.printStackTrace();
