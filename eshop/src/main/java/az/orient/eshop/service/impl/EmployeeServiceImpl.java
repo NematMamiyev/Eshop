@@ -9,6 +9,7 @@ import az.orient.eshop.enums.EnumAvailableStatus;
 import az.orient.eshop.enums.Role;
 import az.orient.eshop.exception.EshopException;
 import az.orient.eshop.exception.ExceptionConstants;
+import az.orient.eshop.mapper.EmployeeMapper;
 import az.orient.eshop.repository.EmployeeRepository;
 import az.orient.eshop.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class EmployeeServiceImpl implements EmployeeService {
     private final EmployeeRepository employeeRepository;
+    private final EmployeeMapper employeeMapper;
 
     @Override
     public Response<RespEmployee> addEmployee(ReqEmployee reqEmployee) {
@@ -39,16 +41,9 @@ public class EmployeeServiceImpl implements EmployeeService {
             if (uniquePhone || uniqueEmail) {
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Email or phone number available in the database");
             }
-            Employee employee = Employee.builder()
-                    .name(name)
-                    .surname(surname)
-                    .email(email)
-                    .phone(phone)
-                    .password(password)
-                    .role(reqEmployee.getRole())
-                    .build();
+            Employee employee = employeeMapper.toEmployee(reqEmployee);
             employeeRepository.save(employee);
-            RespEmployee respEmployee = convert(employee);
+            RespEmployee respEmployee = employeeMapper.toRespEmployee(employee);
             response.setT(respEmployee);
             response.setStatus(RespStatus.getSuccessMessage());
         } catch (EshopException ex) {
@@ -69,7 +64,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             if (employeeList.isEmpty()) {
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Customer list empty");
             }
-            List<RespEmployee> respEmployeeList = employeeList.stream().map(this::convert).toList();
+            List<RespEmployee> respEmployeeList = employeeMapper.toRespEmployeeList(employeeList);
             response.setT(respEmployeeList);
             response.setStatus(RespStatus.getSuccessMessage());
         } catch (EshopException ex) {
@@ -93,7 +88,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             if (employee == null) {
                 throw new EshopException(ExceptionConstants.EMPLOYEE_NOT_FOUND, "Employee not found");
             }
-            RespEmployee respEmployee = convert(employee);
+            RespEmployee respEmployee = employeeMapper.toRespEmployee(employee);
             response.setT(respEmployee);
             response.setStatus(RespStatus.getSuccessMessage());
         } catch (EshopException ex) {
@@ -107,10 +102,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public Response<RespEmployee> updateEmployee(ReqEmployee reqEmployee) {
+    public Response<RespEmployee> updateEmployee(Long id, ReqEmployee reqEmployee) {
         Response<RespEmployee> response = new Response<>();
         try {
-            Long id = reqEmployee.getId();
             String name = reqEmployee.getName();
             String surname = reqEmployee.getSurname();
             String email = reqEmployee.getEmail();
@@ -129,14 +123,9 @@ public class EmployeeServiceImpl implements EmployeeService {
             if (uniqueEmail || uniquePhone) {
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Email or phone number available in the database");
             }
-            employee.setName(name);
-            employee.setSurname(surname);
-            employee.setEmail(email);
-            employee.setPhone(phone);
-            employee.setPassword(password);
-            employee.setRole(reqEmployee.getRole());
+            employeeMapper.updateEmployeeFromReqEmployee(employee,reqEmployee);
             employeeRepository.save(employee);
-            RespEmployee respEmployee = convert(employee);
+            RespEmployee respEmployee = employeeMapper.toRespEmployee(employee);
             response.setT(respEmployee);
             response.setStatus(RespStatus.getSuccessMessage());
         } catch (EshopException ex) {
@@ -171,17 +160,5 @@ public class EmployeeServiceImpl implements EmployeeService {
             response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
         }
         return response;
-    }
-
-    private RespEmployee convert(Employee employee) {
-        return RespEmployee.builder()
-                .id(employee.getId())
-                .name(employee.getName())
-                .surname(employee.getSurname())
-                .email(employee.getEmail())
-                .phone(employee.getPhone())
-                .password(employee.getPassword())
-                .role(employee.getRole())
-                .build();
     }
 }

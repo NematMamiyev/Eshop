@@ -1,6 +1,7 @@
 package az.orient.eshop.controller;
 
 import az.orient.eshop.dto.request.ReqWishlist;
+import az.orient.eshop.dto.response.RespProductDetails;
 import az.orient.eshop.dto.response.RespWishlist;
 import az.orient.eshop.dto.response.Response;
 import az.orient.eshop.service.WishlistService;
@@ -16,7 +17,7 @@ public class WishlistController {
     private final WishlistService wishlistService;
 
     @GetMapping("/{customerId}")
-    public Response<RespWishlist> listByCustomerId(@PathVariable Long customerId){
+    public Response<List<RespProductDetails>> listByCustomerId(@PathVariable Long customerId){
         return wishlistService.listByCustomerId(customerId);
     }
 

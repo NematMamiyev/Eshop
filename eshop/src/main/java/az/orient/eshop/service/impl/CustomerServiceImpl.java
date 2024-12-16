@@ -11,6 +11,7 @@ import az.orient.eshop.enums.EnumAvailableStatus;
 import az.orient.eshop.enums.Gender;
 import az.orient.eshop.exception.EshopException;
 import az.orient.eshop.exception.ExceptionConstants;
+import az.orient.eshop.mapper.CustomerMapper;
 import az.orient.eshop.repository.CartRepository;
 import az.orient.eshop.repository.CustomerRepository;
 import az.orient.eshop.repository.WishlistRepository;
@@ -27,6 +28,7 @@ public class CustomerServiceImpl implements CustomerService {
     private final CustomerRepository customerRepository;
     private final CartRepository cartRepository;
     private final WishlistRepository wishlistRepository;
+    private final CustomerMapper customerMapper;
 
     @Override
     public Response<RespCustomer> addCustomer(ReqCustomer reqCustomer) {
@@ -46,18 +48,7 @@ public class CustomerServiceImpl implements CustomerService {
             if (uniquePhone || uniqueEmail) {
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Email or phone number available in the database");
             }
-            Customer customer = Customer.builder()
-                    .name(name)
-                    .surname(surname)
-                    .gender(gender)
-                    .dob(reqCustomer.getDob())
-                    .address(reqCustomer.getAddress())
-                    .email(email)
-                    .height(reqCustomer.getHeight())
-                    .weight(reqCustomer.getWeight())
-                    .phone(phone)
-                    .password(password)
-                    .build();
+            Customer customer = customerMapper.toCustomer(reqCustomer);
             customerRepository.save(customer);
             Cart cart = Cart.builder()
                     .customer(customer)
@@ -70,7 +61,7 @@ public class CustomerServiceImpl implements CustomerService {
             customer.setCart(cart);
             customer.setWishlist(wishlist);
             customerRepository.save(customer);
-            RespCustomer respCustomer = convert(customer);
+            RespCustomer respCustomer = customerMapper.toRespCustomer(customer);
             response.setT(respCustomer);
             response.setStatus(RespStatus.getSuccessMessage());
         } catch (EshopException ex) {
@@ -91,7 +82,7 @@ public class CustomerServiceImpl implements CustomerService {
             if (customerList.isEmpty()) {
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Customer list empty");
             }
-            List<RespCustomer> respCustomerList = customerList.stream().map(this::convert).toList();
+            List<RespCustomer> respCustomerList =customerMapper.toRespCustomerList(customerList);
             response.setT(respCustomerList);
             response.setStatus(RespStatus.getSuccessMessage());
         } catch (EshopException ex) {
@@ -115,7 +106,7 @@ public class CustomerServiceImpl implements CustomerService {
             if (customer == null) {
                 throw new EshopException(ExceptionConstants.CUSTOMER_NOT_FOUND, "Customer not found");
             }
-            RespCustomer respCustomer = convert(customer);
+            RespCustomer respCustomer = customerMapper.toRespCustomer(customer);
             response.setT(respCustomer);
             response.setStatus(RespStatus.getSuccessMessage());
         } catch (EshopException ex) {
@@ -129,10 +120,9 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Response<RespCustomer> updateCustomer(ReqCustomer reqCustomer) {
+    public Response<RespCustomer> updateCustomer(Long id, ReqCustomer reqCustomer) {
         Response<RespCustomer> response = new Response<>();
         try {
-            Long id = reqCustomer.getId();
             String name = reqCustomer.getName();
             String surname = reqCustomer.getSurname();
             String email = reqCustomer.getEmail();
@@ -151,18 +141,9 @@ public class CustomerServiceImpl implements CustomerService {
             if (uniquePhone || uniqueEmail) {
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Email or phone number available in the database");
             }
-            customer.setName(name);
-            customer.setSurname(surname);
-            customer.setGender(gender);
-            customer.setDob(reqCustomer.getDob());
-            customer.setAddress(reqCustomer.getAddress());
-            customer.setEmail(email);
-            customer.setHeight(reqCustomer.getHeight());
-            customer.setWeight(reqCustomer.getWeight());
-            customer.setPhone(phone);
-            customer.setPassword(password);
+            customerMapper.updateCustomerFromReqCustomer(customer,reqCustomer);
             customerRepository.save(customer);
-            RespCustomer respCustomer = convert(customer);
+            RespCustomer respCustomer = customerMapper.toRespCustomer(customer);
             response.setT(respCustomer);
             response.setStatus(RespStatus.getSuccessMessage());
         } catch (EshopException ex) {
@@ -197,20 +178,5 @@ public class CustomerServiceImpl implements CustomerService {
             response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
         }
         return response;
-    }
-
-    private RespCustomer convert(Customer customer) {
-        return RespCustomer.builder()
-                .id(customer.getId())
-                .name(customer.getName())
-                .surname(customer.getSurname())
-                .gender(customer.getGender())
-                .dob(customer.getDob())
-                .address(customer.getAddress())
-                .email(customer.getEmail())
-                .height(customer.getHeight())
-                .weight(customer.getWeight())
-                .phone(customer.getPhone())
-                .build();
     }
 }

@@ -18,11 +18,11 @@ public class ImageController {
     private final ImageService imageService;
 
     @PostMapping("/{productDetailsId}")
-    public Response addImages(@RequestParam(value = "file") Set<MultipartFile> files, @PathVariable Long productDetailsId){
+    public Response addImages(@RequestParam(value = "files") List<MultipartFile> files, @PathVariable Long productDetailsId){
         return imageService.addImages(files,productDetailsId);
     }
 
-    @DeleteMapping("/{productDetailsId}")
+    @DeleteMapping("/list/{productDetailsId}")
     public Response deleteImagesByProductDetailsId(@PathVariable Long productDetailsId){
         return imageService.deleteImagesByProductDetailsId(productDetailsId);
     }
@@ -33,7 +33,7 @@ public class ImageController {
     }
 
     @GetMapping("/list/{productDetailsId}")
-    public Set<ResponseEntity<byte[]>> getImages(@PathVariable Long productDetailsId){
+    public List<ResponseEntity<byte[]>> getImages(@PathVariable Long productDetailsId){
         return imageService.getImages(productDetailsId);
     }
     @GetMapping("/{imageId}")

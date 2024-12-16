@@ -31,9 +31,9 @@ public class SizeController {
         return sizeService.getSizeById(id);
     }
 
-    @PutMapping
-    public Response<RespSize> updateSize(@RequestBody ReqSize reqSize){
-        return sizeService.updateSize(reqSize);
+    @PutMapping("/{id}")
+    public Response<RespSize> updateSize(@PathVariable Long id,@RequestBody ReqSize reqSize){
+        return sizeService.updateSize(id, reqSize);
     }
 
     @DeleteMapping("/{id}")

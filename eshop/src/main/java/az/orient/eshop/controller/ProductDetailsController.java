@@ -16,9 +16,9 @@ public class ProductDetailsController {
 
     private final ProductDetailsService productDetailsService;
 
-    @PostMapping("/{productId}")
-    public Response<RespProductDetails> addProductDetails(@PathVariable Long productId, @RequestBody ReqProductDetails reqProductDetails){
-        return productDetailsService.addProductDetails(productId,reqProductDetails);
+    @PostMapping
+    public Response<RespProductDetails> addProductDetails( @RequestBody ReqProductDetails reqProductDetails){
+        return productDetailsService.addProductDetails(reqProductDetails);
     }
 
     @PutMapping("/{id}")

@@ -13,7 +13,7 @@ public interface SubcategoryService{
 
     Response<RespSubcategory> getSubcategoryById(Long id);
 
-    Response<RespSubcategory> updateSubcategory(ReqSubcategory reqSubcategory);
+    Response<RespSubcategory> updateSubcategory(Long id, ReqSubcategory reqSubcategory);
 
     Response deleteSubcategory(Long id);
 }

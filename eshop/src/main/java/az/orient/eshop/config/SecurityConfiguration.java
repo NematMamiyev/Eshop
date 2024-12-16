@@ -42,12 +42,12 @@ public class SecurityConfiguration {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers("/public/**").hasAuthority(Role.CUSTOMER.toString())
+                               /* .requestMatchers("/public/**").hasAuthority(Role.CUSTOMER.toString())
                                 .requestMatchers("/customers").permitAll()
                                 .requestMatchers("/auth/employee/login").permitAll()
                                 .requestMatchers("/admin/**").hasAuthority(Role.ADMIN.toString()) // admin-only endpoint-lər
-                                .anyRequest().authenticated() // digər bütün sorğular üçün autentifikasiya
-                                //.anyRequest().permitAll()
+                                .anyRequest().authenticated() // digər bütün sorğular üçün autentifikasiya*/
+                                .anyRequest().permitAll()
                 )
                 .httpBasic(withDefaults());
 

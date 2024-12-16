@@ -13,7 +13,7 @@ public interface EmployeeService {
 
     Response<RespEmployee> getEmployeeById(Long id);
 
-    Response<RespEmployee> updateEmployee(ReqEmployee reqEmployee);
+    Response<RespEmployee> updateEmployee(Long id, ReqEmployee reqEmployee);
 
     Response deleteEmployee(Long id);
 }

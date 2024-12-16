@@ -6,6 +6,7 @@ import az.orient.eshop.entity.OrderStatus;
 import az.orient.eshop.enums.EnumAvailableStatus;
 import az.orient.eshop.exception.EshopException;
 import az.orient.eshop.exception.ExceptionConstants;
+import az.orient.eshop.mapper.OrderStatusMapper;
 import az.orient.eshop.repository.OrderRepository;
 import az.orient.eshop.repository.OrderStatusRepository;
 import az.orient.eshop.service.OrderStatusService;
@@ -19,6 +20,7 @@ public class OrderStatusServiceImpl implements OrderStatusService {
 
     private final OrderRepository orderRepository;
     private final OrderStatusRepository orderStatusRepository;
+    private final OrderStatusMapper orderStatusMapper;
 
     @Override
     public Response<List<RespOrderStatus>> getOrderStatusList(Long orderId) {
@@ -32,7 +34,7 @@ public class OrderStatusServiceImpl implements OrderStatusService {
                 throw new EshopException(ExceptionConstants.ORDER_NOT_FOUND,"Order not found");
             }
             List<OrderStatus> orderStatusList = orderStatusRepository.findOrderStatusByOrderIdAndActive(orderId,EnumAvailableStatus.ACTIVE.getValue());
-            List<RespOrderStatus> respOrderStatusList = orderStatusList.stream().map(this::convert).toList();
+            List<RespOrderStatus> respOrderStatusList = orderStatusMapper.toRespOrderStatusList(orderStatusList);
             response.setT(respOrderStatusList);
             response.setStatus(RespStatus.getSuccessMessage());
         }catch (EshopException ex) {
@@ -43,12 +45,5 @@ public class OrderStatusServiceImpl implements OrderStatusService {
             response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
         }
         return response;
-    }
-    private RespOrderStatus convert(OrderStatus orderStatus){
-        return RespOrderStatus.builder()
-                .id(orderStatus.getId())
-                .status(orderStatus.getStatus())
-                .dataDate(orderStatus.getDataDate())
-                .build();
     }
 }

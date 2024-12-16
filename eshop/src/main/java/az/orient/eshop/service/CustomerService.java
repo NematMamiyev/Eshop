@@ -13,7 +13,7 @@ public interface CustomerService {
 
     Response<RespCustomer> getCustomerById(Long id);
 
-    Response<RespCustomer> updateCustomer(ReqCustomer reqCustomer);
+    Response<RespCustomer> updateCustomer(Long id,ReqCustomer reqCustomer);
 
     Response deleteCustomer(Long id);
 }

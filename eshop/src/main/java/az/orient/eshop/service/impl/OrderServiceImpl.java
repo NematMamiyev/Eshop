@@ -6,6 +6,8 @@ import az.orient.eshop.entity.Order;
 import az.orient.eshop.enums.EnumAvailableStatus;
 import az.orient.eshop.exception.EshopException;
 import az.orient.eshop.exception.ExceptionConstants;
+import az.orient.eshop.mapper.OrderMapper;
+import az.orient.eshop.mapper.ProductDetailsMapper;
 import az.orient.eshop.repository.CustomerRepository;
 import az.orient.eshop.repository.OrderRepository;
 import az.orient.eshop.service.OrderService;
@@ -19,7 +21,7 @@ import java.util.List;
 public class OrderServiceImpl implements OrderService {
     private final CustomerRepository customerRepository;
     private final OrderRepository orderRepository;
-    private final Utility util = new Utility();
+    private final OrderMapper orderMapper;
 
     @Override
     public Response<List<RespOrder>> getList(Long customerId) {
@@ -33,8 +35,8 @@ public class OrderServiceImpl implements OrderService {
                 throw new EshopException(ExceptionConstants.CUSTOMER_NOT_FOUND, "Customer not found");
             }
             List<Order> orders = orderRepository.findOrderByCustomerIdAndActive(customerId, EnumAvailableStatus.ACTIVE.getValue());
-            List<RespOrder> respOrders = orders.stream().map(this::convert).toList();
-            response.setT(respOrders);
+            List<RespOrder> respOrderList = orderMapper.toRespOrderList(orders);
+            response.setT(respOrderList);
             response.setStatus(RespStatus.getSuccessMessage());
         } catch (EshopException ex) {
             ex.printStackTrace();
@@ -44,13 +46,5 @@ public class OrderServiceImpl implements OrderService {
             response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
         }
         return response;
-    }
-    private RespOrder convert(Order order){
-        List<RespProductDetails> respProductDetailsList = order.getProductDetailsList().stream().map(util::convertToRespProductDetails).toList();
-        return RespOrder.builder()
-                .id(order.getId())
-                .amount(order.getAmount())
-                .respProductDetailsList(respProductDetailsList)
-                .build();
     }
 }

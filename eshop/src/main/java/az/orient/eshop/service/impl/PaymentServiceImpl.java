@@ -53,7 +53,7 @@ public class PaymentServiceImpl implements PaymentService {
             if (cart.getProductDetailsList().isEmpty()){
                 throw new EshopException(ExceptionConstants.CART_IS_EMPTY,"Cart is empty");
             }
-            List<ProductDetails> productDetailsList = new ArrayList<>(cart.getProductDetailsList());
+            List<ProductDetails> productDetailsList = cart.getProductDetailsList();
             for (ProductDetails productDetails : productDetailsList) {
                 int currentStock = productDetails.getStock();
                 if (currentStock == 0) {
@@ -71,25 +71,25 @@ public class PaymentServiceImpl implements PaymentService {
                     .customer(customer)
                     .amount(cart.getAmount())
                     .build();
-            paymentRepository.save(payment);//ödənişi bazaya yazır
+            paymentRepository.save(payment);
             Order order = Order.builder()
                     .customer(customer)
                     .amount(cart.getAmount())
                     .productDetailsList(productDetailsList)
                     .build();
-            orderRepository.save(order); //Sifarişi yaradır
+            orderRepository.save(order);
             OrderStatus orderStatus = OrderStatus.builder()
                     .status(Status.ORDERED)
                     .order(order)
                     .build();
-            orderStatusRepository.save(orderStatus);//Sifarişin statusun yaradır
+            orderStatusRepository.save(orderStatus);
             emailService.sendSimpleEmail(customer.getEmail(), "Mehsul", Email.ORDERED.getDescription());
             cart.getProductDetailsList().clear();
             cart.setAmount(BigDecimal.ZERO);
             WarehouseWork warehouseWork = WarehouseWork.builder()
                     .order(order)
                     .build();
-            warehouseWorkRepository.save(warehouseWork);//Anbara məlumat göndərir
+            warehouseWorkRepository.save(warehouseWork);
             response.setStatus(RespStatus.getSuccessMessage());
         } catch (EshopException ex) {
             ex.printStackTrace();

@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/categoryes")
+@RequestMapping("/categories")
 public class CategoryController {
     private final CategoryService categoryService;
 
@@ -30,9 +30,9 @@ public class CategoryController {
         return categoryService.getCategoryById(id);
     }
 
-    @PutMapping
-    public Response<RespCategory> updateCategory(@RequestBody ReqCategory reqCategory){
-        return categoryService.updateCategory(reqCategory);
+    @PutMapping("/{id}")
+    public Response<RespCategory> updateCategory(@PathVariable Long id,@RequestBody ReqCategory reqCategory){
+        return categoryService.updateCategory(id,reqCategory);
     }
 
     @DeleteMapping("/{id}")

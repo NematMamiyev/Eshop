@@ -13,7 +13,7 @@ public interface ShelfService {
 
     Response<RespShelf> getShelfById(Long id);
 
-    Response<RespShelf> updateShelf(ReqShelf reqShelf);
+    Response<RespShelf> updateShelf(Long id, ReqShelf reqShelf);
 
     Response deleteShelf(Long id);
 }
