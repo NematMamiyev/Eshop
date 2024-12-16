@@ -36,7 +36,7 @@ public class Product {
     private Gender gender;
     @Builder.Default
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ProductDetails> productDetails = new ArrayList<>();
+    private List<ProductDetails> productDetailsList = new ArrayList<>();
     @ManyToOne
     @JoinColumn(name = "brand_id")
     private Brand brand;

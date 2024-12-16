@@ -1,33 +1,34 @@
 package az.orient.eshop.service.impl;
 
 
-import az.orient.eshop.dto.request.ReqShelfProduct;
+import az.orient.eshop.dto.request.ReqShelfProductDetails;
 import az.orient.eshop.dto.response.*;
 import az.orient.eshop.entity.*;
 import az.orient.eshop.enums.EnumAvailableStatus;
 import az.orient.eshop.exception.EshopException;
 import az.orient.eshop.exception.ExceptionConstants;
+import az.orient.eshop.mapper.ShelfProductDetailsMapper;
 import az.orient.eshop.repository.*;
-import az.orient.eshop.service.ShelfProductService;
+import az.orient.eshop.service.ShelfProductDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class ShelfProductDetailsServiceImpl implements ShelfProductService {
+public class ShelfProductDetailsServiceImpl implements ShelfProductDetailsService {
     private final ShelfProductRepository shelfProductRepository;
     private final ShelfRepository shelfRepository;
     private final ProductDetailsRepository productDetailsRepository;
-    private final WarehouseRepository warehouseRepository;
+    private final ShelfProductDetailsMapper shelfProductDetailsMapper;
 
     @Override
-    public Response<RespShelfProduct> addProductInShelf(ReqShelfProduct reqShelfProduct) {
-        Response<RespShelfProduct> response = new Response<>();
+    public Response<RespShelfProductDetails> addProductInShelf(ReqShelfProductDetails reqShelfProduct) {
+        Response<RespShelfProductDetails> response = new Response<>();
         try {
             Long shelfId = reqShelfProduct.getShelfId();
             Long productDetailsId = reqShelfProduct.getProductDetailsId();
             if (shelfId == null || productDetailsId == null) {
-                throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Sheld id or product details id is null");
+                throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Shelf id or product details id is null");
             }
             Shelf shelf = shelfRepository.findByIdAndActive(shelfId, EnumAvailableStatus.ACTIVE.getValue());
             if (shelf == null) {
@@ -42,16 +43,11 @@ public class ShelfProductDetailsServiceImpl implements ShelfProductService {
             if (uniqueProductInShelf) {
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Product already added to shelf");
             }
-            Warehouse warehouse = warehouseRepository.findWarehouseByIdAndActive(warehouseId,EnumAvailableStatus.ACTIVE.getValue());
-            ShelfProduct shelfProduct = ShelfProduct.builder()
-                    .id(reqShelfProduct.getId())
-                    .shelf(shelf)
-                    .productDetails(productDetails)
-                    .warehouse(warehouse)
-                    .build();
-            shelfProductRepository.save(shelfProduct);
-            RespShelfProduct respShelfProduct = convert(shelfProduct);
-            response.setT(respShelfProduct);
+          //  voloditaion yazanda!! rəfə əlavə edəndə yoxlasın belə bir productDetailsId əlavə edilib yoxsa edilmeyib silendə problem çixir
+            ShelfProductDetails shelfProductDetails = shelfProductDetailsMapper.toShelfProductDetails(reqShelfProduct);
+            shelfProductRepository.save(shelfProductDetails);
+            RespShelfProductDetails respShelfProductDetails = shelfProductDetailsMapper.toRespShelfProductDetails(shelfProductDetails);
+            response.setT(respShelfProductDetails);
             response.setStatus(RespStatus.getSuccessMessage());
         } catch (EshopException ex) {
             ex.printStackTrace();
@@ -63,8 +59,8 @@ public class ShelfProductDetailsServiceImpl implements ShelfProductService {
         return response;
     }
     @Override
-    public Response<RespShelfProduct> deleteProductInShelf(ReqShelfProduct reqShelfProduct) {
-        Response<RespShelfProduct> response = new Response<>();
+    public Response deleteProductInShelf(ReqShelfProductDetails reqShelfProduct) {
+        Response response = new Response<>();
         try {
             Long shelfId = reqShelfProduct.getShelfId();
             Long productDetailsId = reqShelfProduct.getProductDetailsId();
@@ -79,11 +75,9 @@ public class ShelfProductDetailsServiceImpl implements ShelfProductService {
             if (productDetails == null) {
                 throw new EshopException(ExceptionConstants.PRODUCT_DETAILS_NOT_FOUND, "Product details not found");
             }
-            ShelfProduct shelfProduct = shelfProductRepository.findShelfProductByShelfIdAndProductDetailsIdAndActive(shelfId,productDetailsId,EnumAvailableStatus.ACTIVE.getValue());
-            shelfProduct.setActive(EnumAvailableStatus.DEACTIVE.getValue());
-            shelfProductRepository.save(shelfProduct);
-            RespShelfProduct respShelfProduct = convert(shelfProduct);
-            response.setT(respShelfProduct);
+            ShelfProductDetails shelfProductDetails = shelfProductRepository.findShelfProductByShelfIdAndProductDetailsIdAndActive(shelfId,productDetailsId,EnumAvailableStatus.ACTIVE.getValue());
+            shelfProductDetails.setActive(EnumAvailableStatus.DEACTIVE.getValue());
+            shelfProductRepository.save(shelfProductDetails);
             response.setStatus(RespStatus.getSuccessMessage());
             } catch (EshopException ex) {
             ex.printStackTrace();
@@ -93,42 +87,5 @@ public class ShelfProductDetailsServiceImpl implements ShelfProductService {
             response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
         }
         return response;
-    }
-
-    private RespShelfProduct convert(ShelfProduct shelfProduct) {
-        RespWarehouse respWarehouse = RespWarehouse.builder()
-                .id(shelfProduct.getWarehouse().getId())
-                .name(shelfProduct.getWarehouse().getName())
-                .build();
-        RespShelf respShelf = RespShelf.builder()
-                .id(shelfProduct.getShelf().getId())
-                .name(shelfProduct.getShelf().getName())
-                .build();
-        RespColor respColor = RespColor.builder()
-                .id(shelfProduct.getProductDetails().getColor().getId())
-                .name(shelfProduct.getProductDetails().getColor().getName())
-                .build();
-        RespSize respSize = RespSize.builder()
-                .id(shelfProduct.getProductDetails().getSize().getId())
-                .name(shelfProduct.getProductDetails().getSize().getName())
-                .build();
-        RespProduct respProduct = RespProduct.builder()
-                .id(shelfProduct.getProductDetails().getProduct().getId())
-                .name(shelfProduct.getProductDetails().getProduct().getName())
-                .expertionDate(shelfProduct.getProductDetails().getProduct().getExpertionDate())
-                .gender(shelfProduct.getProductDetails().getProduct().getGender())
-                .build();
-        RespProductDetails respProductDetails = RespProductDetails.builder()
-                .stock(shelfProduct.getProductDetails().getStock())
-                .respColor(respColor)
-                .respSize(respSize)
-                .respProduct(respProduct)
-                .build();
-        return RespShelfProduct.builder()
-                .id(shelfProduct.getId())
-                .respWarehouse(respWarehouse)
-                .respShelf(respShelf)
-                .respProductDetails(respProductDetails)
-                .build();
     }
 }

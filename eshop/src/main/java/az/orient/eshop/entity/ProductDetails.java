@@ -43,11 +43,11 @@ public class ProductDetails {
     @Builder.Default
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "product_details_id")
-    private Set<ProductImage> images = new HashSet<>();
+    private List<ProductImage> images = new ArrayList<>();
     @Builder.Default
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "product_details_id")
-    private Set<ProductVideo> videos = new HashSet<>();
+    private List<ProductVideo> videos = new ArrayList<>();
     @CreationTimestamp
     private Date dataDate;
     @ColumnDefault(value = "1")

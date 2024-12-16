@@ -10,6 +10,7 @@ import az.orient.eshop.entity.Warehouse;
 import az.orient.eshop.enums.EnumAvailableStatus;
 import az.orient.eshop.exception.EshopException;
 import az.orient.eshop.exception.ExceptionConstants;
+import az.orient.eshop.mapper.ShelfMapper;
 import az.orient.eshop.repository.ShelfRepository;
 import az.orient.eshop.repository.WarehouseRepository;
 import az.orient.eshop.service.ShelfService;
@@ -23,6 +24,7 @@ import java.util.List;
 public class ShelfServiceImpl implements ShelfService {
     private final ShelfRepository shelfRepository;
     private final WarehouseRepository warehouseRepository;
+    private final ShelfMapper shelfMapper;
 
     @Override
     public Response<RespShelf> addShelf(ReqShelf reqShelf) {
@@ -37,13 +39,9 @@ public class ShelfServiceImpl implements ShelfService {
             if (warehouse == null) {
                 throw new EshopException(ExceptionConstants.WAREHOUSE_NOT_FOUND, "Warehouse not found");
             }
-            Shelf shelf = Shelf.builder()
-                    .id(reqShelf.getId())
-                    .warehouse(warehouse)
-                    .name(name)
-                    .build();
-            shelfRepository.save(shelf);
-            RespShelf respShelf = convert(shelf);
+            Shelf shelf = shelfMapper.toShelf(reqShelf);
+            shelfRepository.save(shelfMapper.toShelf(reqShelf));
+            RespShelf respShelf = shelfMapper.toRespShelf(shelf);
             response.setT(respShelf);
             response.setStatus(RespStatus.getSuccessMessage());
         } catch (EshopException ex) {
@@ -64,8 +62,7 @@ public class ShelfServiceImpl implements ShelfService {
             if (shelfList.isEmpty()) {
                 throw new EshopException(ExceptionConstants.SHELF_NOT_FOUND, "Shelf not found");
             }
-            List<RespShelf> respShelfList = shelfList.stream().map(this::convert).toList();
-            response.setT(respShelfList);
+            response.setT(shelfMapper.toRespShelfList(shelfList));
             response.setStatus(RespStatus.getSuccessMessage());
         } catch (EshopException ex) {
             ex.printStackTrace();
@@ -89,8 +86,7 @@ public class ShelfServiceImpl implements ShelfService {
             if (shelf == null) {
                 throw new EshopException(ExceptionConstants.SHELF_NOT_FOUND, "Shelf not found");
             }
-            RespShelf respShelf = convert(shelf);
-            response.setT(respShelf);
+            response.setT(shelfMapper.toRespShelf(shelf));
             response.setStatus(RespStatus.getSuccessMessage());
         } catch (EshopException ex) {
             ex.printStackTrace();
@@ -103,10 +99,9 @@ public class ShelfServiceImpl implements ShelfService {
     }
 
     @Override
-    public Response<RespShelf> updateShelf(ReqShelf reqShelf) {
+    public Response<RespShelf> updateShelf(Long id, ReqShelf reqShelf) {
         Response<RespShelf> response = new Response<>();
         try {
-            Long id = reqShelf.getId();
             String name = reqShelf.getName();
             Long warehouseId = reqShelf.getWarehouseId();
             if (id == null || name == null || warehouseId == null) {
@@ -120,11 +115,9 @@ public class ShelfServiceImpl implements ShelfService {
             if (warehouse == null) {
                 throw new EshopException(ExceptionConstants.WAREHOUSE_NOT_FOUND, "Warehouse not found");
             }
-            shelf.setName(reqShelf.getName());
-            shelf.setWarehouse(warehouse);
+            shelfMapper.updateShelfFromReqShelf(shelf,reqShelf);
             shelfRepository.save(shelf);
-            RespShelf respShelf = convert(shelf);
-            response.setT(respShelf);
+            response.setT(shelfMapper.toRespShelf(shelf));
             response.setStatus(RespStatus.getSuccessMessage());
         } catch (EshopException ex) {
             ex.printStackTrace();
@@ -159,18 +152,4 @@ public class ShelfServiceImpl implements ShelfService {
         }
         return response;
     }
-
-    private RespShelf convert(Shelf shelf) {
-        RespWarehouse respWarehouse = RespWarehouse.builder()
-                .id(shelf.getWarehouse().getId())
-                .name(shelf.getWarehouse().getName())
-                .address(shelf.getWarehouse().getAddress())
-                .build();
-        return RespShelf.builder()
-                .id(shelf.getId())
-                .respWarehouse(respWarehouse)
-                .name(shelf.getName())
-                .build();
-    }
-
 }

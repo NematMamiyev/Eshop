@@ -12,12 +12,12 @@ import az.orient.eshop.enums.Currency;
 import az.orient.eshop.enums.EnumAvailableStatus;
 import az.orient.eshop.exception.EshopException;
 import az.orient.eshop.exception.ExceptionConstants;
+import az.orient.eshop.mapper.ProductDetailsMapper;
 import az.orient.eshop.repository.ColorRepository;
 import az.orient.eshop.repository.ProductDetailsRepository;
 import az.orient.eshop.repository.ProductRepository;
 import az.orient.eshop.repository.SizeRepository;
 import az.orient.eshop.service.ProductDetailsService;
-import az.orient.eshop.util.Utility;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -32,24 +32,19 @@ public class ProductDetailsServiceImpl implements ProductDetailsService {
     private final ColorRepository colorRepository;
     private final ProductRepository productRepository;
     private final SizeRepository sizeRepository;
-    private final Utility utility = new Utility();
+    private final ProductDetailsMapper productDetailsMapper;
 
     @Override
-    public Response<RespProductDetails> addProductDetails(Long productId, ReqProductDetails reqProductDetails) {
+    public Response<RespProductDetails> addProductDetails(ReqProductDetails reqProductDetails) {
         Response<RespProductDetails> response = new Response<>();
         try {
-            if (productId == null) {
-                throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Id is null");
-            }
-            Product product = productRepository.findProductByIdAndActive(productId, EnumAvailableStatus.ACTIVE.getValue());
-            if (product == null) {
-                throw new EshopException(ExceptionConstants.PRODUCT_NOT_FOUND, "Product not found");
-            }
+
             Long sizeId = reqProductDetails.getSizeId();
             Long colorId = reqProductDetails.getColorId();
             Integer stock = reqProductDetails.getStock();
-            Currency currency = Currency.fromValue(reqProductDetails.getCurrency().getValue());
+            Currency.fromValue(reqProductDetails.getCurrency().getValue());
             BigDecimal price = reqProductDetails.getPrice();
+            Long productId = reqProductDetails.getProductId();
             if (sizeId == null || stock == null || colorId == null || price == null) {
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Invalid request data");
             }
@@ -61,16 +56,16 @@ public class ProductDetailsServiceImpl implements ProductDetailsService {
             if (color == null) {
                 throw new EshopException(ExceptionConstants.COLOR_NOT_FOUND, "Color not found");
             }
-            ProductDetails productDetails = ProductDetails.builder()
-                    .product(product)
-                    .price(price)
-                    .currency(currency)
-                    .size(size)
-                    .stock(stock)
-                    .color(color)
-                    .build();
+            if (productId == null) {
+                throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Id is null");
+            }
+            Product product = productRepository.findProductByIdAndActive(productId, EnumAvailableStatus.ACTIVE.getValue());
+            if (product == null) {
+                throw new EshopException(ExceptionConstants.PRODUCT_NOT_FOUND, "Product not found");
+            }
+            ProductDetails productDetails = productDetailsMapper.toProductDetails(reqProductDetails);
             productDetailsRepository.save(productDetails);
-            RespProductDetails respProductDetails = utility.convertToRespProductDetails(productDetails);
+            RespProductDetails respProductDetails = productDetailsMapper.toRespProductDetails(productDetails);
             response.setT(respProductDetails);
             response.setStatus(RespStatus.getSuccessMessage());
         } catch (
@@ -98,7 +93,7 @@ public class ProductDetailsServiceImpl implements ProductDetailsService {
             Long sizeId = reqProductDetails.getSizeId();
             Long colorId = reqProductDetails.getColorId();
             Integer stock = reqProductDetails.getStock();
-            Currency currency = Currency.fromValue(reqProductDetails.getCurrency().getValue());
+            Currency.fromValue(reqProductDetails.getCurrency().getValue());
             BigDecimal price = reqProductDetails.getPrice();
             if (sizeId == null || stock == null || colorId == null || price == null) {
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Invaild request data");
@@ -111,15 +106,9 @@ public class ProductDetailsServiceImpl implements ProductDetailsService {
             if (color == null) {
                 throw new EshopException(ExceptionConstants.COLOR_NOT_FOUND, "Color not found");
             }
-            Product product = productRepository.findProductByIdAndActive(reqProductDetails.getProductId(), EnumAvailableStatus.ACTIVE.getValue());
-            productDetails.setProduct(product);
-            productDetails.setPrice(price);
-            productDetails.setCurrency(currency);
-            productDetails.setSize(size);
-            productDetails.setStock(stock);
-            productDetails.setColor(color);
+            productDetailsMapper.updateProductDetailsFromReqProductDetails(productDetails,reqProductDetails);
             productDetailsRepository.save(productDetails);
-            RespProductDetails respProductDetails = utility.convertToRespProductDetails(productDetails);
+            RespProductDetails respProductDetails = productDetailsMapper.toRespProductDetails(productDetails);
             response.setT(respProductDetails);
             response.setStatus(RespStatus.getSuccessMessage());
         } catch (
@@ -141,7 +130,7 @@ public class ProductDetailsServiceImpl implements ProductDetailsService {
             if (productDetailsList.isEmpty()) {
                 throw new EshopException(ExceptionConstants.PRODUCT_DETAILS_NOT_FOUND, "Product Details not found");
             }
-            List<RespProductDetails> respProductDetailsList = productDetailsList.stream().map(utility::convertToRespProductDetails).toList();
+            List<RespProductDetails> respProductDetailsList =productDetailsMapper.toRespProductDetailsList(productDetailsList);
             response.setT(respProductDetailsList);
             response.setStatus(RespStatus.getSuccessMessage());
         } catch (EshopException ex) {
@@ -165,7 +154,7 @@ public class ProductDetailsServiceImpl implements ProductDetailsService {
             if (productDetails == null) {
                 throw new EshopException(ExceptionConstants.PRODUCT_DETAILS_NOT_FOUND, "Product details not found");
             }
-            RespProductDetails respProductDetails = utility.convertToRespProductDetails(productDetails);
+            RespProductDetails respProductDetails = productDetailsMapper.toRespProductDetails(productDetails);
             response.setT(respProductDetails);
             response.setStatus(RespStatus.getSuccessMessage());
         } catch (EshopException ex) {

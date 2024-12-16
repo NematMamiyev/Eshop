@@ -1,10 +1,10 @@
 package az.orient.eshop.repository;
 
-import az.orient.eshop.entity.ShelfProduct;
+import az.orient.eshop.entity.ShelfProductDetails;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ShelfProductRepository extends JpaRepository<ShelfProduct, Long> {
+public interface ShelfProductRepository extends JpaRepository<ShelfProductDetails, Long> {
 
     boolean existsShelfProductByProductDetailsIdAndWarehouseIdAndActive(Long producId,Long warehouseId, Integer active);
-    ShelfProduct findShelfProductByShelfIdAndProductDetailsIdAndActive(Long shelfId,Long productId,Integer active);
+    ShelfProductDetails findShelfProductByShelfIdAndProductDetailsIdAndActive(Long shelfId, Long productId, Integer active);
 }

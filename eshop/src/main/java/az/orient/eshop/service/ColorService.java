@@ -14,7 +14,7 @@ public interface ColorService {
 
     Response<RespColor> getColorById(Long id);
 
-    Response<RespColor> updateColor(ReqColor reqColor);
+    Response<RespColor> updateColor(Long id, ReqColor reqColor);
 
     Response deleteColor(Long id);
 }

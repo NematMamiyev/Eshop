@@ -1,16 +1,14 @@
 package az.orient.eshop.service.impl;
 
 import az.orient.eshop.dto.request.ReqSubcategory;
-import az.orient.eshop.dto.response.RespCategory;
 import az.orient.eshop.dto.response.RespStatus;
 import az.orient.eshop.dto.response.RespSubcategory;
 import az.orient.eshop.dto.response.Response;
-import az.orient.eshop.entity.Category;
 import az.orient.eshop.entity.Subcategory;
 import az.orient.eshop.enums.EnumAvailableStatus;
 import az.orient.eshop.exception.EshopException;
 import az.orient.eshop.exception.ExceptionConstants;
-import az.orient.eshop.repository.CategoryRepository;
+import az.orient.eshop.mapper.SubCategoryMapper;
 import az.orient.eshop.repository.SubcategoryRepository;
 import az.orient.eshop.service.SubcategoryService;
 import lombok.RequiredArgsConstructor;
@@ -22,8 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SubcategoryServiceImpl implements SubcategoryService {
     private final SubcategoryRepository subcategoryRepository;
-
-    private final CategoryRepository categoryRepository;
+    private final SubCategoryMapper subCategoryMapper;
 
     @Override
     public Response<RespSubcategory> addSubcategory(ReqSubcategory reqSubcategory) {
@@ -34,20 +31,13 @@ public class SubcategoryServiceImpl implements SubcategoryService {
             if (name == null || categoryId == null) {
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Invalid request data");
             }
-            Category category = categoryRepository.findByIdAndActive(categoryId, EnumAvailableStatus.ACTIVE.getValue());
-            if (category == null) {
-                throw new EshopException(ExceptionConstants.CATEGORY_NOT_FOUND, "Category not found");
-            }
             boolean uniqueName = subcategoryRepository.existsSubcategoryByNameAndActive(name, EnumAvailableStatus.ACTIVE.getValue());
             if (uniqueName) {
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Name available in the database");
             }
-            Subcategory subcategory = Subcategory.builder()
-                    .name(name)
-                    .category(category)
-                    .build();
+            Subcategory subcategory = subCategoryMapper.toSubcategory(reqSubcategory);
             subcategoryRepository.save(subcategory);
-            RespSubcategory respSubcategory = convert(subcategory);
+            RespSubcategory respSubcategory = subCategoryMapper.toRespSubcategory(subcategory);
             response.setT(respSubcategory);
             response.setStatus(RespStatus.getSuccessMessage());
         } catch (EshopException ex) {
@@ -69,7 +59,7 @@ public class SubcategoryServiceImpl implements SubcategoryService {
             if (subcategoryList.isEmpty()) {
                 throw new EshopException(ExceptionConstants.SUBCATEGORY_NOT_FOUND, "Subcategory is empty");
             }
-            List<RespSubcategory> respSubcategoryList = subcategoryList.stream().map(this::convert).toList();
+            List<RespSubcategory> respSubcategoryList = subCategoryMapper.toRespSubcategoryList(subcategoryList);
             response.setT(respSubcategoryList);
             response.setStatus(RespStatus.getSuccessMessage());
         } catch (EshopException ex) {
@@ -93,7 +83,7 @@ public class SubcategoryServiceImpl implements SubcategoryService {
             if (subcategory == null) {
                 throw new EshopException(ExceptionConstants.SUBCATEGORY_NOT_FOUND, "Subcategory not found");
             }
-            RespSubcategory respSubcategory = convert(subcategory);
+            RespSubcategory respSubcategory = subCategoryMapper.toRespSubcategory(subcategory);
             response.setT(respSubcategory);
             response.setStatus(RespStatus.getSuccessMessage());
         } catch (EshopException ex) {
@@ -107,10 +97,9 @@ public class SubcategoryServiceImpl implements SubcategoryService {
     }
 
     @Override
-    public Response<RespSubcategory> updateSubcategory(ReqSubcategory reqSubcategory) {
+    public Response<RespSubcategory> updateSubcategory(Long id, ReqSubcategory reqSubcategory) {
         Response<RespSubcategory> response = new Response<>();
         try {
-            Long id = reqSubcategory.getId();
             String name = reqSubcategory.getName();
             Long categoryId = reqSubcategory.getCategoryId();
             if (id == null || name == null || categoryId == null) {
@@ -124,14 +113,9 @@ public class SubcategoryServiceImpl implements SubcategoryService {
             if (uniqueName){
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA,"Name available in the database");
             }
-            Category category = categoryRepository.findByIdAndActive(categoryId,EnumAvailableStatus.ACTIVE.getValue());
-            if (category == null){
-                throw new EshopException(ExceptionConstants.CATEGORY_NOT_FOUND, "Category not found");
-            }
-            subcategory.setName(name);
-            subcategory.setCategory(category);
+            subCategoryMapper.updateSubcategoryFromReqSubcategory(subcategory,reqSubcategory);
             subcategoryRepository.save(subcategory);
-            RespSubcategory respSubcategory = convert(subcategory);
+            RespSubcategory respSubcategory = subCategoryMapper.toRespSubcategory(subcategory);
             response.setT(respSubcategory);
             response.setStatus(RespStatus.getSuccessMessage());
         } catch (EshopException ex) {
@@ -166,17 +150,5 @@ public class SubcategoryServiceImpl implements SubcategoryService {
             response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
         }
         return response;
-    }
-
-    private RespSubcategory convert(Subcategory subcategory) {
-        RespCategory respCategory = RespCategory.builder()
-                .id(subcategory.getCategory().getId())
-                .name(subcategory.getCategory().getName())
-                .build();
-        return RespSubcategory.builder()
-                .id(subcategory.getId())
-                .name(subcategory.getName())
-                .respCategory(respCategory)
-                .build();
     }
 }

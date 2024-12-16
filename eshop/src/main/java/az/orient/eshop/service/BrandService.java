@@ -13,7 +13,7 @@ public interface BrandService {
 
     Response<RespBrand> getBrandById(Long id);
 
-    Response<RespBrand> updateBrand(ReqBrand reqBrand);
+    Response<RespBrand> updateBrand(Long id, ReqBrand reqBrand);
 
     Response deleteBrand(Long id);
 }

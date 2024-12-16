@@ -13,7 +13,7 @@ public interface CategoryService {
 
     Response<RespCategory> getCategoryById(Long id);
 
-    Response<RespCategory> updateCategory(ReqCategory reqCategory);
+    Response<RespCategory> updateCategory(Long id,ReqCategory reqCategory);
 
     Response deleteCategory(Long id);
 }

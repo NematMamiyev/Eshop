@@ -18,7 +18,7 @@ import java.util.Date;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ShelfProduct {
+public class ShelfProductDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "shelf_product_seq")
     @SequenceGenerator(name = "shelf_product_seq", sequenceName = "SHELF_PRODUCT_SEQ", allocationSize = 1)

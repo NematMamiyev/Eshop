@@ -30,9 +30,9 @@ public class WarehouseController {
         return warehouseService.getWarehouseById(id);
     }
 
-    @PutMapping
-    public Response<RespWarehouse> updateWarehouse(@RequestBody ReqWarehouse reqWarehouse){
-        return warehouseService.updateWarehouse(reqWarehouse);
+    @PutMapping("/{id}")
+    public Response<RespWarehouse> updateWarehouse(@PathVariable Long id,@RequestBody ReqWarehouse reqWarehouse){
+        return warehouseService.updateWarehouse(id, reqWarehouse);
     }
 
     @DeleteMapping("/{id}")

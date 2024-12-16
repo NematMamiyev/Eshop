@@ -30,9 +30,9 @@ public class CustomerController {
         return customerService.getCustomerById(id);
     }
 
-    @PutMapping
-    public Response<RespCustomer> updateCustomer(@RequestBody ReqCustomer reqCustomer){
-        return customerService.updateCustomer(reqCustomer);
+    @PutMapping("/{id}")
+    public Response<RespCustomer> updateCustomer(@PathVariable Long id,@RequestBody ReqCustomer reqCustomer){
+        return customerService.updateCustomer(id, reqCustomer);
     }
 
     @DeleteMapping("/{id}")

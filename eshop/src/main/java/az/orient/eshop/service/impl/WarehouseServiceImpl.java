@@ -8,6 +8,7 @@ import az.orient.eshop.entity.Warehouse;
 import az.orient.eshop.enums.EnumAvailableStatus;
 import az.orient.eshop.exception.EshopException;
 import az.orient.eshop.exception.ExceptionConstants;
+import az.orient.eshop.mapper.WarehouseMapper;
 import az.orient.eshop.repository.WarehouseRepository;
 import az.orient.eshop.service.WarehouseService;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class WarehouseServiceImpl implements WarehouseService {
     private final WarehouseRepository warehouseRepository;
+    private final WarehouseMapper warehouseMapper;
+
+
     @Override
     public Response<RespWarehouse> addWarehouse(ReqWarehouse reqWarehouse) {
         Response<RespWarehouse> response = new Response<>();
@@ -32,13 +36,9 @@ public class WarehouseServiceImpl implements WarehouseService {
             if (uniqueName){
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA,"Name available in the database");
             }
-            Warehouse warehouse = Warehouse.builder()
-                    .id(reqWarehouse.getId())
-                    .name(name)
-                    .address(address)
-                    .build();
+            Warehouse warehouse = warehouseMapper.toWarehouse(reqWarehouse);
             warehouseRepository.save(warehouse);
-            RespWarehouse respWarehouse = convert(warehouse);
+            RespWarehouse respWarehouse = warehouseMapper.toRespWarehouse(warehouse);
             response.setT(respWarehouse);
             response.setStatus(RespStatus.getSuccessMessage());
         } catch (EshopException ex) {
@@ -59,7 +59,7 @@ public class WarehouseServiceImpl implements WarehouseService {
             if (warehouseList.isEmpty()){
                 throw new EshopException(ExceptionConstants.WAREHOUSE_NOT_FOUND, "Warehouse not found");
             }
-            List<RespWarehouse> respWarehouseList = warehouseList.stream().map(this::convert).toList();
+            List<RespWarehouse> respWarehouseList = warehouseMapper.toRespWarehouseList(warehouseList);
             response.setT(respWarehouseList);
             response.setStatus(RespStatus.getSuccessMessage());
         }catch (EshopException ex) {
@@ -83,7 +83,7 @@ public class WarehouseServiceImpl implements WarehouseService {
             if (warehouse== null){
                 throw new EshopException(ExceptionConstants.WAREHOUSE_NOT_FOUND,"Warehouse not found");
             }
-            RespWarehouse respWarehouse = convert(warehouse);
+            RespWarehouse respWarehouse = warehouseMapper.toRespWarehouse(warehouse);
             response.setT(respWarehouse);
             response.setStatus(RespStatus.getSuccessMessage());
         }catch (EshopException ex) {
@@ -97,10 +97,9 @@ public class WarehouseServiceImpl implements WarehouseService {
     }
 
     @Override
-    public Response<RespWarehouse> updateWarehouse(ReqWarehouse reqWarehouse) {
+    public Response<RespWarehouse> updateWarehouse(Long id, ReqWarehouse reqWarehouse) {
         Response<RespWarehouse> response = new Response<>();
         try {
-            Long id = reqWarehouse.getId();
             String name = reqWarehouse.getName();
             String address = reqWarehouse.getAddress();
             if (id == null || name == null || address == null){
@@ -114,10 +113,9 @@ public class WarehouseServiceImpl implements WarehouseService {
             if (warehouse == null){
                 throw new EshopException(ExceptionConstants.WAREHOUSE_NOT_FOUND, "Warehouse not found");
             }
-            warehouse.setName(name);
-            warehouse.setAddress(address);
+            warehouseMapper.updateWarehouseFromReqWarehouse(warehouse,reqWarehouse);
             warehouseRepository.save(warehouse);
-            RespWarehouse respWarehouse = convert(warehouse);
+            RespWarehouse respWarehouse = warehouseMapper.toRespWarehouse(warehouse);
             response.setT(respWarehouse);
             response.setStatus(RespStatus.getSuccessMessage());
         }catch (EshopException ex) {
@@ -152,13 +150,5 @@ public class WarehouseServiceImpl implements WarehouseService {
             response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
         }
         return response;
-    }
-
-    private RespWarehouse convert(Warehouse warehouse){
-        return RespWarehouse.builder()
-                .id(warehouse.getId())
-                .name(warehouse.getName())
-                .address(warehouse.getAddress())
-                .build();
     }
 }

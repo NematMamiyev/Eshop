@@ -30,9 +30,9 @@ public class EmployeeController {
         return employeeService.getEmployeeById(id);
     }
 
-    @PutMapping
-    public Response<RespEmployee> updateEmployee(@RequestBody ReqEmployee reqEmployee){
-        return employeeService.updateEmployee(reqEmployee);
+    @PutMapping("/{id}")
+    public Response<RespEmployee> updateEmployee(@PathVariable Long id, @RequestBody ReqEmployee reqEmployee){
+        return employeeService.updateEmployee(id,reqEmployee);
     }
 
     @DeleteMapping("/{id}")

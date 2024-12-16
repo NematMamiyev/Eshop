@@ -1,6 +1,7 @@
 package az.orient.eshop.service;
 
 import az.orient.eshop.dto.request.ReqWishlist;
+import az.orient.eshop.dto.response.RespProductDetails;
 import az.orient.eshop.dto.response.RespWishlist;
 import az.orient.eshop.dto.response.Response;
 
@@ -11,5 +12,5 @@ public interface WishlistService {
 
     Response deleteWishlist(ReqWishlist reqWishlist);
 
-    Response<RespWishlist> listByCustomerId(Long customerId);
+    Response<List<RespProductDetails>> listByCustomerId(Long customerId);
 }

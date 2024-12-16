@@ -6,6 +6,7 @@ import az.orient.eshop.entity.*;
 import az.orient.eshop.enums.EnumAvailableStatus;
 import az.orient.eshop.exception.EshopException;
 import az.orient.eshop.exception.ExceptionConstants;
+import az.orient.eshop.mapper.ProductDetailsMapper;
 import az.orient.eshop.repository.CartRepository;
 import az.orient.eshop.repository.CustomerRepository;
 import az.orient.eshop.repository.ProductDetailsRepository;
@@ -23,7 +24,7 @@ public class CartServiceImpl implements CartService {
     private final CartRepository cartRepository;
     private final ProductDetailsRepository productDetailsRepository;
     private final CustomerRepository customerRepository;
-    private final Utility utility= new Utility();
+    private final ProductDetailsMapper productDetailsMapper;
 
     @Override
     public Response addCart(ReqCart reqCart) {
@@ -123,7 +124,7 @@ public class CartServiceImpl implements CartService {
                 throw new EshopException(ExceptionConstants.CART_NOT_FOUND, "Cart not found");
             }
             List<ProductDetails> productDetailsList = cart.getProductDetailsList();
-            List<RespProductDetails> respProductDetailsList = productDetailsList.stream().map(utility::convertToRespProductDetails).toList();
+            List<RespProductDetails> respProductDetailsList = productDetailsMapper.toRespProductDetailsList(productDetailsList);
             RespCart respCart = RespCart.builder()
                     .respProductDetailsList(respProductDetailsList)
                     .amount(cart.getAmount())

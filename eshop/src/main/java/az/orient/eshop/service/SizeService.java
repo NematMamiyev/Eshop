@@ -13,7 +13,7 @@ public interface SizeService {
 
     Response<RespSize> getSizeById(Long id);
 
-    Response<RespSize> updateSize(ReqSize reqSize);
+    Response<RespSize> updateSize(Long id, ReqSize reqSize);
 
     Response deleteSize(Long id);
 }
