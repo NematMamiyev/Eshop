@@ -16,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -36,7 +35,6 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public Response payment(ReqPayment reqPayment) {
         Response response = new Response<>();
-        try {
             Long customerId = reqPayment.getCustomerId();
             if (customerId == null) {
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Invalid request data");
@@ -91,13 +89,6 @@ public class PaymentServiceImpl implements PaymentService {
                     .build();
             warehouseWorkRepository.save(warehouseWork);
             response.setStatus(RespStatus.getSuccessMessage());
-        } catch (EshopException ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
-        }
         return response;
     }
 }

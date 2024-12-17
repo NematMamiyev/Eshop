@@ -33,7 +33,6 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Response<RespCustomer> addCustomer(ReqCustomer reqCustomer) {
         Response<RespCustomer> response = new Response<>();
-        try {
             String name = reqCustomer.getName();
             String surname = reqCustomer.getSurname();
             String email = reqCustomer.getEmail();
@@ -64,20 +63,12 @@ public class CustomerServiceImpl implements CustomerService {
             RespCustomer respCustomer = customerMapper.toRespCustomer(customer);
             response.setT(respCustomer);
             response.setStatus(RespStatus.getSuccessMessage());
-        } catch (EshopException ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
-        }
         return response;
     }
 
     @Override
     public Response<List<RespCustomer>> getCustomerList() {
         Response<List<RespCustomer>> response = new Response<>();
-        try {
             List<Customer> customerList = customerRepository.findAllByActive(EnumAvailableStatus.ACTIVE.getValue());
             if (customerList.isEmpty()) {
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Customer list empty");
@@ -85,20 +76,12 @@ public class CustomerServiceImpl implements CustomerService {
             List<RespCustomer> respCustomerList =customerMapper.toRespCustomerList(customerList);
             response.setT(respCustomerList);
             response.setStatus(RespStatus.getSuccessMessage());
-        } catch (EshopException ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
-        }
         return response;
     }
 
     @Override
     public Response<RespCustomer> getCustomerById(Long id) {
         Response<RespCustomer> response = new Response<>();
-        try {
             if (id == null) {
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Id not found");
             }
@@ -109,20 +92,12 @@ public class CustomerServiceImpl implements CustomerService {
             RespCustomer respCustomer = customerMapper.toRespCustomer(customer);
             response.setT(respCustomer);
             response.setStatus(RespStatus.getSuccessMessage());
-        } catch (EshopException ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
-        }
         return response;
     }
 
     @Override
     public Response<RespCustomer> updateCustomer(Long id, ReqCustomer reqCustomer) {
         Response<RespCustomer> response = new Response<>();
-        try {
             String name = reqCustomer.getName();
             String surname = reqCustomer.getSurname();
             String email = reqCustomer.getEmail();
@@ -146,20 +121,12 @@ public class CustomerServiceImpl implements CustomerService {
             RespCustomer respCustomer = customerMapper.toRespCustomer(customer);
             response.setT(respCustomer);
             response.setStatus(RespStatus.getSuccessMessage());
-        } catch (EshopException ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
-        }
         return response;
     }
 
     @Override
     public Response deleteCustomer(Long id) {
         Response response = new Response<>();
-        try {
             if (id ==  null){
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA,"Id not found");
             }
@@ -170,13 +137,6 @@ public class CustomerServiceImpl implements CustomerService {
             customer.setActive(EnumAvailableStatus.DEACTIVE.getValue());
             customerRepository.save(customer);
             response.setStatus(RespStatus.getSuccessMessage());
-        } catch (EshopException ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
-        }
         return response;
     }
 }

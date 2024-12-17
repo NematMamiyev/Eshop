@@ -26,8 +26,7 @@ public class SizeServiceImpl implements SizeService {
     @Override
     public Response<RespSize> addSize(ReqSize reqSize) {
         Response<RespSize> response = new Response<>();
-        try {
-            String name = reqSize.getName();
+           String name = reqSize.getName();
             if (name == null) {
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Name is null");
             }
@@ -40,41 +39,25 @@ public class SizeServiceImpl implements SizeService {
             RespSize respSize = sizeMapper.toRespSize(size);
             response.setT(respSize);
             response.setStatus(RespStatus.getSuccessMessage());
-        } catch (EshopException ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
-        }
-        return response;
+      return response;
     }
 
     @Override
     public Response<List<RespSize>> getSizeList() {
         Response<List<RespSize>> response = new Response<>();
-        try {
-            List<Size> sizeList = sizeRepository.findAllByActive(EnumAvailableStatus.ACTIVE.getValue());
+          List<Size> sizeList = sizeRepository.findAllByActive(EnumAvailableStatus.ACTIVE.getValue());
             if (sizeList.isEmpty()) {
                 throw new EshopException(ExceptionConstants.SIZE_NOT_FOUND, "Size is empty");
             }
             List<RespSize> respSizeList = sizeMapper.toRespSizeList(sizeList);
             response.setT(respSizeList);
             response.setStatus(RespStatus.getSuccessMessage());
-        } catch (EshopException ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
-        }
-        return response;
+     return response;
     }
 
     @Override
     public Response<RespSize> getSizeById(Long id) {
         Response<RespSize> response = new Response<>();
-        try {
             if (id == null){
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Id is null");
             }
@@ -85,20 +68,12 @@ public class SizeServiceImpl implements SizeService {
             RespSize respSize = sizeMapper.toRespSize(size);
             response.setT(respSize);
             response.setStatus(RespStatus.getSuccessMessage());
-        } catch (EshopException ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
-        }
-        return response;
+      return response;
     }
 
     @Override
     public Response<RespSize> updateSize(Long id, ReqSize reqSize) {
         Response<RespSize> response = new Response<>();
-        try {
             String name = reqSize.getName();
             if (id == null || name == null){
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Id or name is null");
@@ -116,20 +91,12 @@ public class SizeServiceImpl implements SizeService {
             RespSize respSize = sizeMapper.toRespSize(size);
             response.setT(respSize);
             response.setStatus(RespStatus.getSuccessMessage());
-        }catch (EshopException ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
-        }
         return response;
     }
 
     @Override
     public Response deleteSize(Long id) {
         Response response = new Response<>();
-        try {
             if (id == null) {
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Id is null");
             }
@@ -140,13 +107,6 @@ public class SizeServiceImpl implements SizeService {
             size.setActive(EnumAvailableStatus.DEACTIVE.getValue());
             sizeRepository.save(size);
             response.setStatus(RespStatus.getSuccessMessage());
-        }catch (EshopException ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
-        }
-        return response;
+         return response;
     }
 }

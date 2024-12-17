@@ -24,7 +24,6 @@ public class ShelfProductDetailsServiceImpl implements ShelfProductDetailsServic
     @Override
     public Response<RespShelfProductDetails> addProductInShelf(ReqShelfProductDetails reqShelfProduct) {
         Response<RespShelfProductDetails> response = new Response<>();
-        try {
             Long shelfId = reqShelfProduct.getShelfId();
             Long productDetailsId = reqShelfProduct.getProductDetailsId();
             if (shelfId == null || productDetailsId == null) {
@@ -49,19 +48,11 @@ public class ShelfProductDetailsServiceImpl implements ShelfProductDetailsServic
             RespShelfProductDetails respShelfProductDetails = shelfProductDetailsMapper.toRespShelfProductDetails(shelfProductDetails);
             response.setT(respShelfProductDetails);
             response.setStatus(RespStatus.getSuccessMessage());
-        } catch (EshopException ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
-        }
         return response;
     }
     @Override
     public Response deleteProductInShelf(ReqShelfProductDetails reqShelfProduct) {
         Response response = new Response<>();
-        try {
             Long shelfId = reqShelfProduct.getShelfId();
             Long productDetailsId = reqShelfProduct.getProductDetailsId();
             if (shelfId == null || productDetailsId == null) {
@@ -79,13 +70,6 @@ public class ShelfProductDetailsServiceImpl implements ShelfProductDetailsServic
             shelfProductDetails.setActive(EnumAvailableStatus.DEACTIVE.getValue());
             shelfProductRepository.save(shelfProductDetails);
             response.setStatus(RespStatus.getSuccessMessage());
-            } catch (EshopException ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
-        }
         return response;
     }
 }

@@ -11,7 +11,6 @@ import az.orient.eshop.repository.CartRepository;
 import az.orient.eshop.repository.CustomerRepository;
 import az.orient.eshop.repository.ProductDetailsRepository;
 import az.orient.eshop.service.CartService;
-import az.orient.eshop.util.Utility;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +28,6 @@ public class CartServiceImpl implements CartService {
     @Override
     public Response addCart(ReqCart reqCart) {
         Response response = new Response<>();
-        try {
             Long productDetailsId = reqCart.getProductDetailsId();
             Long customerId = reqCart.getCustomerId();
             if (productDetailsId == null || customerId == null) {
@@ -56,20 +54,12 @@ public class CartServiceImpl implements CartService {
             cart.setAmount(amount );
             cartRepository.save(cart);
             response.setStatus(RespStatus.getSuccessMessage());
-        } catch (EshopException ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
-        }
         return response;
     }
 
     @Override
     public Response deleteCart(ReqCart reqCart) {
         Response response = new Response<>();
-        try {
             Long productDetailsId = reqCart.getProductDetailsId();
             Long customerId = reqCart.getCustomerId();
             if (productDetailsId == null || customerId == null) {
@@ -98,20 +88,12 @@ public class CartServiceImpl implements CartService {
             cart.setProductDetailsList(productDetailsList);
             cartRepository.save(cart);
             response.setStatus(RespStatus.getSuccessMessage());
-        } catch (EshopException ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
-        }
         return response;
     }
 
     @Override
     public Response<RespCart> listByCustomerId(Long customerId) {
         Response<RespCart> response = new Response<>();
-        try {
             if (customerId == null) {
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Customer id is null");
             }
@@ -131,13 +113,6 @@ public class CartServiceImpl implements CartService {
                     .build();
             response.setT(respCart);
             response.setStatus(RespStatus.getSuccessMessage());
-        } catch (EshopException ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
-        }
         return response;
     }
 }

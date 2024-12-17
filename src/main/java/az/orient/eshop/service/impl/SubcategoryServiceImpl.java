@@ -25,8 +25,7 @@ public class SubcategoryServiceImpl implements SubcategoryService {
     @Override
     public Response<RespSubcategory> addSubcategory(ReqSubcategory reqSubcategory) {
         Response<RespSubcategory> response = new Response<>();
-        try {
-            String name = reqSubcategory.getName();
+           String name = reqSubcategory.getName();
             Long categoryId = reqSubcategory.getCategoryId();
             if (name == null || categoryId == null) {
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Invalid request data");
@@ -40,42 +39,25 @@ public class SubcategoryServiceImpl implements SubcategoryService {
             RespSubcategory respSubcategory = subCategoryMapper.toRespSubcategory(subcategory);
             response.setT(respSubcategory);
             response.setStatus(RespStatus.getSuccessMessage());
-        } catch (EshopException ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
-        }
-
         return response;
     }
 
     @Override
     public Response<List<RespSubcategory>> getSubcategoryList() {
         Response<List<RespSubcategory>> response = new Response<>();
-        try {
-            List<Subcategory> subcategoryList = subcategoryRepository.findAllByActive(EnumAvailableStatus.ACTIVE.getValue());
+           List<Subcategory> subcategoryList = subcategoryRepository.findAllByActive(EnumAvailableStatus.ACTIVE.getValue());
             if (subcategoryList.isEmpty()) {
                 throw new EshopException(ExceptionConstants.SUBCATEGORY_NOT_FOUND, "Subcategory is empty");
             }
             List<RespSubcategory> respSubcategoryList = subCategoryMapper.toRespSubcategoryList(subcategoryList);
             response.setT(respSubcategoryList);
             response.setStatus(RespStatus.getSuccessMessage());
-        } catch (EshopException ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
-        }
-        return response;
+       return response;
     }
 
     @Override
     public Response<RespSubcategory> getSubcategoryById(Long id) {
         Response<RespSubcategory> response = new Response<>();
-        try {
             if (id == null) {
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Id is null");
             }
@@ -86,20 +68,12 @@ public class SubcategoryServiceImpl implements SubcategoryService {
             RespSubcategory respSubcategory = subCategoryMapper.toRespSubcategory(subcategory);
             response.setT(respSubcategory);
             response.setStatus(RespStatus.getSuccessMessage());
-        } catch (EshopException ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
-        }
-        return response;
+     return response;
     }
 
     @Override
     public Response<RespSubcategory> updateSubcategory(Long id, ReqSubcategory reqSubcategory) {
         Response<RespSubcategory> response = new Response<>();
-        try {
             String name = reqSubcategory.getName();
             Long categoryId = reqSubcategory.getCategoryId();
             if (id == null || name == null || categoryId == null) {
@@ -118,20 +92,12 @@ public class SubcategoryServiceImpl implements SubcategoryService {
             RespSubcategory respSubcategory = subCategoryMapper.toRespSubcategory(subcategory);
             response.setT(respSubcategory);
             response.setStatus(RespStatus.getSuccessMessage());
-        } catch (EshopException ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
-        }
         return response;
     }
 
     @Override
     public Response deleteSubcategory(Long id) {
         Response response = new Response<>();
-        try {
             if (id == null){
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Id is null");
             }
@@ -142,13 +108,6 @@ public class SubcategoryServiceImpl implements SubcategoryService {
             subcategory.setActive(EnumAvailableStatus.DEACTIVE.getValue());
             subcategoryRepository.save(subcategory);
             response.setStatus(RespStatus.getSuccessMessage());
-        }catch (EshopException ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
-        }
-        return response;
+       return response;
     }
 }

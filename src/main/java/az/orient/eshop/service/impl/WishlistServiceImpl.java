@@ -6,7 +6,6 @@ import az.orient.eshop.entity.*;
 import az.orient.eshop.enums.EnumAvailableStatus;
 import az.orient.eshop.exception.EshopException;
 import az.orient.eshop.exception.ExceptionConstants;
-import az.orient.eshop.mapper.MapperHelper;
 import az.orient.eshop.mapper.ProductDetailsMapper;
 import az.orient.eshop.repository.CustomerRepository;
 import az.orient.eshop.repository.ProductDetailsRepository;
@@ -29,8 +28,7 @@ public class WishlistServiceImpl implements WishlistService {
     @Override
     public Response addWishlist(ReqWishlist reqWishlist) {
         Response response = new Response<>();
-        try {
-            Long productDetailsId = reqWishlist.getProductDetailsId();
+           Long productDetailsId = reqWishlist.getProductDetailsId();
             Long customerId = reqWishlist.getCustomerId();
             if (productDetailsId == null || customerId == null) {
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Product details id or customer id is null");
@@ -52,20 +50,12 @@ public class WishlistServiceImpl implements WishlistService {
             wishlist.setProductDetailsList(productDetailsList);
             wishlistRepository.save(wishlist);
             response.setStatus(RespStatus.getSuccessMessage());
-        } catch (EshopException ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
-        }
-        return response;
+       return response;
     }
 
     @Override
     public Response deleteWishlist(ReqWishlist reqWishlist) {
         Response response = new Response<>();
-        try {
             Long productDetailsId = reqWishlist.getProductDetailsId();
             Long customerId = reqWishlist.getCustomerId();
             if (productDetailsId == null || customerId == null) {
@@ -88,20 +78,12 @@ public class WishlistServiceImpl implements WishlistService {
             wishlist.setProductDetailsList(productDetailsList);
             wishlistRepository.save(wishlist);
             response.setStatus(RespStatus.getSuccessMessage());
-        } catch (EshopException ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
-        }
-        return response;
+         return response;
     }
 
     @Override
     public Response<List<RespProductDetails>> listByCustomerId(Long customerId) {
         Response<List<RespProductDetails>> response = new Response<>();
-        try {
             if (customerId == null) {
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Customer id is null");
             }
@@ -115,15 +97,6 @@ public class WishlistServiceImpl implements WishlistService {
             }
             response.setT(productDetailsMapper.toRespProductDetailsList(wishlist.getProductDetailsList()));
             response.setStatus(RespStatus.getSuccessMessage());
-        }  catch (EshopException ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
-        }
-        return response;
+       return response;
     }
-
-
 }

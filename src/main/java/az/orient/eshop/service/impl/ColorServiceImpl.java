@@ -29,7 +29,6 @@ public class ColorServiceImpl implements ColorService {
     @Override
     public Response<RespColor> addColor(ReqColor reqColor) {
         Response<RespColor> response = new Response<>();
-        try {
             String name = reqColor.getName();
             if (name == null) {
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "name is invalid");
@@ -43,20 +42,12 @@ public class ColorServiceImpl implements ColorService {
             RespColor respColor = colorMapper.toRespColor(color);
             response.setT(respColor);
             response.setStatus(RespStatus.getSuccessMessage());
-        } catch (EshopException ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
-        }
         return response;
     }
 
     @Override
     public Response<List<RespColor>> colorList() {
         Response<List<RespColor>> response = new Response<>();
-        try {
             List<Color> colorList = colorRepository.findAllByActive(EnumAvailableStatus.ACTIVE.getValue());
             if (colorList.isEmpty()){
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Invalid request data");
@@ -64,20 +55,12 @@ public class ColorServiceImpl implements ColorService {
             List<RespColor> respColorList = colorMapper.toRespColorList(colorList);
             response.setT(respColorList);
             response.setStatus(RespStatus.getSuccessMessage());
-        } catch (EshopException ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
-        }
         return response;
     }
 
     @Override
     public Response<RespColor> getColorById(Long id) {
         Response<RespColor> response = new Response<>();
-        try {
             LOGGER.info("getColorById request: {}", id);
             if (id == null){
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Id not found");
@@ -90,22 +73,12 @@ public class ColorServiceImpl implements ColorService {
             response.setT(respColor);
             response.setStatus(RespStatus.getSuccessMessage());
             LOGGER.info("getColorById response: {}", response);
-        } catch (EshopException ex) {
-            LOGGER.error("getColorById error: ",ex);
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
-        } catch (Exception ex) {
-            LOGGER.error("getColorById error: ",ex);
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
-        }
         return response;
     }
 
     @Override
     public Response<RespColor> updateColor(Long id, ReqColor reqColor) {
         Response<RespColor> response = new Response<>();
-        try {
             String name = reqColor.getName();
             if (id == null || name == null){
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Id or name is invalid");
@@ -120,20 +93,12 @@ public class ColorServiceImpl implements ColorService {
             RespColor respColor = colorMapper.toRespColor(color);
             response.setT(respColor);
             response.setStatus(RespStatus.getSuccessMessage());
-        }catch (EshopException ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
-        }
         return response;
     }
 
     @Override
     public Response deleteColor(Long id) {
         Response response = new Response<>();
-        try {
             if (id == null){
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Id is invalid");
             }
@@ -144,13 +109,6 @@ public class ColorServiceImpl implements ColorService {
             color.setActive(EnumAvailableStatus.DEACTIVE.getValue());
             colorRepository.save(color);
             response.setStatus(RespStatus.getSuccessMessage());
-        }catch (EshopException ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
-        }
         return response;
     }
 }

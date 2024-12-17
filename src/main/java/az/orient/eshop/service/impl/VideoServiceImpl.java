@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,9 +28,8 @@ public class VideoServiceImpl implements VideoService {
     private final ProductDetailsRepository productDetailsRepository;
 
     @Override
-    public Response addVideos(List<MultipartFile> files, Long productDetailsId) {
+    public Response addVideos(List<MultipartFile> files, Long productDetailsId) throws IOException {
         Response response = new Response<>();
-        try {
             if (files.isEmpty()) {
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "file is empty");
             }
@@ -49,21 +49,13 @@ public class VideoServiceImpl implements VideoService {
                 productVideoRepository.save(productVideo);
             }
             response.setStatus(RespStatus.getSuccessMessage());
-        } catch (EshopException ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
-        }
-        return response;
+            return response;
     }
 
     @Override
     public Response deleteVideosByProductDetailsId(Long productDetailsId) {
         Response response = new Response<>();
-        try {
-            if (productDetailsId == null) {
+           if (productDetailsId == null) {
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Id is null");
             }
             ProductDetails productDetails = productDetailsRepository.findProductDetailsByIdAndActive(productDetailsId, EnumAvailableStatus.ACTIVE.getValue());
@@ -78,21 +70,13 @@ public class VideoServiceImpl implements VideoService {
             productVideoRepository.deactivateProductVideoByProductDetailsId(productDetailsId);
             productVideoRepository.saveAll(videos);
             response.setStatus(RespStatus.getSuccessMessage());
-        } catch (EshopException ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
-        }
         return response;
     }
 
     @Override
     public Response deleteVideo(Long videoId) {
         Response response = new Response<>();
-        try {
-            if (videoId == null) {
+           if (videoId == null) {
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Video id is null");
             }
             ProductVideo productVideo = productVideoRepository.findProductVideoByIdAndActive(videoId, EnumAvailableStatus.ACTIVE.getValue());
@@ -102,21 +86,13 @@ public class VideoServiceImpl implements VideoService {
             productVideo.setActive(EnumAvailableStatus.DEACTIVE.getValue());
             productVideoRepository.save(productVideo);
             response.setStatus(RespStatus.getSuccessMessage());
-        } catch (EshopException ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
-        }
-        return response;
+       return response;
     }
 
     @Override
     public List<ResponseEntity<byte[]>> getVideos(Long productDetailsId) {
         List<ResponseEntity<byte[]>> response = new ArrayList<>();
-        try {
-            if (productDetailsId == null) {
+           if (productDetailsId == null) {
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Id is null");
             }
             ProductDetails productDetails = productDetailsRepository.findProductDetailsByIdAndActive(productDetailsId, EnumAvailableStatus.ACTIVE.getValue());
@@ -130,19 +106,13 @@ public class VideoServiceImpl implements VideoService {
                         .body(productVideo.getData());
                 response.add(responseEntity);
             }
-        } catch (EshopException ex) {
-            ex.printStackTrace();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return response;
+      return response;
     }
 
     @Override
     public ResponseEntity<byte[]> getVideo(Long videoId) {
         ResponseEntity response = null;
-        try {
-            if (videoId == null){
+           if (videoId == null){
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA,"Id is null");
             }
             ProductVideo productVideo= productVideoRepository.findProductVideoByIdAndActive(videoId,EnumAvailableStatus.ACTIVE.getValue());
@@ -152,12 +122,6 @@ public class VideoServiceImpl implements VideoService {
             response = ResponseEntity.ok()
                     .contentType(MediaType.valueOf(productVideo.getFileType()))
                     .body(productVideo.getData());
-        }catch (EshopException ex) {
-            ex.printStackTrace();
-            new  RespStatus(ex.getCode(), ex.getMessage());
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
         return response;
     }
 }

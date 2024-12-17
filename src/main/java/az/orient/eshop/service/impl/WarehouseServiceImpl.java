@@ -26,7 +26,6 @@ public class WarehouseServiceImpl implements WarehouseService {
     @Override
     public Response<RespWarehouse> addWarehouse(ReqWarehouse reqWarehouse) {
         Response<RespWarehouse> response = new Response<>();
-        try {
             String name = reqWarehouse.getName();
             String address = reqWarehouse.getAddress();
             if (name == null || address == null){
@@ -41,20 +40,12 @@ public class WarehouseServiceImpl implements WarehouseService {
             RespWarehouse respWarehouse = warehouseMapper.toRespWarehouse(warehouse);
             response.setT(respWarehouse);
             response.setStatus(RespStatus.getSuccessMessage());
-        } catch (EshopException ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
-        }
         return response;
     }
 
     @Override
     public Response<List<RespWarehouse>> getWarehouseList() {
         Response<List<RespWarehouse>> response = new Response<>();
-        try {
             List<Warehouse> warehouseList = warehouseRepository.findAllByActive(EnumAvailableStatus.ACTIVE.getValue());
             if (warehouseList.isEmpty()){
                 throw new EshopException(ExceptionConstants.WAREHOUSE_NOT_FOUND, "Warehouse not found");
@@ -62,20 +53,12 @@ public class WarehouseServiceImpl implements WarehouseService {
             List<RespWarehouse> respWarehouseList = warehouseMapper.toRespWarehouseList(warehouseList);
             response.setT(respWarehouseList);
             response.setStatus(RespStatus.getSuccessMessage());
-        }catch (EshopException ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
-        }
-        return response;
+       return response;
     }
 
     @Override
     public Response<RespWarehouse> getWarehouseById(Long id) {
         Response<RespWarehouse> response = new Response<>();
-        try {
             if (id == null){
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA,"Id is null");
             }
@@ -86,21 +69,13 @@ public class WarehouseServiceImpl implements WarehouseService {
             RespWarehouse respWarehouse = warehouseMapper.toRespWarehouse(warehouse);
             response.setT(respWarehouse);
             response.setStatus(RespStatus.getSuccessMessage());
-        }catch (EshopException ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
-        }
         return response;
     }
 
     @Override
     public Response<RespWarehouse> updateWarehouse(Long id, ReqWarehouse reqWarehouse) {
         Response<RespWarehouse> response = new Response<>();
-        try {
-            String name = reqWarehouse.getName();
+           String name = reqWarehouse.getName();
             String address = reqWarehouse.getAddress();
             if (id == null || name == null || address == null){
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA,"Invalid request data");
@@ -118,20 +93,12 @@ public class WarehouseServiceImpl implements WarehouseService {
             RespWarehouse respWarehouse = warehouseMapper.toRespWarehouse(warehouse);
             response.setT(respWarehouse);
             response.setStatus(RespStatus.getSuccessMessage());
-        }catch (EshopException ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
-        }
         return response;
     }
 
     @Override
     public Response deleteWarehouse(Long id) {
         Response response = new Response<>();
-        try {
             if (id == null){
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA,"Id id null");
             }
@@ -142,13 +109,6 @@ public class WarehouseServiceImpl implements WarehouseService {
             warehouse.setActive(EnumAvailableStatus.DEACTIVE.getValue());
             warehouseRepository.save(warehouse);
             response.setStatus(RespStatus.getSuccessMessage());
-        }catch (EshopException ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
-        }
         return response;
     }
 }

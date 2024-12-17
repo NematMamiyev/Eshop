@@ -11,7 +11,6 @@ import az.orient.eshop.mapper.WarehouseWorkMapper;
 import az.orient.eshop.repository.OrderStatusRepository;
 import az.orient.eshop.repository.WarehouseWorkRepository;
 import az.orient.eshop.service.WarehouseWorkService;
-import az.orient.eshop.util.Utility;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +28,6 @@ public class WarehouseWorkServiceImpl implements WarehouseWorkService {
     @Override
     public Response<List<RespWareHouseWork>> works() {
         Response<List<RespWareHouseWork>> response = new Response<>();
-        try {
             List<WarehouseWork> warehouseWorkList = warehouseWorkRepository.findALLByActive(EnumAvailableStatus.ACTIVE.getValue());
             if (warehouseWorkList.isEmpty()) {
                 throw new EshopException(ExceptionConstants.WAREHOUSE_WORK_NOT_FOUND, "Warehouse work not found");
@@ -37,20 +35,12 @@ public class WarehouseWorkServiceImpl implements WarehouseWorkService {
             List<RespWareHouseWork> respWareHouseWorkList = warehouseWorkMapper.toRespWarehouseWorkList(warehouseWorkList);
             response.setT(respWareHouseWorkList);
             response.setStatus(RespStatus.getSuccessMessage());
-        } catch (EshopException ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
-        }
-        return response;
+       return response;
     }
 
     @Override
     public Response<RespWareHouseWork> handleWork(Long id) {
         Response<RespWareHouseWork> response = new Response<>();
-        try {
             if (id == null){
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA,"Id is null");
             }
@@ -69,13 +59,6 @@ public class WarehouseWorkServiceImpl implements WarehouseWorkService {
             response.setStatus(RespStatus.getSuccessMessage());
             warehouseWork.setActive(EnumAvailableStatus.DEACTIVE.getValue());
             emailService.sendSimpleEmail(warehouseWork.getOrder().getCustomer().getEmail(), "Mehsul", Email.CONFIRMED.getDescription());
-        } catch (EshopException ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
-        }
         return response;
     }
 }

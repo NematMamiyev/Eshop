@@ -12,7 +12,6 @@ import az.orient.eshop.mapper.CategoryMapper;
 import az.orient.eshop.repository.CategoryRepository;
 import az.orient.eshop.service.CategoryService;
 import lombok.RequiredArgsConstructor;
-import org.mapstruct.Named;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,7 +26,6 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public Response<RespCategory> addCategory(ReqCategory reqCategory) {
         Response<RespCategory> response = new Response<>();
-        try {
             String name= reqCategory.getName();
             if (name == null){
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Name not found");
@@ -41,20 +39,12 @@ public class CategoryServiceImpl implements CategoryService {
             RespCategory respCategory = categoryMapper.toRespCategory(category);
             response.setT(respCategory);
             response.setStatus(RespStatus.getSuccessMessage());
-        }catch (EshopException ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
-        }
         return response;
     }
 
     @Override
     public Response<List<RespCategory>> categoryList() {
         Response<List<RespCategory>> response = new Response<>();
-        try {
             List<Category> categoryList = categoryRepository.findAllByActive(EnumAvailableStatus.ACTIVE.getValue());
             if (categoryList.isEmpty()){
                 throw new EshopException(ExceptionConstants.CATEGORY_NOT_FOUND, "Category not found");
@@ -62,20 +52,12 @@ public class CategoryServiceImpl implements CategoryService {
             List<RespCategory> respBrandList = categoryMapper.toRespCategoryList(categoryList);
             response.setT(respBrandList);
             response.setStatus(RespStatus.getSuccessMessage());
-        }catch (EshopException ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
-        }
         return response;
     }
 
     @Override
     public Response<RespCategory> getCategoryById(Long id) {
         Response<RespCategory> response = new Response<>();
-        try {
             if (id == null){
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "id not found");
             }
@@ -83,20 +65,12 @@ public class CategoryServiceImpl implements CategoryService {
             RespCategory respCategory = categoryMapper.toRespCategory(category);
             response.setT(respCategory);
             response.setStatus(RespStatus.getSuccessMessage());
-        }catch (EshopException ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
-        }
         return response;
     }
 
     @Override
     public Response<RespCategory> updateCategory(Long id ,ReqCategory reqCategory) {
         Response<RespCategory> response = new Response<>();
-        try {
             String name = reqCategory.getName();
             if (id == null || name == null){
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Id or name is invalid data");
@@ -111,20 +85,12 @@ public class CategoryServiceImpl implements CategoryService {
             RespCategory respCategory = categoryMapper.toRespCategory(category);
             response.setT(respCategory);
             response.setStatus(RespStatus.getSuccessMessage());
-        }catch (EshopException ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
-        }
         return response;
     }
 
     @Override
     public Response deleteCategory(Long id) {
         Response response = new Response<>();
-        try {
             if (id == null){
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA,"Id is invalid data");
             }
@@ -132,13 +98,6 @@ public class CategoryServiceImpl implements CategoryService {
             category.setActive(EnumAvailableStatus.DEACTIVE.getValue());
             categoryRepository.save(category);
             response.setStatus(RespStatus.getSuccessMessage());
-        }catch (EshopException ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
-        }
         return response;
     }
 

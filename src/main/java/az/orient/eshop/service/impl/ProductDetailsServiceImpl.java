@@ -37,8 +37,6 @@ public class ProductDetailsServiceImpl implements ProductDetailsService {
     @Override
     public Response<RespProductDetails> addProductDetails(ReqProductDetails reqProductDetails) {
         Response<RespProductDetails> response = new Response<>();
-        try {
-
             Long sizeId = reqProductDetails.getSizeId();
             Long colorId = reqProductDetails.getColorId();
             Integer stock = reqProductDetails.getStock();
@@ -68,21 +66,12 @@ public class ProductDetailsServiceImpl implements ProductDetailsService {
             RespProductDetails respProductDetails = productDetailsMapper.toRespProductDetails(productDetails);
             response.setT(respProductDetails);
             response.setStatus(RespStatus.getSuccessMessage());
-        } catch (
-                EshopException ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
-        }
         return response;
     }
 
     @Override
     public Response<RespProductDetails> updateProductDetails(Long id, ReqProductDetails reqProductDetails) {
         Response<RespProductDetails> response = new Response<>();
-        try {
             if (id == null) {
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Id is null");
             }
@@ -111,21 +100,12 @@ public class ProductDetailsServiceImpl implements ProductDetailsService {
             RespProductDetails respProductDetails = productDetailsMapper.toRespProductDetails(productDetails);
             response.setT(respProductDetails);
             response.setStatus(RespStatus.getSuccessMessage());
-        } catch (
-                EshopException ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
-        }
         return response;
     }
 
     @Override
     public Response<List<RespProductDetails>> getProductDetails() {
         Response<List<RespProductDetails>> response = new Response<>();
-        try {
             List<ProductDetails> productDetailsList = productDetailsRepository.findProductDetailsByActive(EnumAvailableStatus.ACTIVE.getValue());
             if (productDetailsList.isEmpty()) {
                 throw new EshopException(ExceptionConstants.PRODUCT_DETAILS_NOT_FOUND, "Product Details not found");
@@ -133,20 +113,12 @@ public class ProductDetailsServiceImpl implements ProductDetailsService {
             List<RespProductDetails> respProductDetailsList =productDetailsMapper.toRespProductDetailsList(productDetailsList);
             response.setT(respProductDetailsList);
             response.setStatus(RespStatus.getSuccessMessage());
-        } catch (EshopException ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
-        }
         return response;
     }
 
     @Override
     public Response<RespProductDetails> getProductDetailsById(Long id) {
         Response<RespProductDetails> response = new Response<>();
-        try {
             if (id == null) {
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Product details id is null");
             }
@@ -157,20 +129,12 @@ public class ProductDetailsServiceImpl implements ProductDetailsService {
             RespProductDetails respProductDetails = productDetailsMapper.toRespProductDetails(productDetails);
             response.setT(respProductDetails);
             response.setStatus(RespStatus.getSuccessMessage());
-        } catch (EshopException ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
-        }
         return response;
     }
 
     @Override
     public Response deleteProductDetails(Long id) {
         Response response = new Response<>();
-        try {
             if (id == null) {
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Product details id is null");
             }
@@ -181,13 +145,6 @@ public class ProductDetailsServiceImpl implements ProductDetailsService {
             productDetails.setActive(EnumAvailableStatus.DEACTIVE.getValue());
             productDetailsRepository.save(productDetails);
             response.setStatus(RespStatus.getSuccessMessage());
-        } catch (EshopException ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
-        }
         return response;
     }
 

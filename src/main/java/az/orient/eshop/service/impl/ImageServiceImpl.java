@@ -17,8 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 
@@ -29,9 +29,8 @@ public class ImageServiceImpl implements ImageService {
     private final ProductDetailsRepository productDetailsRepository;
 
     @Override
-    public Response addImages(List<MultipartFile> files, Long productDetailsId) {
+    public Response addImages(List<MultipartFile> files, Long productDetailsId) throws IOException {
         Response response = new Response<>();
-        try {
             if (files.isEmpty()) {
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "file is empty");
             }
@@ -51,20 +50,12 @@ public class ImageServiceImpl implements ImageService {
                 productImageRepository.save(productImage);
             }
             response.setStatus(RespStatus.getSuccessMessage());
-        } catch (EshopException ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
-        }
         return response;
     }
 
     @Override
     public Response deleteImagesByProductDetailsId(Long productDetailsId) {
         Response response = new Response<>();
-        try {
             if (productDetailsId == null) {
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Id is null");
             }
@@ -79,20 +70,12 @@ public class ImageServiceImpl implements ImageService {
             productImageRepository.deactivateProductImagesByProductDetailsId(productDetailsId);
             productImageRepository.saveAll(images);
             response.setStatus(RespStatus.getSuccessMessage());
-        } catch (EshopException ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
-        }
         return response;
     }
 
     @Override
     public Response deleteImage(Long imageId) {
         Response response = new Response<>();
-        try {
             if (imageId == null) {
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Image id is null");
             }
@@ -104,20 +87,12 @@ public class ImageServiceImpl implements ImageService {
             productImage.setActive(EnumAvailableStatus.DEACTIVE.getValue());
             productImageRepository.save(productImage);
             response.setStatus(RespStatus.getSuccessMessage());
-        } catch (EshopException ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
-        }
         return response;
     }
 
     @Override
     public List<ResponseEntity<byte[]>> getImages(Long productDetailsId) {
         List<ResponseEntity<byte[]>> response = new ArrayList<>();
-        try {
             if (productDetailsId == null) {
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Id is null");
             }
@@ -132,18 +107,12 @@ public class ImageServiceImpl implements ImageService {
                         .body(productImage.getData());
                 response.add(responseEntity);
             }
-        } catch (EshopException ex) {
-            ex.printStackTrace();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
         return response;
     }
 
     @Override
     public ResponseEntity<byte[]> getImage(Long imageId) {
         ResponseEntity response = null;
-        try {
             if (imageId == null){
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA,"Id is null");
             }
@@ -154,12 +123,6 @@ public class ImageServiceImpl implements ImageService {
             response = ResponseEntity.ok()
                     .contentType(MediaType.valueOf(productImage.getFileType()))
                     .body(productImage.getData());
-        }catch (EshopException ex) {
-            ex.printStackTrace();
-            new  RespStatus(ex.getCode(), ex.getMessage());
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
         return response;
     }
 }

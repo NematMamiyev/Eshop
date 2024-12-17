@@ -25,7 +25,6 @@ public class OrderStatusServiceImpl implements OrderStatusService {
     @Override
     public Response<List<RespOrderStatus>> getOrderStatusList(Long orderId) {
         Response<List<RespOrderStatus>> response = new Response<>();
-        try {
             if (orderId == null){
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA,"Order id is null");
             }
@@ -37,13 +36,6 @@ public class OrderStatusServiceImpl implements OrderStatusService {
             List<RespOrderStatus> respOrderStatusList = orderStatusMapper.toRespOrderStatusList(orderStatusList);
             response.setT(respOrderStatusList);
             response.setStatus(RespStatus.getSuccessMessage());
-        }catch (EshopException ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            response.setStatus(new RespStatus(ExceptionConstants.INTERNAL_EXCEPTION, "Internal exception"));
-        }
         return response;
     }
 }
