@@ -1,10 +1,12 @@
 package az.orient.eshop.enums;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 
 @Getter
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 public enum Status {
     ORDERED("Sifariş verildi"),
     CONFIRMED("Sifariş təsdiqləndi"),
@@ -15,6 +17,6 @@ public enum Status {
     CANCELLED("Ləğv edildi"),
     PAYMENT_FAILED("Ödəniş uğursuz");
 
-    private final String description;
+    private  String description;
 
 }

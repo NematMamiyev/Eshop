@@ -8,4 +8,7 @@ import java.util.List;
 public interface ShelfRepository extends JpaRepository<Shelf, Long> {
     List<Shelf> findAllByActive(Integer active);
     Shelf findByIdAndActive(Long id,Integer active);
+    boolean existsShelfByIdAndActive(Long id,Integer active);
+    boolean existsShelfByNameAndActive(String name, Integer active);
+    boolean existsShelfByNameAndActiveAndIdNot(String name, Integer active, Long id);
 }

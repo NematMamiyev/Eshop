@@ -13,13 +13,11 @@ public class RedisConfiguration {
 
     @Bean
     public LettuceConnectionFactory redisConnectionFactory() {
-        // Redis bağlantısı üçün LettuceConnectionFactory yaradılır
         return new LettuceConnectionFactory();
     }
 
     @Bean
     public RedisTemplate<String, String> redisTemplate() {
-        // RedisTemplate tipini String olaraq təyin edirik
         RedisTemplate<String, String> template = new RedisTemplate<>();
         template.setConnectionFactory(redisConnectionFactory());
         return template;

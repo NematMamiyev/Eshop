@@ -29,86 +29,68 @@ public class ColorServiceImpl implements ColorService {
     @Override
     public Response<RespColor> addColor(ReqColor reqColor) {
         Response<RespColor> response = new Response<>();
-            String name = reqColor.getName();
-            if (name == null) {
-                throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "name is invalid");
-            }
-            boolean uniqueName = colorRepository.existsColorByNameAndActive(name,EnumAvailableStatus.ACTIVE.getValue());
-            if (uniqueName){
-                throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Name available in the database");
-            }
-            Color color = colorMapper.toColor(reqColor);
-            colorRepository.save(color);
-            RespColor respColor = colorMapper.toRespColor(color);
-            response.setT(respColor);
-            response.setStatus(RespStatus.getSuccessMessage());
+        boolean uniqueName = colorRepository.existsColorByNameAndActive(reqColor.getName(), EnumAvailableStatus.ACTIVE.getValue());
+        if (uniqueName) {
+            throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Name available in the database");
+        }
+        Color color = colorMapper.toColor(reqColor);
+        colorRepository.save(color);
+        response.setT(colorMapper.toRespColor(color));
+        response.setStatus(RespStatus.getSuccessMessage());
         return response;
     }
 
     @Override
     public Response<List<RespColor>> colorList() {
         Response<List<RespColor>> response = new Response<>();
-            List<Color> colorList = colorRepository.findAllByActive(EnumAvailableStatus.ACTIVE.getValue());
-            if (colorList.isEmpty()){
-                throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Invalid request data");
-            }
-            List<RespColor> respColorList = colorMapper.toRespColorList(colorList);
-            response.setT(respColorList);
-            response.setStatus(RespStatus.getSuccessMessage());
+        List<Color> colorList = colorRepository.findAllByActive(EnumAvailableStatus.ACTIVE.getValue());
+        if (colorList.isEmpty()) {
+            throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Invalid request data");
+        }
+        response.setT(colorMapper.toRespColorList(colorList));
+        response.setStatus(RespStatus.getSuccessMessage());
         return response;
     }
 
     @Override
     public Response<RespColor> getColorById(Long id) {
         Response<RespColor> response = new Response<>();
-            LOGGER.info("getColorById request: {}", id);
-            if (id == null){
-                throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Id not found");
-            }
-            Color color = colorRepository.findByIdAndActive(id ,EnumAvailableStatus.ACTIVE.getValue());
-            if (color == null){
-                throw new EshopException(ExceptionConstants.COLOR_NOT_FOUND, "Color not found");
-            }
-            RespColor respColor = colorMapper.toRespColor(color);
-            response.setT(respColor);
-            response.setStatus(RespStatus.getSuccessMessage());
-            LOGGER.info("getColorById response: {}", response);
+        LOGGER.info("getColorById request: {}", id);
+        Color color = getColor(id);
+        response.setT(colorMapper.toRespColor(color));
+        response.setStatus(RespStatus.getSuccessMessage());
+        LOGGER.info("getColorById response: {}", response);
         return response;
     }
 
     @Override
     public Response<RespColor> updateColor(Long id, ReqColor reqColor) {
         Response<RespColor> response = new Response<>();
-            String name = reqColor.getName();
-            if (id == null || name == null){
-                throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Id or name is invalid");
-            }
-            boolean uniqueName = colorRepository.existsColorByNameAndActiveAndIdNot(name,EnumAvailableStatus.ACTIVE.getValue(), id);
-            if (uniqueName){
-                throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Name available in the database");
-            }
-            Color color = colorRepository.findByIdAndActive(id,EnumAvailableStatus.ACTIVE.getValue());
-            colorMapper.updateColorFromReqColor(color,reqColor);
-            colorRepository.save(color);
-            RespColor respColor = colorMapper.toRespColor(color);
-            response.setT(respColor);
-            response.setStatus(RespStatus.getSuccessMessage());
+        boolean uniqueName = colorRepository.existsColorByNameAndActiveAndIdNot(reqColor.getName(), EnumAvailableStatus.ACTIVE.getValue(), id);
+        if (uniqueName) {
+            throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Name available in the database");
+        }
+        Color color = getColor(id);
+        colorMapper.updateColorFromReqColor(color, reqColor);
+        colorRepository.save(color);
+        response.setT(colorMapper.toRespColor(color));
+        response.setStatus(RespStatus.getSuccessMessage());
         return response;
     }
 
     @Override
-    public Response deleteColor(Long id) {
-        Response response = new Response<>();
-            if (id == null){
-                throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Id is invalid");
-            }
-            Color color = colorRepository.findByIdAndActive(id,EnumAvailableStatus.ACTIVE.getValue());
-            if (color == null){
-                throw new EshopException(ExceptionConstants.COLOR_NOT_FOUND, "Color not found");
-            }
-            color.setActive(EnumAvailableStatus.DEACTIVE.getValue());
-            colorRepository.save(color);
-            response.setStatus(RespStatus.getSuccessMessage());
-        return response;
+    public RespStatus deleteColor(Long id) {
+        Color color = getColor(id);
+        color.setActive(EnumAvailableStatus.DEACTIVATED.getValue());
+        colorRepository.save(color);
+        return RespStatus.getSuccessMessage();
+    }
+
+    private Color getColor(Long id) {
+        Color color = colorRepository.findByIdAndActive(id, EnumAvailableStatus.ACTIVE.getValue());
+        if (color == null) {
+            throw new EshopException(ExceptionConstants.COLOR_NOT_FOUND, "Color not found");
+        }
+        return color;
     }
 }

@@ -1,7 +1,6 @@
 package az.orient.eshop.service.impl;
 
 import az.orient.eshop.dto.response.RespStatus;
-import az.orient.eshop.dto.response.Response;
 import az.orient.eshop.entity.ProductDetails;
 import az.orient.eshop.entity.ProductImage;
 import az.orient.eshop.enums.EnumAvailableStatus;
@@ -29,13 +28,9 @@ public class ImageServiceImpl implements ImageService {
     private final ProductDetailsRepository productDetailsRepository;
 
     @Override
-    public Response addImages(List<MultipartFile> files, Long productDetailsId) throws IOException {
-        Response response = new Response<>();
+    public RespStatus addImages(List<MultipartFile> files, Long productDetailsId) throws IOException {
             if (files.isEmpty()) {
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "file is empty");
-            }
-            if (productDetailsId == null) {
-                throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Id is null");
             }
             ProductDetails productDetails = productDetailsRepository.findProductDetailsByIdAndActive(productDetailsId, EnumAvailableStatus.ACTIVE.getValue());
             if (productDetails == null) {
@@ -49,16 +44,11 @@ public class ImageServiceImpl implements ImageService {
                 ProductImage productImage = new ProductImage(fileName, file.getContentType(), file.getBytes(), productDetails);
                 productImageRepository.save(productImage);
             }
-            response.setStatus(RespStatus.getSuccessMessage());
-        return response;
+        return RespStatus.getSuccessMessage();
     }
 
     @Override
-    public Response deleteImagesByProductDetailsId(Long productDetailsId) {
-        Response response = new Response<>();
-            if (productDetailsId == null) {
-                throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Id is null");
-            }
+    public RespStatus deleteImagesByProductDetailsId(Long productDetailsId) {
             ProductDetails productDetails = productDetailsRepository.findProductDetailsByIdAndActive(productDetailsId, EnumAvailableStatus.ACTIVE.getValue());
             if (productDetails == null) {
                 throw new EshopException(ExceptionConstants.PRODUCT_DETAILS_NOT_FOUND, "Product details not found");
@@ -69,33 +59,23 @@ public class ImageServiceImpl implements ImageService {
             }
             productImageRepository.deactivateProductImagesByProductDetailsId(productDetailsId);
             productImageRepository.saveAll(images);
-            response.setStatus(RespStatus.getSuccessMessage());
-        return response;
+        return RespStatus.getSuccessMessage();
     }
 
     @Override
-    public Response deleteImage(Long imageId) {
-        Response response = new Response<>();
-            if (imageId == null) {
-                throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Image id is null");
-            }
-
+    public RespStatus deleteImage(Long imageId) {
             ProductImage productImage = productImageRepository.findProductImageByIdAndActive(imageId, EnumAvailableStatus.ACTIVE.getValue());
             if (productImage == null) {
                 throw new EshopException(ExceptionConstants.PRODUCT_IMAGE_NOT_FOUND, "Image not found");
             }
-            productImage.setActive(EnumAvailableStatus.DEACTIVE.getValue());
+            productImage.setActive(EnumAvailableStatus.DEACTIVATED.getValue());
             productImageRepository.save(productImage);
-            response.setStatus(RespStatus.getSuccessMessage());
-        return response;
+        return RespStatus.getSuccessMessage();
     }
 
     @Override
     public List<ResponseEntity<byte[]>> getImages(Long productDetailsId) {
         List<ResponseEntity<byte[]>> response = new ArrayList<>();
-            if (productDetailsId == null) {
-                throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Id is null");
-            }
             ProductDetails productDetails = productDetailsRepository.findProductDetailsByIdAndActive(productDetailsId, EnumAvailableStatus.ACTIVE.getValue());
             if (productDetails == null) {
                 throw new EshopException(ExceptionConstants.PRODUCT_DETAILS_NOT_FOUND, "Product details not found");
@@ -112,17 +92,12 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     public ResponseEntity<byte[]> getImage(Long imageId) {
-        ResponseEntity response = null;
-            if (imageId == null){
-                throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA,"Id is null");
-            }
             ProductImage productImage = productImageRepository.findProductImageByIdAndActive(imageId,EnumAvailableStatus.ACTIVE.getValue());
             if (productImage == null){
                 throw new EshopException(ExceptionConstants.PRODUCT_IMAGE_NOT_FOUND,"Product Image Not found");
             }
-            response = ResponseEntity.ok()
-                    .contentType(MediaType.valueOf(productImage.getFileType()))
-                    .body(productImage.getData());
-        return response;
+        return ResponseEntity.ok()
+                .contentType(MediaType.valueOf(productImage.getFileType()))
+                .body(productImage.getData());
     }
 }

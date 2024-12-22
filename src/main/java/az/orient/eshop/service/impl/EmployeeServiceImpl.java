@@ -6,7 +6,6 @@ import az.orient.eshop.dto.response.RespStatus;
 import az.orient.eshop.dto.response.Response;
 import az.orient.eshop.entity.Employee;
 import az.orient.eshop.enums.EnumAvailableStatus;
-import az.orient.eshop.enums.Role;
 import az.orient.eshop.exception.EshopException;
 import az.orient.eshop.exception.ExceptionConstants;
 import az.orient.eshop.mapper.EmployeeMapper;
@@ -26,24 +25,14 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public Response<RespEmployee> addEmployee(ReqEmployee reqEmployee) {
         Response<RespEmployee> response = new Response<>();
-        String name = reqEmployee.getName();
-        String surname = reqEmployee.getSurname();
-        String email = reqEmployee.getEmail();
-        String phone = reqEmployee.getPhone();
-        String password = reqEmployee.getPassword();
-        Role.fromValue(reqEmployee.getRole().getValue());
-        if (name == null || surname == null || email == null || phone == null || password == null) {
-            throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Invalid request data");
-        }
-        boolean uniqueEmail = employeeRepository.existsEmployeeByEmailIgnoreCaseAndActive(email, EnumAvailableStatus.ACTIVE.getValue());
-        boolean uniquePhone = employeeRepository.existsEmployeeByPhoneIgnoreCaseAndActive(phone, EnumAvailableStatus.ACTIVE.getValue());
+        boolean uniqueEmail = employeeRepository.existsEmployeeByEmailIgnoreCaseAndActive(reqEmployee.getEmail(), EnumAvailableStatus.ACTIVE.getValue());
+        boolean uniquePhone = employeeRepository.existsEmployeeByPhoneIgnoreCaseAndActive(reqEmployee.getPhone(), EnumAvailableStatus.ACTIVE.getValue());
         if (uniquePhone || uniqueEmail) {
             throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Email or phone number available in the database");
         }
         Employee employee = employeeMapper.toEmployee(reqEmployee);
         employeeRepository.save(employee);
-        RespEmployee respEmployee = employeeMapper.toRespEmployee(employee);
-        response.setT(respEmployee);
+        response.setT(employeeMapper.toRespEmployee(employee));
         response.setStatus(RespStatus.getSuccessMessage());
         return response;
     }
@@ -55,8 +44,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (employeeList.isEmpty()) {
             throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Customer list empty");
         }
-        List<RespEmployee> respEmployeeList = employeeMapper.toRespEmployeeList(employeeList);
-        response.setT(respEmployeeList);
+        response.setT(employeeMapper.toRespEmployeeList(employeeList));
         response.setStatus(RespStatus.getSuccessMessage());
         return response;
     }
@@ -64,15 +52,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public Response<RespEmployee> getEmployeeById(Long id) {
         Response<RespEmployee> response = new Response<>();
-        if (id == null) {
-            throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Id not found");
-        }
-        Employee employee = employeeRepository.findEmployeeByIdAndActive(id, EnumAvailableStatus.ACTIVE.getValue());
-        if (employee == null) {
-            throw new EshopException(ExceptionConstants.EMPLOYEE_NOT_FOUND, "Employee not found");
-        }
-        RespEmployee respEmployee = employeeMapper.toRespEmployee(employee);
-        response.setT(respEmployee);
+        Employee employee = getEmployee(id);
+        response.setT(employeeMapper.toRespEmployee(employee));
         response.setStatus(RespStatus.getSuccessMessage());
         return response;
     }
@@ -80,45 +61,32 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public Response<RespEmployee> updateEmployee(Long id, ReqEmployee reqEmployee) {
         Response<RespEmployee> response = new Response<>();
-        String name = reqEmployee.getName();
-        String surname = reqEmployee.getSurname();
-        String email = reqEmployee.getEmail();
-        String phone = reqEmployee.getPhone();
-        String password = reqEmployee.getPassword();
-        Role.fromValue(reqEmployee.getRole().getValue());
-        if (id == null || name == null || surname == null || email == null || phone == null || password == null) {
-            throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Invalid request data");
-        }
-        Employee employee = employeeRepository.findEmployeeByIdAndActive(id, EnumAvailableStatus.ACTIVE.getValue());
-        if (employee == null) {
-            throw new EshopException(ExceptionConstants.EMPLOYEE_NOT_FOUND, "Employee not found");
-        }
-        boolean uniqueEmail = employeeRepository.existsEmployeeByEmailIgnoreCaseAndActiveAndIdNot(email, EnumAvailableStatus.ACTIVE.getValue(), id);
-        boolean uniquePhone = employeeRepository.existsEmployeeByPhoneIgnoreCaseAndActiveAndIdNot(phone, EnumAvailableStatus.ACTIVE.getValue(), id);
+        Employee employee = getEmployee(id);
+        boolean uniqueEmail = employeeRepository.existsEmployeeByEmailIgnoreCaseAndActiveAndIdNot(reqEmployee.getEmail(), EnumAvailableStatus.ACTIVE.getValue(), id);
+        boolean uniquePhone = employeeRepository.existsEmployeeByPhoneIgnoreCaseAndActiveAndIdNot(reqEmployee.getPhone(), EnumAvailableStatus.ACTIVE.getValue(), id);
         if (uniqueEmail || uniquePhone) {
             throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Email or phone number available in the database");
         }
         employeeMapper.updateEmployeeFromReqEmployee(employee, reqEmployee);
         employeeRepository.save(employee);
-        RespEmployee respEmployee = employeeMapper.toRespEmployee(employee);
-        response.setT(respEmployee);
+        response.setT(employeeMapper.toRespEmployee(employee));
         response.setStatus(RespStatus.getSuccessMessage());
         return response;
     }
 
     @Override
-    public Response deleteEmployee(Long id) {
-        Response response = new Response<>();
-        if (id == null) {
-            throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Id not found");
-        }
+    public RespStatus deleteEmployee(Long id) {
+        Employee employee = getEmployee(id);
+        employee.setActive(EnumAvailableStatus.DEACTIVATED.getValue());
+        employeeRepository.save(employee);
+        return RespStatus.getSuccessMessage();
+    }
+
+    private Employee getEmployee(Long id) {
         Employee employee = employeeRepository.findEmployeeByIdAndActive(id, EnumAvailableStatus.ACTIVE.getValue());
         if (employee == null) {
             throw new EshopException(ExceptionConstants.EMPLOYEE_NOT_FOUND, "Employee not found");
         }
-        employee.setActive(EnumAvailableStatus.DEACTIVE.getValue());
-        employeeRepository.save(employee);
-        response.setStatus(RespStatus.getSuccessMessage());
-        return response;
+        return employee;
     }
 }

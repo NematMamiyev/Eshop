@@ -1,6 +1,6 @@
 package az.orient.eshop.service;
 
-import az.orient.eshop.dto.response.Response;
+import az.orient.eshop.dto.response.RespStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -8,11 +8,11 @@ import java.io.IOException;
 import java.util.List;
 
 public interface VideoService {
-    Response addVideos(List<MultipartFile> files, Long productDetailsId) throws IOException;
+    RespStatus addVideos(List<MultipartFile> files, Long productDetailsId) throws IOException;
 
-    Response deleteVideosByProductDetailsId(Long productDetailsId);
+    RespStatus deleteVideosByProductDetailsId(Long productDetailsId);
 
-    Response deleteVideo(Long videoId);
+    RespStatus deleteVideo(Long videoId);
 
     List<ResponseEntity<byte[]>> getVideos(Long productDetailsId);
 

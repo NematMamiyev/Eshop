@@ -26,84 +26,64 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public Response<RespCategory> addCategory(ReqCategory reqCategory) {
         Response<RespCategory> response = new Response<>();
-            String name= reqCategory.getName();
-            if (name == null){
-                throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Name not found");
-            }
-            boolean uniqueName = categoryRepository.existsCategoryByNameAndActive(name,EnumAvailableStatus.ACTIVE.getValue());
-            if (uniqueName){
-                throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Name available in the database");
-            }
-            Category category = categoryMapper.toCategory(reqCategory);
-            categoryRepository.save(category);
-            RespCategory respCategory = categoryMapper.toRespCategory(category);
-            response.setT(respCategory);
-            response.setStatus(RespStatus.getSuccessMessage());
+        boolean uniqueName = categoryRepository.existsCategoryByNameAndActive(reqCategory.getName(), EnumAvailableStatus.ACTIVE.getValue());
+        if (uniqueName) {
+            throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Name available in the database");
+        }
+        Category category = categoryMapper.toCategory(reqCategory);
+        categoryRepository.save(category);
+        response.setT(categoryMapper.toRespCategory(category));
+        response.setStatus(RespStatus.getSuccessMessage());
         return response;
     }
 
     @Override
     public Response<List<RespCategory>> categoryList() {
         Response<List<RespCategory>> response = new Response<>();
-            List<Category> categoryList = categoryRepository.findAllByActive(EnumAvailableStatus.ACTIVE.getValue());
-            if (categoryList.isEmpty()){
-                throw new EshopException(ExceptionConstants.CATEGORY_NOT_FOUND, "Category not found");
-            }
-            List<RespCategory> respBrandList = categoryMapper.toRespCategoryList(categoryList);
-            response.setT(respBrandList);
-            response.setStatus(RespStatus.getSuccessMessage());
+        List<Category> categoryList = categoryRepository.findAllByActive(EnumAvailableStatus.ACTIVE.getValue());
+        if (categoryList.isEmpty()) {
+            throw new EshopException(ExceptionConstants.CATEGORY_NOT_FOUND, "Category not found");
+        }
+        response.setT(categoryMapper.toRespCategoryList(categoryList));
+        response.setStatus(RespStatus.getSuccessMessage());
         return response;
     }
 
     @Override
     public Response<RespCategory> getCategoryById(Long id) {
         Response<RespCategory> response = new Response<>();
-            if (id == null){
-                throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "id not found");
-            }
-            Category category = getCategory(id);
-            RespCategory respCategory = categoryMapper.toRespCategory(category);
-            response.setT(respCategory);
-            response.setStatus(RespStatus.getSuccessMessage());
+        Category category = getCategory(id);
+        response.setT(categoryMapper.toRespCategory(category));
+        response.setStatus(RespStatus.getSuccessMessage());
         return response;
     }
 
     @Override
-    public Response<RespCategory> updateCategory(Long id ,ReqCategory reqCategory) {
+    public Response<RespCategory> updateCategory(Long id, ReqCategory reqCategory) {
         Response<RespCategory> response = new Response<>();
-            String name = reqCategory.getName();
-            if (id == null || name == null){
-                throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Id or name is invalid data");
-            }
-            Category category = getCategory(id);
-            boolean uniqueName = categoryRepository.existsCategoryByNameAndActiveAndIdNot(name,EnumAvailableStatus.ACTIVE.getValue(), id);
-            if (uniqueName){
-                throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Name available in the database");
-            }
-            categoryMapper.updateCategoryFromReqCategory(category,reqCategory);
-            categoryRepository.save(category);
-            RespCategory respCategory = categoryMapper.toRespCategory(category);
-            response.setT(respCategory);
-            response.setStatus(RespStatus.getSuccessMessage());
+        Category category = getCategory(id);
+        boolean uniqueName = categoryRepository.existsCategoryByNameAndActiveAndIdNot(reqCategory.getName(), EnumAvailableStatus.ACTIVE.getValue(), id);
+        if (uniqueName) {
+            throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Name available in the database");
+        }
+        categoryMapper.updateCategoryFromReqCategory(category, reqCategory);
+        categoryRepository.save(category);
+        response.setT(categoryMapper.toRespCategory(category));
+        response.setStatus(RespStatus.getSuccessMessage());
         return response;
     }
 
     @Override
-    public Response deleteCategory(Long id) {
-        Response response = new Response<>();
-            if (id == null){
-                throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA,"Id is invalid data");
-            }
-            Category category = getCategory(id);
-            category.setActive(EnumAvailableStatus.DEACTIVE.getValue());
-            categoryRepository.save(category);
-            response.setStatus(RespStatus.getSuccessMessage());
-        return response;
+    public RespStatus deleteCategory(Long id) {
+        Category category = getCategory(id);
+        category.setActive(EnumAvailableStatus.DEACTIVATED.getValue());
+        categoryRepository.save(category);
+        return RespStatus.getSuccessMessage();
     }
 
-    public Category getCategory(Long categoryId){
+    public Category getCategory(Long categoryId) {
         Category category = categoryRepository.findByIdAndActive(categoryId, EnumAvailableStatus.ACTIVE.getValue());
-        if (category == null){
+        if (category == null) {
             throw new EshopException(ExceptionConstants.CATEGORY_NOT_FOUND, "Category not found");
         }
         return category;

@@ -1,10 +1,7 @@
 package az.orient.eshop.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
@@ -12,8 +9,9 @@ import org.hibernate.annotations.DynamicInsert;
 import java.util.Date;
 
 @Entity
-@Table(name = "shelf_product")
-@Data
+@Table(name = "shelf_product_details")
+@Setter
+@Getter
 @DynamicInsert
 @Builder
 @NoArgsConstructor
@@ -29,9 +27,6 @@ public class ShelfProductDetails {
     @ManyToOne
     @JoinColumn(name = "product_details_id")
     private ProductDetails productDetails;
-    @ManyToOne
-    @JoinColumn(name = "warehouse_id")
-    private Warehouse warehouse;
     @CreationTimestamp
     private Date dataDate;
     @ColumnDefault(value = "1")

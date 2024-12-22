@@ -1,6 +1,8 @@
 package az.orient.eshop.service.impl;
 
-import az.orient.eshop.dto.response.*;
+import az.orient.eshop.dto.response.RespOrderStatus;
+import az.orient.eshop.dto.response.RespStatus;
+import az.orient.eshop.dto.response.Response;
 import az.orient.eshop.entity.Order;
 import az.orient.eshop.entity.OrderStatus;
 import az.orient.eshop.enums.EnumAvailableStatus;
@@ -12,6 +14,7 @@ import az.orient.eshop.repository.OrderStatusRepository;
 import az.orient.eshop.service.OrderStatusService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 @Service
@@ -25,17 +28,13 @@ public class OrderStatusServiceImpl implements OrderStatusService {
     @Override
     public Response<List<RespOrderStatus>> getOrderStatusList(Long orderId) {
         Response<List<RespOrderStatus>> response = new Response<>();
-            if (orderId == null){
-                throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA,"Order id is null");
-            }
-            Order order = orderRepository.findOrderByIdAndActive(orderId, EnumAvailableStatus.ACTIVE.getValue());
-            if (order == null){
-                throw new EshopException(ExceptionConstants.ORDER_NOT_FOUND,"Order not found");
-            }
-            List<OrderStatus> orderStatusList = orderStatusRepository.findOrderStatusByOrderIdAndActive(orderId,EnumAvailableStatus.ACTIVE.getValue());
-            List<RespOrderStatus> respOrderStatusList = orderStatusMapper.toRespOrderStatusList(orderStatusList);
-            response.setT(respOrderStatusList);
-            response.setStatus(RespStatus.getSuccessMessage());
+        Order order = orderRepository.findOrderByIdAndActive(orderId, EnumAvailableStatus.ACTIVE.getValue());
+        if (order == null) {
+            throw new EshopException(ExceptionConstants.ORDER_NOT_FOUND, "Order not found");
+        }
+        List<OrderStatus> orderStatusList = orderStatusRepository.findOrderStatusByOrderIdAndActive(orderId, EnumAvailableStatus.ACTIVE.getValue());
+        response.setT(orderStatusMapper.toRespOrderStatusList(orderStatusList));
+        response.setStatus(RespStatus.getSuccessMessage());
         return response;
     }
 }

@@ -1,9 +1,7 @@
 package az.orient.eshop.mapper;
 
 import az.orient.eshop.dto.response.RespOrder;
-import az.orient.eshop.dto.response.RespProductDetails;
 import az.orient.eshop.entity.Order;
-import az.orient.eshop.entity.ProductDetails;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

@@ -5,7 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface CustomerRepository extends JpaRepository<Customer, Long> {
+public interface
+CustomerRepository extends JpaRepository<Customer, Long> {
 
     boolean existsCustomerByEmailIgnoreCaseAndActiveAndIdNot(String email, Integer active, Long id);
 
@@ -14,6 +15,8 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
     boolean existsCustomerByEmailIgnoreCaseAndActive(String email, Integer active);
 
     boolean existsCustomerByPhoneIgnoreCaseAndActive(String phone, Integer active);
+
+    boolean existsCustomerByIdAndActive(Long id, Integer active);
 
     List<Customer> findAllByActive(Integer active);
 

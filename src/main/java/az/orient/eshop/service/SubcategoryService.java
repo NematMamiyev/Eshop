@@ -1,6 +1,7 @@
 package az.orient.eshop.service;
 
 import az.orient.eshop.dto.request.ReqSubcategory;
+import az.orient.eshop.dto.response.RespStatus;
 import az.orient.eshop.dto.response.RespSubcategory;
 import az.orient.eshop.dto.response.Response;
 
@@ -15,5 +16,5 @@ public interface SubcategoryService{
 
     Response<RespSubcategory> updateSubcategory(Long id, ReqSubcategory reqSubcategory);
 
-    Response deleteSubcategory(Long id);
+    RespStatus deleteSubcategory(Long id);
 }

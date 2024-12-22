@@ -2,6 +2,7 @@ package az.orient.eshop.service;
 
 import az.orient.eshop.dto.request.ReqSize;
 import az.orient.eshop.dto.response.RespSize;
+import az.orient.eshop.dto.response.RespStatus;
 import az.orient.eshop.dto.response.Response;
 
 import java.util.List;
@@ -15,5 +16,5 @@ public interface SizeService {
 
     Response<RespSize> updateSize(Long id, ReqSize reqSize);
 
-    Response deleteSize(Long id);
+    RespStatus deleteSize(Long id);
 }

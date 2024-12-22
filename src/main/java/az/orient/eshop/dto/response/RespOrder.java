@@ -1,6 +1,5 @@
 package az.orient.eshop.dto.response;
 
-import az.orient.eshop.entity.Product;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

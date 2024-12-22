@@ -1,9 +1,9 @@
 package az.orient.eshop.exception;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-@Data
+import lombok.*;
+
+@Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 public class EshopException extends RuntimeException{

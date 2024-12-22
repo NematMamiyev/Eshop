@@ -2,12 +2,13 @@ package az.orient.eshop.controller;
 
 import az.orient.eshop.dto.request.ReqBrand;
 import az.orient.eshop.dto.response.RespBrand;
+import az.orient.eshop.dto.response.RespStatus;
 import az.orient.eshop.dto.response.Response;
 import az.orient.eshop.service.BrandService;
+import az.orient.eshop.validation.BrandActive;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,7 +30,7 @@ public class BrandController {
     }
 
     @GetMapping("/{id}")
-    public Response<RespBrand> getBrandById(@PathVariable Long id){
+    public Response<RespBrand> getBrandById(@PathVariable @NotNull(message = "Id is required") Long id){
         return brandService.getBrandById(id);
     }
 
@@ -39,7 +40,7 @@ public class BrandController {
     }
 
     @DeleteMapping("/{id}")
-    public Response deleteBrand(@PathVariable @NotNull(message = "Id is required") Long id){
+    public RespStatus deleteBrand(@PathVariable @NotNull(message = "Id is required") Long id){
         return brandService.deleteBrand(id);
     }
 }

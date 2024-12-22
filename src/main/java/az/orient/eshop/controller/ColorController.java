@@ -2,8 +2,11 @@ package az.orient.eshop.controller;
 
 import az.orient.eshop.dto.request.ReqColor;
 import az.orient.eshop.dto.response.RespColor;
+import az.orient.eshop.dto.response.RespStatus;
 import az.orient.eshop.dto.response.Response;
 import az.orient.eshop.service.ColorService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,7 +19,7 @@ public class ColorController {
     private final ColorService colorService;
 
     @PostMapping
-    public Response<RespColor> addColor(@RequestBody ReqColor reqColor){
+    public Response<RespColor> addColor(@RequestBody @Valid ReqColor reqColor){
         return colorService.addColor(reqColor);
     }
 
@@ -26,17 +29,17 @@ public class ColorController {
     }
 
     @GetMapping("/{id}")
-    public Response<RespColor> getColorById(@PathVariable Long id){
+    public Response<RespColor> getColorById(@PathVariable @NotNull(message = "Id is required") Long id){
         return colorService.getColorById(id);
     }
 
     @PutMapping("/{id}")
-    public Response<RespColor> updateColor(@PathVariable Long id,@RequestBody ReqColor reqColor){
+    public Response<RespColor> updateColor(@PathVariable @NotNull(message = "Id is required") Long id,@RequestBody @Valid ReqColor reqColor){
         return colorService.updateColor(id, reqColor);
     }
 
     @DeleteMapping("/{id}")
-    public Response deleteColor(@PathVariable Long id){
+    public RespStatus deleteColor(@PathVariable @NotNull(message = "Id is required") Long id){
         return colorService.deleteColor(id);
     }
 }

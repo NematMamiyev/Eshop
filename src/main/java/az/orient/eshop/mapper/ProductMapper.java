@@ -1,9 +1,7 @@
 package az.orient.eshop.mapper;
 
 import az.orient.eshop.dto.request.ReqProduct;
-import az.orient.eshop.dto.request.ReqProductDetails;
 import az.orient.eshop.dto.response.RespProduct;
-import az.orient.eshop.dto.response.RespProductDetails;
 import az.orient.eshop.dto.response.RespProductDetailsForProduct;
 import az.orient.eshop.entity.Product;
 import az.orient.eshop.entity.ProductDetails;

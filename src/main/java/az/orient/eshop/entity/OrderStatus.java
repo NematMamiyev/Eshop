@@ -2,10 +2,7 @@ package az.orient.eshop.entity;
 
 import az.orient.eshop.enums.Status;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
@@ -13,7 +10,8 @@ import org.hibernate.annotations.DynamicInsert;
 import java.util.Date;
 
 @Entity
-@Data
+@Setter
+@Getter
 @Table(name = "order_status")
 @Builder
 @DynamicInsert

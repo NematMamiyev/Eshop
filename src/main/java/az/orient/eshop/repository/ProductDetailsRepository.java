@@ -8,5 +8,5 @@ import java.util.List;
 public interface ProductDetailsRepository extends JpaRepository<ProductDetails,Long> {
     ProductDetails findProductDetailsByIdAndActive(Long productDetailsId, Integer active);
     List<ProductDetails> findProductDetailsByActive(Integer active);
-    List<ProductDetails> findProductDetailsByProductIdAndActive(Long productId,Integer active);
+    boolean existsProductDetailsByIdAndActive(Long productDetailsId, Integer active);
 }

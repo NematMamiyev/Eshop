@@ -17,7 +17,7 @@ public class RespProduct {
     private Long id;
     private String name;
     private String productInformation;
-    private Date expertionDate;
+    private Date expirationDate;
     private Gender gender;
     private RespBrand respBrand;
     private List<RespProductDetailsForProduct> respProductDetailsForProductList;

@@ -11,6 +11,7 @@ import az.orient.eshop.repository.EmployeeRepository;
 import az.orient.eshop.security.CustomUserDetailsService;
 import az.orient.eshop.security.JwtGenerator;
 import az.orient.eshop.security.SecurityConstants;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -33,7 +34,7 @@ public class EmployeeAuthController {
     private final RedisTemplate<String, String> redisTemplate;
 
     @PostMapping("/login")
-    public Response<String> login(@RequestBody LoginRequest loginRequest){
+    public Response<String> login(@RequestBody @Valid LoginRequest loginRequest){
         Response<String> response = new Response<>();
         try {
             Employee employee = employeeRepository.findEmployeeByEmailAndPasswordAndActive(loginRequest.getMail(), loginRequest.getPassword(), EnumAvailableStatus.ACTIVE.getValue());

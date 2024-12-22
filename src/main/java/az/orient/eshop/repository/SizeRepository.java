@@ -11,6 +11,8 @@ public interface SizeRepository extends JpaRepository<Size , Long> {
 
     boolean existsSizeByNameAndActiveAndIdNot(String name, Integer active, Long id);
 
+    boolean existsSizeByIdAndActive(Long id, Integer active);
+
     List<Size> findAllByActive(Integer active);
 
     Size findSizeByIdAndActive(Long id, Integer active);

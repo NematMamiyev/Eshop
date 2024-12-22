@@ -2,6 +2,7 @@ package az.orient.eshop.service;
 
 import az.orient.eshop.dto.request.ReqCategory;
 import az.orient.eshop.dto.response.RespCategory;
+import az.orient.eshop.dto.response.RespStatus;
 import az.orient.eshop.dto.response.Response;
 
 import java.util.List;
@@ -15,5 +16,5 @@ public interface CategoryService {
 
     Response<RespCategory> updateCategory(Long id,ReqCategory reqCategory);
 
-    Response deleteCategory(Long id);
+    RespStatus deleteCategory(Long id);
 }

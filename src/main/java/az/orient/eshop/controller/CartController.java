@@ -2,6 +2,7 @@ package az.orient.eshop.controller;
 
 import az.orient.eshop.dto.request.ReqCart;
 import az.orient.eshop.dto.response.RespCart;
+import az.orient.eshop.dto.response.RespStatus;
 import az.orient.eshop.dto.response.Response;
 import az.orient.eshop.service.CartService;
 import jakarta.validation.Valid;
@@ -23,12 +24,12 @@ public class CartController {
     }
 
     @PostMapping("/add")
-    public Response addCart(@RequestBody @Valid ReqCart reqCart){
+    public RespStatus addCart(@RequestBody @Valid ReqCart reqCart){
         return cartService.addCart(reqCart);
     }
 
     @DeleteMapping("delete")
-    public Response deleteCart(@RequestBody @Valid ReqCart reqCart){
+    public RespStatus deleteCart(@RequestBody @Valid ReqCart reqCart){
         return cartService.deleteCart(reqCart);
     }
 

@@ -1,6 +1,7 @@
 package az.orient.eshop.service;
 
 import az.orient.eshop.dto.request.ReqWarehouse;
+import az.orient.eshop.dto.response.RespStatus;
 import az.orient.eshop.dto.response.RespWarehouse;
 import az.orient.eshop.dto.response.Response;
 
@@ -15,5 +16,5 @@ public interface WarehouseService {
 
     Response<RespWarehouse> updateWarehouse(Long id, ReqWarehouse reqWarehouse);
 
-    Response deleteWarehouse(Long id);
+    RespStatus deleteWarehouse(Long id);
 }

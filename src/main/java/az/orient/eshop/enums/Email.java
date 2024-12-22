@@ -1,9 +1,12 @@
 package az.orient.eshop.enums;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public enum Email {
 
     ORDERED("Məhsul sifariş verildi"),
@@ -15,10 +18,5 @@ public enum Email {
     CANCELLED("Sifarişiniz ləğv edildi"),
     PAYMENT_FAILED("Ödəniş uğursuz");
 
-    private final String description;
-
-    Email(String description) {
-        this.description = description;
-    }
-
+    private  String description;
 }

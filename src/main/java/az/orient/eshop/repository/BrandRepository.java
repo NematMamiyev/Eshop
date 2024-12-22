@@ -8,7 +8,7 @@ import java.util.List;
 public interface BrandRepository extends JpaRepository<Brand, Long> {
   List<Brand> findAllByActive(Integer active);
   Brand findByIdAndActive(Long id,Integer active);
-
+  boolean existsBrandByIdAndActive(Long id,Integer active);
   boolean existsBrandByNameAndActive(String name, Integer active);
   boolean existsBrandByNameAndActiveAndIdNot(String name, Integer active, Long id);
 }
