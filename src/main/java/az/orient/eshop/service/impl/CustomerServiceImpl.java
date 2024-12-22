@@ -8,7 +8,6 @@ import az.orient.eshop.entity.Cart;
 import az.orient.eshop.entity.Customer;
 import az.orient.eshop.entity.Wishlist;
 import az.orient.eshop.enums.EnumAvailableStatus;
-import az.orient.eshop.enums.Gender;
 import az.orient.eshop.exception.EshopException;
 import az.orient.eshop.exception.ExceptionConstants;
 import az.orient.eshop.mapper.CustomerMapper;
@@ -33,17 +32,8 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Response<RespCustomer> addCustomer(ReqCustomer reqCustomer) {
         Response<RespCustomer> response = new Response<>();
-            String name = reqCustomer.getName();
-            String surname = reqCustomer.getSurname();
-            String email = reqCustomer.getEmail();
-            String password = reqCustomer.getPassword();
-            String phone = reqCustomer.getPhone();
-            Gender gender = reqCustomer.getGender();
-            if (name == null || surname == null || email == null || password == null || phone == null || gender == null) {
-                throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Invalid request data");
-            }
-            boolean uniqueEmail = customerRepository.existsCustomerByEmailIgnoreCaseAndActive(email, EnumAvailableStatus.ACTIVE.getValue());
-            boolean uniquePhone = customerRepository.existsCustomerByPhoneIgnoreCaseAndActive(phone, EnumAvailableStatus.ACTIVE.getValue());
+            boolean uniqueEmail = customerRepository.existsCustomerByEmailIgnoreCaseAndActive(reqCustomer.getEmail(), EnumAvailableStatus.ACTIVE.getValue());
+            boolean uniquePhone = customerRepository.existsCustomerByPhoneIgnoreCaseAndActive(reqCustomer.getPhone(), EnumAvailableStatus.ACTIVE.getValue());
             if (uniquePhone || uniqueEmail) {
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Email or phone number available in the database");
             }
@@ -60,8 +50,7 @@ public class CustomerServiceImpl implements CustomerService {
             customer.setCart(cart);
             customer.setWishlist(wishlist);
             customerRepository.save(customer);
-            RespCustomer respCustomer = customerMapper.toRespCustomer(customer);
-            response.setT(respCustomer);
+            response.setT(customerMapper.toRespCustomer(customer));
             response.setStatus(RespStatus.getSuccessMessage());
         return response;
     }
@@ -73,8 +62,7 @@ public class CustomerServiceImpl implements CustomerService {
             if (customerList.isEmpty()) {
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Customer list empty");
             }
-            List<RespCustomer> respCustomerList =customerMapper.toRespCustomerList(customerList);
-            response.setT(respCustomerList);
+            response.setT(customerMapper.toRespCustomerList(customerList));
             response.setStatus(RespStatus.getSuccessMessage());
         return response;
     }
@@ -82,15 +70,8 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Response<RespCustomer> getCustomerById(Long id) {
         Response<RespCustomer> response = new Response<>();
-            if (id == null) {
-                throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Id not found");
-            }
-            Customer customer = customerRepository.findCustomerByIdAndActive(id, EnumAvailableStatus.ACTIVE.getValue());
-            if (customer == null) {
-                throw new EshopException(ExceptionConstants.CUSTOMER_NOT_FOUND, "Customer not found");
-            }
-            RespCustomer respCustomer = customerMapper.toRespCustomer(customer);
-            response.setT(respCustomer);
+            Customer customer = getCustomer(id);
+            response.setT(customerMapper.toRespCustomer(customer));
             response.setStatus(RespStatus.getSuccessMessage());
         return response;
     }
@@ -98,45 +79,32 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Response<RespCustomer> updateCustomer(Long id, ReqCustomer reqCustomer) {
         Response<RespCustomer> response = new Response<>();
-            String name = reqCustomer.getName();
-            String surname = reqCustomer.getSurname();
-            String email = reqCustomer.getEmail();
-            String password = reqCustomer.getPassword();
-            String phone = reqCustomer.getPhone();
-            Gender gender = reqCustomer.getGender();
-            if (id == null || name == null || surname == null || email == null || password == null || phone == null || gender == null) {
-                throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Invalid request data");
-            }
-            Customer customer = customerRepository.findCustomerByIdAndActive(id, EnumAvailableStatus.ACTIVE.getValue());
-            if (customer == null) {
-                throw new EshopException(ExceptionConstants.CUSTOMER_NOT_FOUND, "Customer not found");
-            }
-            boolean uniqueEmail = customerRepository.existsCustomerByEmailIgnoreCaseAndActiveAndIdNot(email, EnumAvailableStatus.ACTIVE.getValue(), id);
-            boolean uniquePhone = customerRepository.existsCustomerByPhoneIgnoreCaseAndActiveAndIdNot(phone, EnumAvailableStatus.ACTIVE.getValue(), id);
+            Customer customer = getCustomer(id);
+            boolean uniqueEmail = customerRepository.existsCustomerByEmailIgnoreCaseAndActiveAndIdNot(reqCustomer.getEmail(), EnumAvailableStatus.ACTIVE.getValue(), id);
+            boolean uniquePhone = customerRepository.existsCustomerByPhoneIgnoreCaseAndActiveAndIdNot(reqCustomer.getPhone(), EnumAvailableStatus.ACTIVE.getValue(), id);
             if (uniquePhone || uniqueEmail) {
                 throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Email or phone number available in the database");
             }
             customerMapper.updateCustomerFromReqCustomer(customer,reqCustomer);
             customerRepository.save(customer);
-            RespCustomer respCustomer = customerMapper.toRespCustomer(customer);
-            response.setT(respCustomer);
+            response.setT(customerMapper.toRespCustomer(customer));
             response.setStatus(RespStatus.getSuccessMessage());
         return response;
     }
 
     @Override
-    public Response deleteCustomer(Long id) {
-        Response response = new Response<>();
-            if (id ==  null){
-                throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA,"Id not found");
-            }
-            Customer customer = customerRepository.findCustomerByIdAndActive(id,EnumAvailableStatus.ACTIVE.getValue());
-            if (customer == null){
-                throw new EshopException(ExceptionConstants.CUSTOMER_NOT_FOUND, "Customer not found");
-            }
-            customer.setActive(EnumAvailableStatus.DEACTIVE.getValue());
+    public RespStatus deleteCustomer(Long id) {
+            Customer customer = getCustomer(id);
+            customer.setActive(EnumAvailableStatus.DEACTIVATED.getValue());
             customerRepository.save(customer);
-            response.setStatus(RespStatus.getSuccessMessage());
-        return response;
+        return RespStatus.getSuccessMessage();
+    }
+
+    private Customer getCustomer(Long id){
+        Customer customer = customerRepository.findCustomerByIdAndActive(id,EnumAvailableStatus.ACTIVE.getValue());
+        if (customer == null){
+            throw new EshopException(ExceptionConstants.CUSTOMER_NOT_FOUND, "Customer not found");
+        }
+        return customer;
     }
 }

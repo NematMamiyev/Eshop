@@ -1,10 +1,7 @@
 package az.orient.eshop.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
@@ -16,7 +13,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "cart_customer")
-@Data
+@Setter
+@Getter
 @DynamicInsert
 @Builder
 @NoArgsConstructor
@@ -39,6 +37,7 @@ public class Cart {
     @JoinColumn(name = "customer_id", referencedColumnName = "id")
     private Customer customer;
 
+    @ColumnDefault("0")
     private BigDecimal amount;
 
     @CreationTimestamp

@@ -2,10 +2,7 @@ package az.orient.eshop.entity;
 
 import az.orient.eshop.enums.Gender;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
@@ -14,7 +11,8 @@ import java.util.Date;
 
 @Entity
 @Table(name = "customer")
-@Data
+@Setter
+@Getter
 @DynamicInsert
 @Builder
 @NoArgsConstructor
@@ -48,9 +46,9 @@ public class Customer {
     private Date dataDate;
     @ColumnDefault(value = "1")
     private Integer active;
-    @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL)
     private Cart cart;
-    @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL)
     private Wishlist wishlist;
 
 }

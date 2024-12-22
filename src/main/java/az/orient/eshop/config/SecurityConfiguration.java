@@ -1,6 +1,5 @@
 package az.orient.eshop.config;
 
-import az.orient.eshop.enums.Role;
 import az.orient.eshop.security.JwtAuthEntryPoint;
 import az.orient.eshop.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;

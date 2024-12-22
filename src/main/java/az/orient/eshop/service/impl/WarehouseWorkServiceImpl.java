@@ -48,7 +48,7 @@ public class WarehouseWorkServiceImpl implements WarehouseWorkService {
             if (warehouseWork == null){
                 throw new EshopException(ExceptionConstants.WAREHOUSE_WORK_NOT_FOUND,"Warehouse work not found");
             }
-            warehouseWork.setActive(EnumAvailableStatus.DEACTIVE.getValue());
+            warehouseWork.setActive(EnumAvailableStatus.DEACTIVATED.getValue());
             OrderStatus orderStatus = OrderStatus.builder()
                     .order(warehouseWork.getOrder())
                     .status(Status.CONFIRMED)
@@ -57,7 +57,7 @@ public class WarehouseWorkServiceImpl implements WarehouseWorkService {
             RespWareHouseWork respWareHouseWork = warehouseWorkMapper.toRespWarehouseWork(warehouseWork);
             response.setT(respWareHouseWork);
             response.setStatus(RespStatus.getSuccessMessage());
-            warehouseWork.setActive(EnumAvailableStatus.DEACTIVE.getValue());
+            warehouseWork.setActive(EnumAvailableStatus.DEACTIVATED.getValue());
             emailService.sendSimpleEmail(warehouseWork.getOrder().getCustomer().getEmail(), "Mehsul", Email.CONFIRMED.getDescription());
         return response;
     }

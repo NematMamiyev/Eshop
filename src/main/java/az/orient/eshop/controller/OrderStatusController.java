@@ -3,6 +3,7 @@ package az.orient.eshop.controller;
 import az.orient.eshop.dto.response.RespOrderStatus;
 import az.orient.eshop.dto.response.Response;
 import az.orient.eshop.service.OrderStatusService;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,7 +19,7 @@ public class OrderStatusController {
     private final OrderStatusService orderStatusService;
 
     @GetMapping("/{orderId}")
-    public Response<List<RespOrderStatus>> getOrderStatusList(@PathVariable Long orderId){
+    public Response<List<RespOrderStatus>> getOrderStatusList(@PathVariable @NotNull(message = "Id is required") Long orderId){
         return orderStatusService.getOrderStatusList(orderId);
     }
 }

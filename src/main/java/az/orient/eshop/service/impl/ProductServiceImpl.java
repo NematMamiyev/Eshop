@@ -5,7 +5,6 @@ import az.orient.eshop.dto.request.ReqProductDetails;
 import az.orient.eshop.dto.response.*;
 import az.orient.eshop.entity.*;
 import az.orient.eshop.enums.EnumAvailableStatus;
-import az.orient.eshop.enums.Gender;
 import az.orient.eshop.exception.EshopException;
 import az.orient.eshop.exception.ExceptionConstants;
 import az.orient.eshop.mapper.ProductMapper;
@@ -23,7 +22,6 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final SizeRepository sizeRepository;
     private final ColorRepository colorRepository;
-    private final SubcategoryRepository subcategoryRepository;
     private final ProductDetailsRepository productDetailsRepository;
     private final ProductMapper productMapper;
 
@@ -44,8 +42,7 @@ public class ProductServiceImpl implements ProductService {
             ).collect(Collectors.toList());
             productDetailsRepository.saveAll(productDetailsList);
             product.setProductDetailsList(productDetailsList);
-            RespProduct respProduct = productMapper.toRespProduct(product);
-            response.setT(respProduct);
+            response.setT(productMapper.toRespProduct(product));
             response.setStatus(RespStatus.getSuccessMessage());
         return response;
     }
@@ -57,8 +54,7 @@ public class ProductServiceImpl implements ProductService {
             if (productList.isEmpty()) {
                 throw new EshopException(ExceptionConstants.PRODUCT_NOT_FOUND, "Product is empty");
             }
-            List<RespProduct> respProductList = productMapper.toRespProductList(productList);
-            response.setT(respProductList);
+            response.setT(productMapper.toRespProductList(productList));
             response.setStatus(RespStatus.getSuccessMessage());
         return response;
     }
@@ -66,15 +62,8 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Response<RespProduct> getProductById(Long id) {
         Response<RespProduct> response = new Response<>();
-            if (id == null) {
-                throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, " Id is null");
-            }
-            Product product = productRepository.findProductByIdAndActive(id, EnumAvailableStatus.ACTIVE.getValue());
-            if (product == null) {
-                throw new EshopException(ExceptionConstants.PRODUCT_NOT_FOUND, "Product not found");
-            }
-            RespProduct respProduct = productMapper.toRespProduct(product);
-            response.setT(respProduct);
+            Product product = getProduct(id);
+            response.setT(productMapper.toRespProduct(product));
             response.setStatus(RespStatus.getSuccessMessage());
         return response;
     }
@@ -82,55 +71,34 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Response<RespProduct> updateProduct(Long id, ReqProduct reqProduct) {
         Response<RespProduct> response = new Response<>();
-            String name = reqProduct.getName();
-            Long subcategoryId = reqProduct.getSubcategoryId();
-            Gender.fromValue(reqProduct.getGender().getValue());
-            Long brandId = reqProduct.getBrandId();
-            if (id == null || name == null || brandId == null || subcategoryId == null) {
-                throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Invalid request data");
-            }
-            Product product = productRepository.findProductByIdAndActive(id, EnumAvailableStatus.ACTIVE.getValue());
-            if (product == null) {
-                throw new EshopException(ExceptionConstants.PRODUCT_NOT_FOUND, "Product not found");
-            }
-            getSubcategory(subcategoryId);
+            Product product = getProduct(id);
             productMapper.updateProductFromReqProduct(product,reqProduct);
             productRepository.save(product);
-            RespProduct respProduct = productMapper.toRespProduct(product);
-            response.setT(respProduct);
+            response.setT(productMapper.toRespProduct(product));
             response.setStatus(RespStatus.getSuccessMessage());
         return response;
     }
 
     @Override
-    public Response deleteProduct(Long id) {
-        Response response = new Response<>();
-            if (id == null) {
-                throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Id is null");
-            }
-            Product product = productRepository.findProductByIdAndActive(id, EnumAvailableStatus.ACTIVE.getValue());
-            if (product == null) {
-                throw new EshopException(ExceptionConstants.PRODUCT_NOT_FOUND, "Product not found");
-            }
-            product.setActive(EnumAvailableStatus.DEACTIVE.getValue());
+    public RespStatus deleteProduct(Long id) {
+            Product product = getProduct(id);
+            product.setActive(EnumAvailableStatus.DEACTIVATED.getValue());
             productRepository.save(product);
-            response.setStatus(RespStatus.getSuccessMessage());
-        return response;
+        return RespStatus.getSuccessMessage();
     }
 
-    public Subcategory getSubcategory(Long subcategoryId) {
-        Subcategory subcategory = subcategoryRepository.findSubcategoryByIdAndActive(subcategoryId, EnumAvailableStatus.ACTIVE.getValue());
-        if (subcategory == null) {
-            throw new EshopException(ExceptionConstants.SUBCATEGORY_NOT_FOUND, "Subcategory not found");
-        }
-        return subcategory;
-    }
-
-    public Size getSize(Long sizeId) {
+    private Size getSize(Long sizeId) {
         return sizeRepository.findSizeByIdAndActive(sizeId, EnumAvailableStatus.ACTIVE.getValue());
     }
 
-    public Color getColor(Long colorId) {
+    private Color getColor(Long colorId) {
         return colorRepository.findByIdAndActive(colorId, EnumAvailableStatus.ACTIVE.getValue());
+    }
+    private Product getProduct(Long id){
+        Product product = productRepository.findProductByIdAndActive(id, EnumAvailableStatus.ACTIVE.getValue());
+        if (product == null) {
+            throw new EshopException(ExceptionConstants.PRODUCT_NOT_FOUND, "Product not found");
+        }
+        return product;
     }
 }

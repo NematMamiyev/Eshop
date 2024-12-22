@@ -3,6 +3,7 @@ package az.orient.eshop.service;
 import az.orient.eshop.dto.request.ReqProduct;
 import az.orient.eshop.dto.request.ReqProductDetails;
 import az.orient.eshop.dto.response.RespProduct;
+import az.orient.eshop.dto.response.RespStatus;
 import az.orient.eshop.dto.response.Response;
 
 import java.util.List;
@@ -16,5 +17,5 @@ public interface ProductService {
 
     Response<RespProduct> updateProduct(Long id, ReqProduct reqProduct);
 
-    Response deleteProduct(Long id);
+    RespStatus deleteProduct(Long id);
 }

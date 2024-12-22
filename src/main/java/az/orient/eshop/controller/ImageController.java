@@ -1,12 +1,15 @@
 package az.orient.eshop.controller;
 
+import az.orient.eshop.dto.response.RespStatus;
 import az.orient.eshop.dto.response.Response;
 import az.orient.eshop.service.ImageService;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
@@ -18,26 +21,26 @@ public class ImageController {
     private final ImageService imageService;
 
     @PostMapping("/{productDetailsId}")
-    public Response addImages(@RequestParam(value = "files") List<MultipartFile> files, @PathVariable Long productDetailsId){
+    public RespStatus addImages(@RequestParam(value = "files") List<MultipartFile> files, @PathVariable @NotNull(message = "Id is required") Long productDetailsId) throws IOException {
         return imageService.addImages(files,productDetailsId);
     }
 
     @DeleteMapping("/list/{productDetailsId}")
-    public Response deleteImagesByProductDetailsId(@PathVariable Long productDetailsId){
+    public RespStatus deleteImagesByProductDetailsId(@PathVariable @NotNull(message = "Id is required") Long productDetailsId){
         return imageService.deleteImagesByProductDetailsId(productDetailsId);
     }
 
     @DeleteMapping("/{imageId}")
-    public Response deleteImage(@PathVariable Long imageId){
+    public RespStatus deleteImage(@PathVariable @NotNull(message = "Id is required") Long imageId){
         return imageService.deleteImage(imageId);
     }
 
     @GetMapping("/list/{productDetailsId}")
-    public List<ResponseEntity<byte[]>> getImages(@PathVariable Long productDetailsId){
+    public List<ResponseEntity<byte[]>> getImages(@PathVariable @NotNull(message = "Id is required") Long productDetailsId){
         return imageService.getImages(productDetailsId);
     }
     @GetMapping("/{imageId}")
-    public ResponseEntity<byte[]> getImage(@PathVariable Long imageId){
+    public ResponseEntity<byte[]> getImage(@PathVariable @NotNull(message = "Id is required") Long imageId){
         return imageService.getImage(imageId);
     }
 }

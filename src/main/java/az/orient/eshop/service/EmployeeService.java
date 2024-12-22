@@ -2,6 +2,7 @@ package az.orient.eshop.service;
 
 import az.orient.eshop.dto.request.ReqEmployee;
 import az.orient.eshop.dto.response.RespEmployee;
+import az.orient.eshop.dto.response.RespStatus;
 import az.orient.eshop.dto.response.Response;
 
 import java.util.List;
@@ -15,5 +16,5 @@ public interface EmployeeService {
 
     Response<RespEmployee> updateEmployee(Long id, ReqEmployee reqEmployee);
 
-    Response deleteEmployee(Long id);
+    RespStatus deleteEmployee(Long id);
 }

@@ -2,24 +2,24 @@ package az.orient.eshop.enums;
 
 import az.orient.eshop.exception.EshopException;
 import az.orient.eshop.exception.ExceptionConstants;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public enum Currency {
     AZN(0), USD(1), EURO(2);
 
-    private final Integer value;
+    private Integer value;
 
-    Currency(Integer value) {
-        this.value = value;
-    }
-
-    public static Currency fromValue(Integer value) {
-        for (Currency currency : values()) {
+    public static boolean isValidCurrency(Integer value) {
+        for (Currency currency : Currency.values()) {
             if (currency.getValue().equals(value)) {
-                return currency;
+                return true;
             }
         }
-        throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA,"Invalid value");
+        return false;
     }
 }

@@ -25,15 +25,8 @@ public class BrandServiceImpl implements BrandService {
     @Override
     public Response<RespBrand> getBrandById(Long id) {
         Response<RespBrand> response = new Response<>();
-        if (id == null) {
-            throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Invalid request data");
-        }
-        Brand brand = brandRepository.findByIdAndActive(id, EnumAvailableStatus.ACTIVE.getValue());
-        if (brand == null) {
-            throw new EshopException(ExceptionConstants.BRAND_NOT_FOUND, "Brand not found");
-        }
-        RespBrand respBrand = brandMapper.toRespBrand(brand);
-        response.setT(respBrand);
+        Brand brand = getBrand(id);
+        response.setT(brandMapper.toRespBrand(brand));
         response.setStatus(RespStatus.getSuccessMessage());
         return response;
     }
@@ -41,71 +34,57 @@ public class BrandServiceImpl implements BrandService {
     @Override
     public Response<RespBrand> addBrand(ReqBrand reqBrand) {
         Response<RespBrand> response = new Response<>();
-            String name = reqBrand.getName();
-            if (name == null) {
-                throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Invalid request data");
-            }
-            boolean uniqueName = brandRepository.existsBrandByNameAndActive(name,EnumAvailableStatus.ACTIVE.getValue());
-            if (uniqueName){
-                throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Name available in the database");
-            }
-            Brand brand = brandMapper.toBrand(reqBrand);
-            brandRepository.save(brand);
-            RespBrand respBrand = brandMapper.toRespBrand(brand);
-            response.setT(respBrand);
-            response.setStatus(RespStatus.getSuccessMessage());
+        boolean uniqueName = brandRepository.existsBrandByNameAndActive(reqBrand.getName().trim(), EnumAvailableStatus.ACTIVE.getValue());
+        if (uniqueName) {
+            throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Name available in the database");
+        }
+        Brand brand = brandMapper.toBrand(reqBrand);
+        brandRepository.save(brand);
+        response.setT(brandMapper.toRespBrand(brand));
+        response.setStatus(RespStatus.getSuccessMessage());
         return response;
     }
 
     @Override
     public Response<List<RespBrand>> brandList() {
         Response<List<RespBrand>> response = new Response<>();
-            List<Brand> brandList = brandRepository.findAllByActive(EnumAvailableStatus.ACTIVE.getValue());
-            if (brandList.isEmpty()) {
-                throw new EshopException(ExceptionConstants.BRAND_NOT_FOUND, "Brand not found");
-            }
-            List<RespBrand> respBrandList = brandMapper.toRespBrandList(brandList);
-            response.setT(respBrandList);
-            response.setStatus(RespStatus.getSuccessMessage());
+        List<Brand> brandList = brandRepository.findAllByActive(EnumAvailableStatus.ACTIVE.getValue());
+        if (brandList.isEmpty()) {
+            throw new EshopException(ExceptionConstants.BRAND_NOT_FOUND, "Brand not found");
+        }
+        response.setT(brandMapper.toRespBrandList(brandList));
+        response.setStatus(RespStatus.getSuccessMessage());
         return response;
     }
 
     @Override
     public Response<RespBrand> updateBrand(Long id, ReqBrand reqBrand) {
         Response<RespBrand> response = new Response<>();
-            String name = reqBrand.getName();
-            if (id == null || name == null){
-                throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Id or name is invalid");
-            }
-            Brand brand = brandRepository.findByIdAndActive(id,EnumAvailableStatus.ACTIVE.getValue());
-            if (brand == null){
-                throw new EshopException(ExceptionConstants.BRAND_NOT_FOUND, "Brand not found");
-            }
-            boolean uniqueName = brandRepository.existsBrandByNameAndActiveAndIdNot(name,EnumAvailableStatus.ACTIVE.getValue(), id);
-            if (uniqueName){
-                throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Name available in the database");
-            }
-            brandMapper.updateBrandFromReqBrand(brand,reqBrand);
-            brandRepository.save(brand);
-            RespBrand respBrand = brandMapper.toRespBrand(brand);
-            response.setT(respBrand);
-            response.setStatus(RespStatus.getSuccessMessage());
+        Brand brand = getBrand(id);
+        boolean uniqueName = brandRepository.existsBrandByNameAndActiveAndIdNot(reqBrand.getName(), EnumAvailableStatus.ACTIVE.getValue(), id);
+        if (uniqueName) {
+            throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Name available in the database");
+        }
+        brandMapper.updateBrandFromReqBrand(brand, reqBrand);
+        brandRepository.save(brand);
+        response.setT(brandMapper.toRespBrand(brand));
+        response.setStatus(RespStatus.getSuccessMessage());
         return response;
     }
 
     @Override
-    public Response deleteBrand(Long id) {
-        Response response = new Response<>();
-            if (id == null){
-                throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Id not found");
-            }
-            Brand brand = brandRepository.findByIdAndActive(id,EnumAvailableStatus.ACTIVE.getValue());
-            if (brand == null){
-                throw new EshopException(ExceptionConstants.BRAND_NOT_FOUND, "Brand not found");
-            }
-            brand.setActive(EnumAvailableStatus.DEACTIVE.getValue());
-            brandRepository.save(brand);
-            response.setStatus(RespStatus.getSuccessMessage());
-        return response;
+    public RespStatus deleteBrand(Long id) {
+        Brand brand = getBrand(id);
+        brand.setActive(EnumAvailableStatus.DEACTIVATED.getValue());
+        brandRepository.save(brand);
+        return RespStatus.getSuccessMessage();
+    }
+
+    private Brand getBrand(Long id) {
+        Brand brand = brandRepository.findByIdAndActive(id, EnumAvailableStatus.ACTIVE.getValue());
+        if (brand == null) {
+            throw new EshopException(ExceptionConstants.BRAND_NOT_FOUND, "Brand not found");
+        }
+        return brand;
     }
 }

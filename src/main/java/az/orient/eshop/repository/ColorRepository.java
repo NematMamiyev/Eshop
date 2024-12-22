@@ -14,4 +14,5 @@ public interface ColorRepository extends JpaRepository<Color, Long> {
 
     boolean existsColorByNameAndActive(String name, Integer active);
     boolean existsColorByNameAndActiveAndIdNot(String name, Integer active, Long id);
+    boolean existsColorByIdAndActive(Long id, Integer active);
 }

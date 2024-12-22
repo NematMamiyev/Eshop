@@ -25,89 +25,66 @@ public class SubcategoryServiceImpl implements SubcategoryService {
     @Override
     public Response<RespSubcategory> addSubcategory(ReqSubcategory reqSubcategory) {
         Response<RespSubcategory> response = new Response<>();
-           String name = reqSubcategory.getName();
-            Long categoryId = reqSubcategory.getCategoryId();
-            if (name == null || categoryId == null) {
-                throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Invalid request data");
-            }
-            boolean uniqueName = subcategoryRepository.existsSubcategoryByNameAndActive(name, EnumAvailableStatus.ACTIVE.getValue());
-            if (uniqueName) {
-                throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Name available in the database");
-            }
-            Subcategory subcategory = subCategoryMapper.toSubcategory(reqSubcategory);
-            subcategoryRepository.save(subcategory);
-            RespSubcategory respSubcategory = subCategoryMapper.toRespSubcategory(subcategory);
-            response.setT(respSubcategory);
-            response.setStatus(RespStatus.getSuccessMessage());
+        boolean uniqueName = subcategoryRepository.existsSubcategoryByNameAndActive(reqSubcategory.getName(), EnumAvailableStatus.ACTIVE.getValue());
+        if (uniqueName) {
+            throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Name available in the database");
+        }
+        Subcategory subcategory = subCategoryMapper.toSubcategory(reqSubcategory);
+        subcategoryRepository.save(subcategory);
+        response.setT(subCategoryMapper.toRespSubcategory(subcategory));
+        response.setStatus(RespStatus.getSuccessMessage());
         return response;
     }
 
     @Override
     public Response<List<RespSubcategory>> getSubcategoryList() {
         Response<List<RespSubcategory>> response = new Response<>();
-           List<Subcategory> subcategoryList = subcategoryRepository.findAllByActive(EnumAvailableStatus.ACTIVE.getValue());
-            if (subcategoryList.isEmpty()) {
-                throw new EshopException(ExceptionConstants.SUBCATEGORY_NOT_FOUND, "Subcategory is empty");
-            }
-            List<RespSubcategory> respSubcategoryList = subCategoryMapper.toRespSubcategoryList(subcategoryList);
-            response.setT(respSubcategoryList);
-            response.setStatus(RespStatus.getSuccessMessage());
-       return response;
+        List<Subcategory> subcategoryList = subcategoryRepository.findAllByActive(EnumAvailableStatus.ACTIVE.getValue());
+        if (subcategoryList.isEmpty()) {
+            throw new EshopException(ExceptionConstants.SUBCATEGORY_NOT_FOUND, "Subcategory is empty");
+        }
+        response.setT(subCategoryMapper.toRespSubcategoryList(subcategoryList));
+        response.setStatus(RespStatus.getSuccessMessage());
+        return response;
     }
 
     @Override
     public Response<RespSubcategory> getSubcategoryById(Long id) {
         Response<RespSubcategory> response = new Response<>();
-            if (id == null) {
-                throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Id is null");
-            }
-            Subcategory subcategory = subcategoryRepository.findSubcategoryByIdAndActive(id, EnumAvailableStatus.ACTIVE.getValue());
-            if (subcategory == null) {
-                throw new EshopException(ExceptionConstants.SUBCATEGORY_NOT_FOUND, "Subcategory not found");
-            }
-            RespSubcategory respSubcategory = subCategoryMapper.toRespSubcategory(subcategory);
-            response.setT(respSubcategory);
-            response.setStatus(RespStatus.getSuccessMessage());
-     return response;
+        Subcategory subcategory = getSubcategory(id);
+        response.setT(subCategoryMapper.toRespSubcategory(subcategory));
+        response.setStatus(RespStatus.getSuccessMessage());
+        return response;
     }
 
     @Override
     public Response<RespSubcategory> updateSubcategory(Long id, ReqSubcategory reqSubcategory) {
         Response<RespSubcategory> response = new Response<>();
-            String name = reqSubcategory.getName();
-            Long categoryId = reqSubcategory.getCategoryId();
-            if (id == null || name == null || categoryId == null) {
-                throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Invalid request data");
-            }
-            Subcategory subcategory = subcategoryRepository.findSubcategoryByIdAndActive(id,EnumAvailableStatus.ACTIVE.getValue());
-            if (subcategory== null){
-                throw new EshopException(ExceptionConstants.SUBCATEGORY_NOT_FOUND, "Subcategory not found");
-            }
-            boolean uniqueName = subcategoryRepository.existsSubcategoryByNameAndActiveAndIdNot(name,EnumAvailableStatus.ACTIVE.getValue(), id);
-            if (uniqueName){
-                throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA,"Name available in the database");
-            }
-            subCategoryMapper.updateSubcategoryFromReqSubcategory(subcategory,reqSubcategory);
-            subcategoryRepository.save(subcategory);
-            RespSubcategory respSubcategory = subCategoryMapper.toRespSubcategory(subcategory);
-            response.setT(respSubcategory);
-            response.setStatus(RespStatus.getSuccessMessage());
+        boolean uniqueName = subcategoryRepository.existsSubcategoryByNameAndActiveAndIdNot(reqSubcategory.getName(), EnumAvailableStatus.ACTIVE.getValue(), id);
+        if (uniqueName) {
+            throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Name available in the database");
+        }
+        Subcategory subcategory = getSubcategory(id);
+        subCategoryMapper.updateSubcategoryFromReqSubcategory(subcategory, reqSubcategory);
+        subcategoryRepository.save(subcategory);
+        response.setT(subCategoryMapper.toRespSubcategory(subcategory));
+        response.setStatus(RespStatus.getSuccessMessage());
         return response;
     }
 
     @Override
-    public Response deleteSubcategory(Long id) {
-        Response response = new Response<>();
-            if (id == null){
-                throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Id is null");
-            }
-            Subcategory subcategory = subcategoryRepository.findSubcategoryByIdAndActive(id,EnumAvailableStatus.ACTIVE.getValue());
-            if (subcategory == null){
-                throw new EshopException(ExceptionConstants.SUBCATEGORY_NOT_FOUND, "Subcategory not found");
-            }
-            subcategory.setActive(EnumAvailableStatus.DEACTIVE.getValue());
-            subcategoryRepository.save(subcategory);
-            response.setStatus(RespStatus.getSuccessMessage());
-       return response;
+    public RespStatus deleteSubcategory(Long id) {
+        Subcategory subcategory = getSubcategory(id);
+        subcategory.setActive(EnumAvailableStatus.DEACTIVATED.getValue());
+        subcategoryRepository.save(subcategory);
+        return RespStatus.getSuccessMessage();
+    }
+
+    private Subcategory getSubcategory(Long id) {
+        Subcategory subcategory = subcategoryRepository.findSubcategoryByIdAndActive(id, EnumAvailableStatus.ACTIVE.getValue());
+        if (subcategory == null) {
+            throw new EshopException(ExceptionConstants.SUBCATEGORY_NOT_FOUND, "Subcategory not found");
+        }
+        return subcategory;
     }
 }

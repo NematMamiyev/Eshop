@@ -11,6 +11,8 @@ public interface SubcategoryRepository extends JpaRepository<Subcategory, Long> 
 
     boolean existsSubcategoryByNameAndActiveAndIdNot(String name, Integer active, Long id);
 
+    boolean existsSubcategoryByIdAndActive(Long id, Integer active);
+
     List<Subcategory> findAllByActive(Integer active);
 
     Subcategory findSubcategoryByIdAndActive(Long id, Integer active);

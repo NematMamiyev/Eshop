@@ -3,6 +3,7 @@ package az.orient.eshop.controller;
 import az.orient.eshop.dto.response.RespWareHouseWork;
 import az.orient.eshop.dto.response.Response;
 import az.orient.eshop.service.WarehouseWorkService;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +21,7 @@ public class WarehouseWorkController {
     }
 
     @PutMapping("/handlework/{id}")
-    public Response<RespWareHouseWork> handleWork(@PathVariable Long id){
+    public Response<RespWareHouseWork> handleWork(@PathVariable @NotNull(message = "Id is required") Long id){
         return warehouseWorkService.handleWork(id);
     }
 }
