@@ -1,11 +1,11 @@
 package az.orient.eshop.controller;
 
-import az.orient.eshop.dto.request.ReqWishlist;
 import az.orient.eshop.dto.response.RespProductDetails;
 import az.orient.eshop.dto.response.RespStatus;
 import az.orient.eshop.dto.response.Response;
 import az.orient.eshop.service.WishlistService;
-import jakarta.validation.Valid;
+import az.orient.eshop.validation.ProductDetailsActive;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,19 +21,24 @@ public class WishlistController {
     private final WishlistService wishlistService;
 
     @PreAuthorize("hasAuthority('CUSTOMER')")
-    @GetMapping("/{customerId}")
-    public Response<List<RespProductDetails>> listByCustomerId(@PathVariable @NotNull(message = "Id is required") Long customerId){
-        return wishlistService.listByCustomerId(customerId);
+    @GetMapping
+    public Response<List<RespProductDetails>> listByCustomerId(HttpServletRequest httpServletRequest){
+        return wishlistService.listByCustomerId(httpServletRequest);
     }
+
     @PreAuthorize("hasAuthority('CUSTOMER')")
     @PostMapping
-    public RespStatus addWishlist(@RequestBody @Valid ReqWishlist reqWishlist){
-        return wishlistService.addWishlist(reqWishlist);
+    public RespStatus addWishlist(@NotNull(message = "Product details id is required")
+                                      @ProductDetailsActive
+                                      Long productDetailsId, HttpServletRequest httpServletRequest){
+        return wishlistService.addWishlist(productDetailsId,httpServletRequest);
     }
 
     @PreAuthorize("hasAuthority('CUSTOMER')")
     @DeleteMapping
-    public RespStatus deleteWishlist(@RequestBody @Valid ReqWishlist reqWishlist){
-        return wishlistService.deleteWishlist(reqWishlist);
+    public RespStatus deleteWishlist(@NotNull(message = "Product details id is required")
+                                         @ProductDetailsActive
+                                         Long productDetailsId, HttpServletRequest httpServletRequest){
+        return wishlistService.deleteWishlist(productDetailsId,httpServletRequest);
     }
 }

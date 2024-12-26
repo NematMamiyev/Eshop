@@ -27,7 +27,6 @@ public class BrandController {
         return brandService.addBrand(reqBrand);
     }
 
-    @PermitAll
     @GetMapping
     public Response<List<RespBrand>> brandList(){
         return brandService.brandList();

@@ -1,45 +1,243 @@
-**Edit a file, create a new file, and clone from Bitbucket in under 2 minutes**
+**Layihə Haqqında**
 
-When you're done, you can delete the content in this README and update the file with details for others getting started with your repository.
+E-Shop layihəsi müasir bir onlayn alış-veriş platformasıdır, istifadəçilərə müxtəlif məhsul kateqoriyalarında rahat alış-veriş təcrübəsi təqdim edir. 
+Layihə Spring Boot texnologiyası ilə qurulmuşdur və istifadəçilərin asanlıqla məhsul axtarışı, seçimi və sifarişi etməsini təmin edir.
+Sistemdə hər məhsul üçün fərqli ölçü və rəng variantları mövcuddur, beləliklə müştərilər öz istəklərinə uyğun məhsulu asanlıqla seçə bilərlər.
+E-Shop layihəsində iki əsas istifadəçi tipi mövcuddur: Müştəri (Customer) və İşçi (Employee). Müştəri istifadəçiləri yalnız alış-veriş edə bilər 
+və onlar üçün sadə qeydiyyat və giriş API-ləri mövcuddur. İşçi istifadəçiləri isə müxtəlif rollara sahibdir: SUPERADMIN, ADMIN və OPERATOR, 
+bu da onlara sistemdə müxtəlif hüquq və səlahiyyətlər verir. İstifadəçilərin təhlükəsizliyi təmin edilib, müştəri və işçi üçün fərqli 
+autentifikasiya və avtorizasiya sistemləri mövcuddur. Bu layihə monolitik bir tətbiq olaraq qurulmuşdur, amma gələcəkdə daha çevik və genişlənə 
+bilən arxitektura üçün mikrosistemlərə keçid planlaşdırılır. Layihə, Spring Boot'un gücündən istifadə edərək yüksək performans və genişlənə bilən 
+bir platforma təmin edir.
 
-*We recommend that you open this README in another tab as you perform the tasks below. You can [watch our video](https://youtu.be/0ocf7u76WSo) for a full demo of all the steps in this tutorial. Open the video in a new tab to avoid leaving Bitbucket.*
+**Funksionallıqlar**
 
----
+1.Məhsul İdarəetməsi
+Məhsul əlavə et, yenilə, sil.
+Məhsulun ölçü və rəng variantlarını idarə et.
+2.Sifariş İdarəetməsi
+Müştəri məhsulları səbətə əlavə edə, sifariş edə bilər.
+Sifarişinin statusu izləyə bilər.
+3.İstifadəçi İdarəetməsi
+Müştəri qeydiyyatı və girişi.
+İşçilər üçün SUPERADMIN, ADMIN və OPERATOR rolları ilə fərqli hüquqlar.
+4.Təhlükəsizlik və Authentication
+JWT token əsaslı autentifikasiya.
+Müştəri və işçi üçün ayrılmış API-lər.
+5.Global Exception Handling
+Sistemdə baş verən səhvlərin mərkəzləşdirilmiş idarə edilməsi.
 
-## Edit a file
+**Texnologiyalar və kitabxanalar**
+Java 17: Əsas proqramlaşdırma dili.
+Spring Boot 3.3.2: Tətbiqin sürətli inkişafı və asan konfiqurasiyası üçün istifadə olunan Java əsaslı framework.
+Spring Data JPA: ORM və verilənlər bazası əməliyyatları üçün.
+Spring Security: Təhlükəsizlik və autentifikasiya üçün.
+JWT (io.jsonwebtoken): JSON Web Token əsaslı autentifikasiya.
+Redis: Keşləmə üçün verilənlər bazası.
+MapStruct: DTO-ların avtomatik map edilməsi üçün.
+Lombok: Kodun optimallaşdırılması və təkrarı azaltmaq üçün.
+SpringDoc OpenAPI: API sənədləşdirməsi üçün.
+Log4j2: Loglama.
+Oracle JDBC (ojdbc11): Oracle verilənlər bazası ilə əlaqə üçün.
 
-You’ll start by editing this README file to learn how to edit a file in Bitbucket.
+**Modul Dizaynı**
+src
+├── main
+│   ├── java
+│   │   └── az.orient.eshop
+│   │       ├── config             # Konfiqurasiya sinifləri (məsələn, verilənlər bazası, təhlükəsizlik və s.).
+│   │       ├── controller         # HTTP sorğularını qəbul edən və xidmət metodlarına yönləndirən siniflər.
+│   │       ├── dto                # Gələn və gedən məlumatlar üçün Data Transfer Obje (DTO).
+│   │       │   ├── request        # Gələn məlumatlar üçün DTO-lar (məsələn, POST/PUT sorğularının bədənləri).
+│   │       │   └── response       # Gedən məlumatlar üçün DTO-lar (məsələn, GET/POST sorğularının cavabları).
+│   │       ├── entity             # Verilənlər bazasının entitiləri (cədvəllər).
+│   │       ├── enums              # Layihədə istifadə olunan enum tipləri.
+│   │       ├── exception          # Xətaların idarə edilməsi üçün xüsusi istisna sinifləri.
+│   │       ├── mapper             # MapStruct və ya digər obyekt çevirmə lojiği üçün siniflər.
+│   │       ├── repository         # Verilənlər bazası ilə əlaqə yaratmaq üçün interfeyslər, JPA repository-dən irs alır.
+│   │       ├── security           # Təhlükəsizlik konfiqurasiyaları, autentifikasiya və avtorizasiya lojiği.
+│   │       ├── service            # İş lojiğini idarə edən xidmət sinifləri.
+│   │       └── validation         # Giriş verilənlərinin yoxlanması üçün xüsusi doğrulama lojiği və annotasiyalar.
+│   └── resources
+│       ├── application.properties # Tətbiq konfiqurasiya faylı (məsələn, verilənlər bazası, təhlükəsizlik və s.)
+│       └── log4j2.xml             # Tətbiqin loqlarını idarə etmək üçün log4j konfiqurasiyası..
+└── test
+└── java
+└── az.orient.eshop        # Unit və inteqrasiya testləri üçün siniflər.
 
-1. Click **Source** on the left side.
-2. Click the README.md link from the list of files.
-3. Click the **Edit** button.
-4. Delete the following text: *Delete this line to make a change to the README from Bitbucket.*
-5. After making your change, click **Commit** and then **Commit** again in the dialog. The commit page will open and you’ll see the change you just made.
-6. Go back to the **Source** page.
+Entity-lər:
+Employee, Customer, Product, Order, ProductImage, Brand, Cart, Category, Color, OrderStatus, Payment, ProductDetails,
+ProductVideo, Shelf, ShelfProductDetails, Size, Subcategory,Warehouse, WarehouseWork, Wishlist siniflərindən ibarətdir.
 
----
+Repository-lər:
+Database əməliyyatları üçün istifadə edilir.
 
-## Create a file
+Service və ServiceImpl:
+Biznes loqikası buradadır.
 
-Next, you’ll add a new file to this repository.
+Controller-lər:
+REST API interfeysi yaradılır
+.
+GlobalException:
+Sistemdə exception handling ünvanlı təmin edilir.
 
-1. Click the **New file** button at the top of the **Source** page.
-2. Give the file a filename of **contributors.txt**.
-3. Enter your name in the empty file space.
-4. Click **Commit** and then **Commit** again in the dialog.
-5. Go back to the **Source** page.
+Swagger UI
+API-lər OpenAPI vasitəsilə dokumentasiya olunub. Swagger interfeysi étibarlı REST API test etməyə imkan yaradar.
 
-Before you move on, go ahead and explore the repository. You've already seen the **Source** page, but check out the **Commits**, **Branches**, and **Settings** pages.
+**API-lər**
+BrandController
+POST /brands: Yeni brand əlavə etmək.
+GET /brands: Bütün brand-ların siyahısını almaq.
+GET /brands/{id}: Müəyyən bir brand haqqında məlumat əldə etmək.
+PUT /brands/{id}: Mövcud brand-u yeniləmək.
+DELETE /brands/{id}: Brand-u silmək.
 
----
+CartController
+GET /carts: Müştərinin səbətindəki məhsuları əldə etmək.
+POST /carts/add/{productDetailsId}: Məhsul əlavə etmək.
+DELETE /carts/delete/{productDetailsId}: Məhsul silmək.
 
-## Clone a repository
+CategoryController
+POST /categories: Yeni kateqoriya əlavə etmək.
+GET /categories: Bütün kateqoriyaların siyahısını almaq.
+GET /categories/{id}: Müəyyən bir kateqoriya haqqında məlumat əldə etmək.
+PUT /categories/{id}: Mövcud kateqoriyanı yeniləmək.
+DELETE /categories/{id}: Kateqoriyanı silmək.
+ColorController
 
-Use these steps to clone from SourceTree, our client for using the repository command-line free. Cloning allows you to work on your files locally. If you don't yet have SourceTree, [download and install first](https://www.sourcetreeapp.com/). If you prefer to clone from the command line, see [Clone a repository](https://confluence.atlassian.com/x/4whODQ).
+POST /colors: Yeni rəng əlavə etmək.
+GET /colors: Bütün rənglərin siyahısını almaq.
+GET /colors/{id}: Müəyyən bir rəng haqqında məlumat əldə etmək.
+PUT /colors/{id}: Mövcud rəngi yeniləmək.
+DELETE /colors/{id}: Rəngi silmək.
 
-1. You’ll see the clone button under the **Source** heading. Click that button.
-2. Now click **Check out in SourceTree**. You may need to create a SourceTree account or log in.
-3. When you see the **Clone New** dialog in SourceTree, update the destination path and name if you’d like to and then click **Clone**.
-4. Open the directory you just created to see your repository’s files.
+CustomerAuthController
+POST /auth/customer/login: Müştəriyə giriş imkanı vermək.
+POST /auth/customer/logout: Müştəri çıxışı (Authorization token ilə).
 
-Now that you're more familiar with your Bitbucket repository, go ahead and add a new file locally. You can [push your change back to Bitbucket with SourceTree](https://confluence.atlassian.com/x/iqyBMg), or you can [add, commit,](https://confluence.atlassian.com/x/8QhODQ) and [push from the command line](https://confluence.atlassian.com/x/NQ0zDQ).
+CustomerController
+POST /customers/register: Yeni müştəri qeydiyyatı.
+GET /customers: Bütün müştərilərin siyahısını almaq.
+GET /customers/{id}: Müəyyən bir müştəri haqqında məlumat əldə etmək.
+PUT /customers/{id}: Müştəri məlumatlarını yeniləmək.
+DELETE /customers/{id}: Müştəri silmək.
+
+EmployeeAuthController
+POST /auth/employee/login: İşçi üçün giriş API-si.
+POST /auth/employee/logout: İşçi çıxışı (Authorization token ilə).
+
+EmployeeController
+POST /employees: Yeni işçi əlavə etmək.
+GET /employees: Bütün işçilərin siyahısını almaq.
+GET /employees/{id}: Müəyyən bir işçi haqqında məlumat əldə etmək.
+PUT /employees/{id}: İşçi məlumatlarını yeniləmək.
+DELETE /employees/{id}: İşçini silmək.
+
+ImageController
+POST /images/{productDetailsId}: Məhsula şəkil əlavə etmək.
+DELETE /images/list/{productDetailsId}: Məhsulun şəkillərini silmək.
+DELETE /images/{imageId}: Şəkili silmək.
+GET /images/list/{productDetailsId}: Məhsulun şəkillərini əldə etmək.
+GET /images/{imageId}: Müəyyən bir şəkili əldə etmək.
+
+OrderController
+GET /orders: Müştərinin sifarişlərini əldə etmək.
+OrderStatusController
+GET /orderstatus/{orderId}: Sifariş statusunu almaq.
+
+PaymentController
+POST /payment/{paymentMethod}: Ödəniş etmək.
+
+ProductController
+POST /products: Yeni məhsul əlavə etmək.
+GET /products: Bütün məhsulların siyahısını almaq.
+GET /products/{id}: Müəyyən bir məhsul haqqında məlumat əldə etmək.
+PUT /products/{id}: Məhsulu yeniləmək.
+DELETE /products/{id}: Məhsulu silmək.
+
+ProductDetailsController
+POST /productdetails: Yeni məhsulun detalları əlavə etmək.
+PUT /productdetails/{id}: Məhsul detalları yeniləmək.
+GET /productdetails: Bütün məhsul detalları siyahısını almaq.
+GET /productdetails/{id}: Müəyyən bir məhsulun detalını əldə etmək.
+DELETE /productdetails/{id}: Məhsul detalını silmək.
+
+ShelfController
+POST /shelfs: Yeni rəf əlavə etmək.
+GET /shelfs: Bütün rəflərin siyahısını almaq.
+GET /shelfs/{id}: Müəyyən bir rəf haqqında məlumat əldə etmək.
+PUT /shelfs/{id}: Rəfi yeniləmək.
+DELETE /shelfs/{id}: Rəfi silmək.
+
+ShelfProductDetailsController
+POST /shelfproducts: Məhsulu rəfə əlavə etmək.
+DELETE /shelfproducts: Məhsulu rəfdən silmək.
+
+SizeController
+POST /size: Yeni ölçü əlavə etmək.
+GET /size: Bütün ölçülərin siyahısını almaq.
+GET /size/{id}: Müəyyən bir ölçü haqqında məlumat əldə etmək.
+PUT /size/{id}: Ölçünü yeniləmək.
+DELETE /size/{id}: Ölçünü silmək.
+
+SubcategoryController
+POST /subcategorys: Yeni subkateqoriya əlavə etmək.
+GET /subcategorys: Bütün subkateqoriyaların siyahısını almaq.
+GET /subcategorys/{id}: Müəyyən bir subkateqoriya haqqında məlumat əldə etmək.
+PUT /subcategorys/{id}: Subkateqoriyanı yeniləmək.
+DELETE /subcategorys/{id}: Subkateqoriyanı silmək.
+
+VideoController
+POST /videos/{productDetailsId}: Məhsul detalları ilə videolar əlavə etmək.
+DELETE /videos/list/{productDetailsId}: Məhsul detalları ilə videoları silmək.
+DELETE /videos/{videoId}: Müəyyən bir videonu silmək.
+GET /videos/list/{productDetailsId}: Məhsul detalları ilə videoları əldə etmək.
+GET /videos/{videoId}: Müəyyən bir videonu əldə etmək.
+
+WarehouseController
+POST /warehouses: Yeni anbar əlavə etmək.
+GET /warehouses: Bütün anbarların siyahısını almaq.
+GET /warehouses/{id}: Müəyyən bir anbar haqqında məlumat əldə etmək.
+PUT /warehouses/{id}: Anbarı yeniləmək.
+DELETE /warehouses/{id}: Anbarı silmək.
+
+WarehouseWorkController
+GET /warehouseworks: Bütün anbar işlərini almaq.
+PUT /warehouseworks/handlework/{id}: Anbar işini idarə etmək.
+
+WishlistController
+GET /wishlists: Müştərinin bütün arzuladığı məhsulları almaq.
+POST /wishlists: Məhsulu arzu siyahısına əlavə etmək.
+DELETE /wishlists: Məhsulu arzu siyahısından silmək.
+
+**Layihəni İşlətmək**
+Tələblər:
+JDK 17
+Maven 3.8+
+Oracle Database
+Adımlar:
+1.Konfiqurasiya Edin
+Layihədə application.properties faylını konfiqurasiya edərək verilənlər bazası, Redis və JWT üçün lazımi məlumatları təmin edin.
+2.Layihəni Klonlayın
+git clone https://github.com/NematMamiyev/Eshop.git
+cd eshop
+3.Maven Asılılıqlarını Yükləyin
+mvn clean install
+4.Layihəni işə Salın
+mvn spring-boot:run
+5.Sistemə Swagger vasitəsilə daxil olun və API-ləri test edin.
+Swagger URL:
+http://localhost:8082/swagger-ui/index.html
+
+**Mümkün Gələcək İnkişaflar**
+
+Unit Test-lərin tam əhatə etməsi.
+Mikroservice tam bolünmə.
+Məhsul kataloqlarında çevik filter sistemləri.
+
+**Əlaqə**
+Hər hansı bir sualınız olduqda əlaqə saxlayın:
+
+E-mail: nemet.memiyev1@gmail.com
+
+GitHub : https://github.com/NematMamiyev
