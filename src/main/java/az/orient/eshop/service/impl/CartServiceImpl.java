@@ -27,7 +27,7 @@ public class CartServiceImpl implements CartService {
     @Override
     public RespStatus addCart(Long productDetailsId, HttpServletRequest httpServletRequest) {
         ProductDetails productDetails = getProductDetails(productDetailsId);
-        Cart cart = getCart(customerId(httpServletRequest));
+        Cart cart = getCart(getCustomerId(httpServletRequest));
         cart.getProductDetailsList().add(productDetails);
         cart.setAmount(cart.getAmount().add(productDetails.getPrice()));
         cartRepository.save(cart);
@@ -37,7 +37,7 @@ public class CartServiceImpl implements CartService {
     @Override
     public RespStatus deleteCart(Long productDetailsId, HttpServletRequest httpServletRequest) {
         ProductDetails productDetails = getProductDetails(productDetailsId);
-        Cart cart = getCart(customerId(httpServletRequest));
+        Cart cart = getCart(getCustomerId(httpServletRequest));
         List<ProductDetails> productDetailsList = cart.getProductDetailsList();
         if (productDetailsList.isEmpty()) {
             throw new EshopException(ExceptionConstants.PRODUCT_IS_NOT_IN_CART, "The product is not in the cart");
@@ -52,7 +52,7 @@ public class CartServiceImpl implements CartService {
     @Override
     public Response<RespCart> listByCustomerId(HttpServletRequest httpServletRequest) {
         Response<RespCart> response = new Response<>();
-        Cart cart = getCart(customerId(httpServletRequest));
+        Cart cart = getCart(getCustomerId(httpServletRequest));
         if (cart.getProductDetailsList().isEmpty()){
             throw new EshopException(ExceptionConstants.CART_IS_EMPTY, "Cart is empty");
         }
@@ -65,13 +65,13 @@ public class CartServiceImpl implements CartService {
         response.setStatus(RespStatus.getSuccessMessage());
         return response;
     }
-    private Long customerId(HttpServletRequest httpServletRequest){
+    private Long getCustomerId(HttpServletRequest httpServletRequest){
         String token = httpServletRequest.getHeader("Authorization");
         if (token != null && token.startsWith("Bearer ")) {
             token = token.substring(7);
             return jwtGenerator.getId(token);
         }
-        throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA,"cer");
+        throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA,"Token not found");
     }
 
     private Cart getCart(Long customerId) {
