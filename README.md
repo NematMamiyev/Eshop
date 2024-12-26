@@ -1,244 +1,244 @@
-**Layihə Haqqında**
+**About the Project**
+The E-Shop project is a modern online shopping platform that offers users a convenient shopping experience across various product categories.
+The project is built using Spring Boot technology, ensuring users can easily search for, select, and order products.
+Each product has different size and color variants, allowing customers to easily choose the product according to their preferences.
+There are two main types of users in the E-Shop project: Customer and Employee. Customer users can only shop, and simple registration
+and login APIs are available for them. Employee users have different roles: SUPERADMIN, ADMIN, and OPERATOR, providing them with various
+rights and privileges in the system. Security for users is ensured, and there are separate authentication and authorization systems for
+Customers and Employees. This project is built as a monolithic application, but there are plans to migrate to microservices for a more
+flexible and scalable architecture in the future. The project leverages the power of Spring Boot to provide a high-performance and scalable platform.
 
-E-Shop layihəsi müasir bir onlayn alış-veriş platformasıdır, istifadəçilərə müxtəlif məhsul kateqoriyalarında rahat alış-veriş təcrübəsi təqdim edir. 
-Layihə Spring Boot texnologiyası ilə qurulmuşdur və istifadəçilərin asanlıqla məhsul axtarışı, seçimi və sifarişi etməsini təmin edir.
-Sistemdə hər məhsul üçün fərqli ölçü və rəng variantları mövcuddur, beləliklə müştərilər öz istəklərinə uyğun məhsulu asanlıqla seçə bilərlər.
-E-Shop layihəsində iki əsas istifadəçi tipi mövcuddur: Müştəri (Customer) və İşçi (Employee). Müştəri istifadəçiləri yalnız alış-veriş edə bilər 
-və onlar üçün sadə qeydiyyat və giriş API-ləri mövcuddur. İşçi istifadəçiləri isə müxtəlif rollara sahibdir: SUPERADMIN, ADMIN və OPERATOR, 
-bu da onlara sistemdə müxtəlif hüquq və səlahiyyətlər verir. İstifadəçilərin təhlükəsizliyi təmin edilib, müştəri və işçi üçün fərqli 
-autentifikasiya və avtorizasiya sistemləri mövcuddur. Bu layihə monolitik bir tətbiq olaraq qurulmuşdur, amma gələcəkdə daha çevik və genişlənə 
-bilən arxitektura üçün mikrosistemlərə keçid planlaşdırılır. Layihə, Spring Boot'un gücündən istifadə edərək yüksək performans və genişlənə bilən 
-bir platforma təmin edir.
-
-**Funksionallıqlar**
-
-1.Məhsul İdarəetməsi
-Məhsul əlavə et, yenilə, sil.
-Məhsulun ölçü və rəng variantlarını idarə et.
-2.Sifariş İdarəetməsi
-Müştəri məhsulları səbətə əlavə edə, sifariş edə bilər.
-Sifarişinin statusu izləyə bilər.
-3.İstifadəçi İdarəetməsi
-Müştəri qeydiyyatı və girişi.
-İşçilər üçün SUPERADMIN, ADMIN və OPERATOR rolları ilə fərqli hüquqlar.
-4.Təhlükəsizlik və Authentication
-JWT token əsaslı autentifikasiya.
-Müştəri və işçi üçün ayrılmış API-lər.
+**Functionalities**
+1.Product Management
+Add, update, and delete products.
+Manage size and color variants of products.
+2.Order Management
+Customers can add products to the cart and place orders.
+Track the status of orders.
+3.User Management
+Customer registration and login.
+Different roles for Employees (SUPERADMIN, ADMIN, OPERATOR) with different rights.
+4.Security and Authentication
+JWT token-based authentication.
+Separate APIs for Customers and Employees.
 5.Global Exception Handling
-Sistemdə baş verən səhvlərin mərkəzləşdirilmiş idarə edilməsi.
+Centralized management of errors in the system.
 
-**Texnologiyalar və kitabxanalar**
-Java 17: Əsas proqramlaşdırma dili.
-Spring Boot 3.3.2: Tətbiqin sürətli inkişafı və asan konfiqurasiyası üçün istifadə olunan Java əsaslı framework.
-Spring Data JPA: ORM və verilənlər bazası əməliyyatları üçün.
-Spring Security: Təhlükəsizlik və autentifikasiya üçün.
-JWT (io.jsonwebtoken): JSON Web Token əsaslı autentifikasiya.
-Redis: Keşləmə üçün verilənlər bazası.
-MapStruct: DTO-ların avtomatik map edilməsi üçün.
-Lombok: Kodun optimallaşdırılması və təkrarı azaltmaq üçün.
-SpringDoc OpenAPI: API sənədləşdirməsi üçün.
-Log4j2: Loglama.
-Oracle JDBC (ojdbc11): Oracle verilənlər bazası ilə əlaqə üçün.
+**Technologies and Libraries**
+Java 17: Main programming language.
+Spring Boot 3.3.2: Java-based framework for rapid application development and easy configuration.
+Spring Data JPA: ORM and database operations.
+Spring Security: For security and authentication.
+JWT (io.jsonwebtoken): JSON Web Token-based authentication.
+Redis: Database for caching.
+MapStruct: For automatic mapping of DTOs.
+Lombok: To optimize code and reduce repetition.
+SpringDoc OpenAPI: API documentation.
+Log4j2: Logging.
+Oracle JDBC (ojdbc11): For database connectivity with Oracle.
 
-**Modul Dizaynı**
+**Module Design**
 ```
 src
 ├── main
 │   ├── java
 │   │   └── az.orient.eshop
-│   │       ├── config             # Konfiqurasiya sinifləri (məsələn, verilənlər bazası, təhlükəsizlik və s.).
-│   │       ├── controller         # HTTP sorğularını qəbul edən və xidmət metodlarına yönləndirən siniflər.
-│   │       ├── dto                # Gələn və gedən məlumatlar üçün Data Transfer Obje (DTO).
-│   │       │   ├── request        # Gələn məlumatlar üçün DTO-lar (məsələn, POST/PUT sorğularının bədənləri).
-│   │       │   └── response       # Gedən məlumatlar üçün DTO-lar (məsələn, GET/POST sorğularının cavabları).
-│   │       ├── entity             # Verilənlər bazasının entitiləri (cədvəllər).
-│   │       ├── enums              # Layihədə istifadə olunan enum tipləri.
-│   │       ├── exception          # Xətaların idarə edilməsi üçün xüsusi istisna sinifləri.
-│   │       ├── mapper             # MapStruct və ya digər obyekt çevirmə lojiği üçün siniflər.
-│   │       ├── repository         # Verilənlər bazası ilə əlaqə yaratmaq üçün interfeyslər, JPA repository-dən irs alır.
-│   │       ├── security           # Təhlükəsizlik konfiqurasiyaları, autentifikasiya və avtorizasiya lojiği.
-│   │       ├── service            # İş lojiğini idarə edən xidmət sinifləri.
-│   │       └── validation         # Giriş verilənlərinin yoxlanması üçün xüsusi doğrulama lojiği və annotasiyalar.
+│   │       ├── config             # Configuration classes (e.g., database, security, etc.)
+│   │       ├── controller         # Classes to handle HTTP requests and route to service methods.
+│   │       ├── dto                # Data Transfer Object (DTO) for incoming and outgoing data.
+│   │       │   ├── request        # DTOs for incoming data (e.g., POST/PUT request bodies).
+│   │       │   └── response       # DTOs for outgoing data (e.g., GET/POST response).
+│   │       ├── entity             # Database entities (tables).
+│   │       ├── enums              # Enum types used in the project.
+│   │       ├── exception          # Custom exception classes for error handling.
+│   │       ├── mapper             # Classes for object transformation logic (e.g., MapStruct).
+│   │       ├── repository         # Interfaces for database operations, extending JPA repositories.
+│   │       ├── security           # Security configuration, authentication, and authorization logic.
+│   │       ├── service            # Service classes managing business logic.
+│   │       └── validation         # Custom validation logic and annotations for input data.
 │   └── resources
-│       ├── application.properties # Tətbiq konfiqurasiya faylı (məsələn, verilənlər bazası, təhlükəsizlik və s.)
-│       └── log4j2.xml             # Tətbiqin loqlarını idarə etmək üçün log4j konfiqurasiyası..
+│       ├── application.properties # Application configuration file (e.g., database, security, etc.)
+│       └── log4j2.xml             # Configuration for logging with log4j.
 └── test
 └── java
-└── az.orient.eshop        # Unit və inteqrasiya testləri üçün siniflər.
+└── az.orient.eshop        # Unit and integration test classes.
 
-Entity-lər:
+Entities:
 Employee, Customer, Product, Order, ProductImage, Brand, Cart, Category, Color, OrderStatus, Payment, ProductDetails,
-ProductVideo, Shelf, ShelfProductDetails, Size, Subcategory,Warehouse, WarehouseWork, Wishlist siniflərindən ibarətdir.
+ProductVideo, Shelf, ShelfProductDetails, Size, Subcategory, Warehouse, WarehouseWork, Wishlist.
 
-Repository-lər:
-Database əməliyyatları üçün istifadə edilir.
+Repositories:
+Used for database operations.
 
-Service və ServiceImpl:
-Biznes loqikası buradadır.
+Service and ServiceImpl:
+Contains business logic.
 
-Controller-lər:
-REST API interfeysi yaradılır
-.
+Controllers:
+Defines the REST API interface.
+
 GlobalException:
-Sistemdə exception handling ünvanlı təmin edilir.
+Centralized exception handling for the system.
 
-Swagger UI
-API-lər OpenAPI vasitəsilə dokumentasiya olunub. Swagger interfeysi étibarlı REST API test etməyə imkan yaradar.
+Swagger UI:
+APIs are documented using OpenAPI. The Swagger interface allows testing of REST APIs.
 
-**API-lər**
-BrandController
-POST /brands: Yeni brand əlavə etmək.
-GET /brands: Bütün brand-ların siyahısını almaq.
-GET /brands/{id}: Müəyyən bir brand haqqında məlumat əldə etmək.
-PUT /brands/{id}: Mövcud brand-u yeniləmək.
-DELETE /brands/{id}: Brand-u silmək.
+# **APIs**
 
-CartController
-GET /carts: Müştərinin səbətindəki məhsuları əldə etmək.
-POST /carts/add/{productDetailsId}: Məhsul əlavə etmək.
-DELETE /carts/delete/{productDetailsId}: Məhsul silmək.
+- **BrandController**
+    - POST /brands: Add a new brand.
+    - GET /brands: Get the list of all brands.
+    - GET /brands/{id}: Get information about a specific brand.
+    - PUT /brands/{id}: Update an existing brand.
+    - DELETE /brands/{id}: Delete a brand.
 
-CategoryController
-POST /categories: Yeni kateqoriya əlavə etmək.
-GET /categories: Bütün kateqoriyaların siyahısını almaq.
-GET /categories/{id}: Müəyyən bir kateqoriya haqqında məlumat əldə etmək.
-PUT /categories/{id}: Mövcud kateqoriyanı yeniləmək.
-DELETE /categories/{id}: Kateqoriyanı silmək.
-ColorController
+- **CartController**
+    - GET /carts: Get products in the customer's cart.
+    - POST /carts/add/{productDetailsId}: Add a product to the cart.
+    - DELETE /carts/delete/{productDetailsId}: Remove a product from the cart.
 
-POST /colors: Yeni rəng əlavə etmək.
-GET /colors: Bütün rənglərin siyahısını almaq.
-GET /colors/{id}: Müəyyən bir rəng haqqında məlumat əldə etmək.
-PUT /colors/{id}: Mövcud rəngi yeniləmək.
-DELETE /colors/{id}: Rəngi silmək.
+- **CategoryController**
+    - POST /categories: Add a new category.
+    - GET /categories: Get the list of all categories.
+    - GET /categories/{id}: Get information about a specific category.
+    - PUT /categories/{id}: Update an existing category.
+    - DELETE /categories/{id}: Delete a category.
 
-CustomerAuthController
-POST /auth/customer/login: Müştəriyə giriş imkanı vermək.
-POST /auth/customer/logout: Müştəri çıxışı (Authorization token ilə).
+- **ColorController**
+    - POST /colors: Add a new color.
+    - GET /colors: Get the list of all colors.
+    - GET /colors/{id}: Get information about a specific color.
+    - PUT /colors/{id}: Update an existing color.
+    - DELETE /colors/{id}: Delete a color.
 
-CustomerController
-POST /customers/register: Yeni müştəri qeydiyyatı.
-GET /customers: Bütün müştərilərin siyahısını almaq.
-GET /customers/{id}: Müəyyən bir müştəri haqqında məlumat əldə etmək.
-PUT /customers/{id}: Müştəri məlumatlarını yeniləmək.
-DELETE /customers/{id}: Müştəri silmək.
+- **CustomerAuthController**
+    - POST /auth/customer/login: Customer login.
+    - POST /auth/customer/logout: Customer logout (with authorization token).
 
-EmployeeAuthController
-POST /auth/employee/login: İşçi üçün giriş API-si.
-POST /auth/employee/logout: İşçi çıxışı (Authorization token ilə).
+- **CustomerController**
+    - POST /customers/register: Register a new customer.
+    - GET /customers: Get the list of all customers.
+    - GET /customers/{id}: Get information about a specific customer.
+    - PUT /customers/{id}: Update customer details.
+    - DELETE /customers/{id}: Delete a customer.
 
-EmployeeController
-POST /employees: Yeni işçi əlavə etmək.
-GET /employees: Bütün işçilərin siyahısını almaq.
-GET /employees/{id}: Müəyyən bir işçi haqqında məlumat əldə etmək.
-PUT /employees/{id}: İşçi məlumatlarını yeniləmək.
-DELETE /employees/{id}: İşçini silmək.
+- **EmployeeAuthController**
+    - POST /auth/employee/login: Employee login.
+    - POST /auth/employee/logout: Employee logout (with authorization token).
 
-ImageController
-POST /images/{productDetailsId}: Məhsula şəkil əlavə etmək.
-DELETE /images/list/{productDetailsId}: Məhsulun şəkillərini silmək.
-DELETE /images/{imageId}: Şəkili silmək.
-GET /images/list/{productDetailsId}: Məhsulun şəkillərini əldə etmək.
-GET /images/{imageId}: Müəyyən bir şəkili əldə etmək.
+- **EmployeeController**
+    - POST /employees: Add a new employee.
+    - GET /employees: Get the list of all employees.
+    - GET /employees/{id}: Get information about a specific employee.
+    - PUT /employees/{id}: Update employee details.
+    - DELETE /employees/{id}: Delete an employee.
 
-OrderController
-GET /orders: Müştərinin sifarişlərini əldə etmək.
-OrderStatusController
-GET /orderstatus/{orderId}: Sifariş statusunu almaq.
+- **ImageController**
+    - POST /images/{productDetailsId}: Add an image to a product.
+    - DELETE /images/list/{productDetailsId}: Delete product images.
+    - DELETE /images/{imageId}: Delete a specific image.
+    - GET /images/list/{productDetailsId}: Get product images.
+    - GET /images/{imageId}: Get a specific image.
 
-PaymentController
-POST /payment/{paymentMethod}: Ödəniş etmək.
+- **OrderController**
+    - GET /orders: Get the customer's orders.
 
-ProductController
-POST /products: Yeni məhsul əlavə etmək.
-GET /products: Bütün məhsulların siyahısını almaq.
-GET /products/{id}: Müəyyən bir məhsul haqqında məlumat əldə etmək.
-PUT /products/{id}: Məhsulu yeniləmək.
-DELETE /products/{id}: Məhsulu silmək.
+- **OrderStatusController**
+    - GET /orderstatus/{orderId}: Get the status of an order.
 
-ProductDetailsController
-POST /productdetails: Yeni məhsulun detalları əlavə etmək.
-PUT /productdetails/{id}: Məhsul detalları yeniləmək.
-GET /productdetails: Bütün məhsul detalları siyahısını almaq.
-GET /productdetails/{id}: Müəyyən bir məhsulun detalını əldə etmək.
-DELETE /productdetails/{id}: Məhsul detalını silmək.
+- **PaymentController**
+    - POST /payment/{paymentMethod}: Make a payment.
 
-ShelfController
-POST /shelfs: Yeni rəf əlavə etmək.
-GET /shelfs: Bütün rəflərin siyahısını almaq.
-GET /shelfs/{id}: Müəyyən bir rəf haqqında məlumat əldə etmək.
-PUT /shelfs/{id}: Rəfi yeniləmək.
-DELETE /shelfs/{id}: Rəfi silmək.
+- **ProductController**
+    - POST /products: Add a new product.
+    - GET /products: Get the list of all products.
+    - GET /products/{id}: Get information about a specific product.
+    - PUT /products/{id}: Update a product.
+    - DELETE /products/{id}: Delete a product.
 
-ShelfProductDetailsController
-POST /shelfproducts: Məhsulu rəfə əlavə etmək.
-DELETE /shelfproducts: Məhsulu rəfdən silmək.
+- **ProductDetailsController**
+    - POST /productdetails: Add product details.
+    - PUT /productdetails/{id}: Update product details.
+    - GET /productdetails: Get the list of all product details.
+    - GET /productdetails/{id}: Get information about a specific product detail.
+    - DELETE /productdetails/{id}: Delete product details.
 
-SizeController
-POST /size: Yeni ölçü əlavə etmək.
-GET /size: Bütün ölçülərin siyahısını almaq.
-GET /size/{id}: Müəyyən bir ölçü haqqında məlumat əldə etmək.
-PUT /size/{id}: Ölçünü yeniləmək.
-DELETE /size/{id}: Ölçünü silmək.
+- **ShelfController**
+    - POST /shelfs: Add a new shelf.
+    - GET /shelfs: Get the list of all shelves.
+    - GET /shelfs/{id}: Get information about a specific shelf.
+    - PUT /shelfs/{id}: Update a shelf.
+    - DELETE /shelfs/{id}: Delete a shelf.
 
-SubcategoryController
-POST /subcategorys: Yeni subkateqoriya əlavə etmək.
-GET /subcategorys: Bütün subkateqoriyaların siyahısını almaq.
-GET /subcategorys/{id}: Müəyyən bir subkateqoriya haqqında məlumat əldə etmək.
-PUT /subcategorys/{id}: Subkateqoriyanı yeniləmək.
-DELETE /subcategorys/{id}: Subkateqoriyanı silmək.
+- **ShelfProductDetailsController**
+    - POST /shelfproducts: Add a product to a shelf.
+    - DELETE /shelfproducts: Remove a product from a shelf.
 
-VideoController
-POST /videos/{productDetailsId}: Məhsul detalları ilə videolar əlavə etmək.
-DELETE /videos/list/{productDetailsId}: Məhsul detalları ilə videoları silmək.
-DELETE /videos/{videoId}: Müəyyən bir videonu silmək.
-GET /videos/list/{productDetailsId}: Məhsul detalları ilə videoları əldə etmək.
-GET /videos/{videoId}: Müəyyən bir videonu əldə etmək.
+- **SizeController**
+    - POST /size: Add a new size.
+    - GET /size: Get the list of all sizes.
+    - GET /size/{id}: Get information about a specific size.
+    - PUT /size/{id}: Update a size.
+    - DELETE /size/{id}: Delete a size.
 
-WarehouseController
-POST /warehouses: Yeni anbar əlavə etmək.
-GET /warehouses: Bütün anbarların siyahısını almaq.
-GET /warehouses/{id}: Müəyyən bir anbar haqqında məlumat əldə etmək.
-PUT /warehouses/{id}: Anbarı yeniləmək.
-DELETE /warehouses/{id}: Anbarı silmək.
+- **SubcategoryController**
+    - POST /subcategorys: Add a new subcategory.
+    - GET /subcategorys: Get the list of all subcategories.
+    - GET /subcategorys/{id}: Get information about a specific subcategory.
+    - PUT /subcategorys/{id}: Update a subcategory.
+    - DELETE /subcategorys/{id}: Delete a subcategory.
 
-WarehouseWorkController
-GET /warehouseworks: Bütün anbar işlərini almaq.
-PUT /warehouseworks/handlework/{id}: Anbar işini idarə etmək.
+- **VideoController**
+    - POST /videos/{productDetailsId}: Add videos for product details.
+    - DELETE /videos/list/{productDetailsId}: Delete videos for product details.
+    - DELETE /videos/{videoId}: Delete a specific video.
+    - GET /videos/list/{productDetailsId}: Get videos for product details.
+    - GET /videos/{videoId}: Get a specific video.
 
-WishlistController
-GET /wishlists: Müştərinin bütün arzuladığı məhsulları almaq.
-POST /wishlists: Məhsulu arzu siyahısına əlavə etmək.
-DELETE /wishlists: Məhsulu arzu siyahısından silmək.
+- **WarehouseController**
+    - POST /warehouses: Add a new warehouse.
+    - GET /warehouses: Get the list of all warehouses.
+    - GET /warehouses/{id}: Get information about a specific warehouse.
+    - PUT /warehouses/{id}: Update a warehouse.
+    - DELETE /warehouses/{id}: Delete a warehouse.
 
-**Layihəni İşlətmək**
-Tələblər:
-JDK 17
-Maven 3.8+
-Oracle Database
-Adımlar:
-1.Konfiqurasiya Edin
-Layihədə application.properties faylını konfiqurasiya edərək verilənlər bazası, Redis və JWT üçün lazımi məlumatları təmin edin.
-2.Layihəni Klonlayın
-git clone https://github.com/NematMamiyev/Eshop.git
-cd eshop
-3.Maven Asılılıqlarını Yükləyin
+- **WarehouseWorkController**
+    - GET /warehouseworks: Get the list of all warehouse works.
+    - PUT /warehouseworks/handlework/{id}: Manage a warehouse task.
+
+- **WishlistController**
+    - GET /wishlists: Get all wishlisted products for a customer.
+    - POST /wishlists: Add a product to the wishlist.
+    - DELETE /wishlists: Remove a product from the wishlist.
+
+# **Running the Project**
+
+**Requirements:**
+- JDK 17
+- Maven 3.8+
+- Oracle Database
+
+**Steps:**
+1. **Configure**  
+   Configure the `application.properties` file in the project to provide necessary details for the database, Redis, and JWT.
+
+2. **Clone the Project**
+   ```bash
+   git clone https://github.com/NematMamiyev/Eshop.git  
+   cd eshop
+3.**Install Maven Dependencies**
 mvn clean install
-4.Layihəni işə Salın
+4.**Run the Project**
 mvn spring-boot:run
-5.Sistemə Swagger vasitəsilə daxil olun və API-ləri test edin.
-Swagger URL:
+Access Swagger and test the APIs.
+5.**Swagger URL:**
 http://localhost:8082/swagger-ui/index.html
 
-**Mümkün Gələcək İnkişaflar**
+**Possible Future Enhancements**
+Complete unit test coverage.
+Full migration to microservices.
+Flexible filter systems in product catalogs.
+Contact
+If you have any questions, feel free to reach out:
 
-Unit Test-lərin tam əhatə etməsi.
-Mikroservice tam bolünmə.
-Məhsul kataloqlarında çevik filter sistemləri.
-
-**Əlaqə**
-Hər hansı bir sualınız olduqda əlaqə saxlayın:
-
-E-mail: nemet.memiyev1@gmail.com
-
-GitHub : [https://github.com/NematMamiyev]()
+Email: nemet.memiyev1@gmail.com
+GitHub: https://github.com/NematMamiyev
