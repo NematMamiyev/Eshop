@@ -9,9 +9,8 @@ bu da onlara sistemdə müxtəlif hüquq və səlahiyyətlər verir. İstifadə�
 autentifikasiya və avtorizasiya sistemləri mövcuddur. Bu layihə monolitik bir tətbiq olaraq qurulmuşdur, amma gələcəkdə daha çevik və genişlənə
 bilən arxitektura üçün mikrosistemlərə keçid planlaşdırılır. Layihə, Spring Boot'un gücündən istifadə edərək yüksək performans və genişlənə bilən
 bir platforma təmin edir.
-
+```
 **Funksionallıqlar**
-
 1.Məhsul İdarəetməsi
 Məhsul əlavə et, yenilə, sil.
 Məhsulun ölçü və rəng variantlarını idarə et.
@@ -41,7 +40,6 @@ Log4j2: Loglama.
 Oracle JDBC (ojdbc11): Oracle verilənlər bazası ilə əlaqə üçün.
 
 **Modul Dizaynı**
-```
 src
 ├── main
 │   ├── java
