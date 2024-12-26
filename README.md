@@ -64,8 +64,8 @@ src
 │       └── log4j2.xml             # Tətbiqin loqlarını idarə etmək üçün log4j konfiqurasiyası..
 └── test
 └── java
-└── az.orient.eshop        # Unit və inteqrasiya testləri üçün siniflər. 
-
+└── az.orient.eshop        # Unit və inteqrasiya testləri üçün siniflər.
+```
 Entity-lər:
 Employee, Customer, Product, Order, ProductImage, Brand, Cart, Category, Color, OrderStatus, Payment, ProductDetails,
 ProductVideo, Shelf, ShelfProductDetails, Size, Subcategory,Warehouse, WarehouseWork, Wishlist siniflərindən ibarətdir.
@@ -241,4 +241,4 @@ Hər hansı bir sualınız olduqda əlaqə saxlayın:
 
 E-mail: nemet.memiyev1@gmail.com
 
-GitHub : https://github.com/NematMamiyev
+GitHub : [https://github.com/NematMamiyev]()
