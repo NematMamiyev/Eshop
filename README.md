@@ -7,7 +7,7 @@ and login APIs are available for them. Employee users have different roles: SUPE
 rights and privileges in the system. Security for users is ensured, and there are separate authentication and authorization systems for
 Customers and Employees. This project is built as a monolithic application, but there are plans to migrate to microservices for a more
 flexible and scalable architecture in the future. The project leverages the power of Spring Boot to provide a high-performance and scalable platform.
-
+```
 **Functionalities**
 1.Product Management
 Add, update, and delete products.
@@ -38,7 +38,6 @@ Log4j2: Logging.
 Oracle JDBC (ojdbc11): For database connectivity with Oracle.
 
 **Module Design**
-```
 src
 ├── main
 │   ├── java
