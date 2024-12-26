@@ -17,7 +17,6 @@ public interface ProductDetailsMapper {
     @Mapping(source = "colorId", target = "color", qualifiedByName = "mapColor")
     ProductDetails toProductDetails(ReqProductDetails reqProductDetails);
 
-    @Mapping(source = "product", target = "respProductForProductDetails")
     @Mapping(source = "size", target = "respSize")
     @Mapping(source = "color", target = "respColor")
     @Mapping(source = "product.brand", target = "respProductForProductDetails.respBrand")

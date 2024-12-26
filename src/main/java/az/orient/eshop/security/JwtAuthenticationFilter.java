@@ -1,6 +1,8 @@
 package az.orient.eshop.security;
 
 import az.orient.eshop.enums.Role;
+import az.orient.eshop.exception.EshopException;
+import az.orient.eshop.exception.ExceptionConstants;
 import io.micrometer.common.lang.NonNull;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -32,16 +34,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain)
             throws ServletException, IOException {
-        String token = getJWTfromRequest(request);
+        String token = getJwtFromRequest(request);
         if (token != null && redisTemplate.opsForValue().get(token) != null) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Token has been blacklisted");
-            return;
+            throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Profile logged out");
         }
         if (token != null && jwtGenerator.validateToken(token)) {
             String username = jwtGenerator.getUsernameFromJWT(token);
-            String role = jwtGenerator.getRoleFromJWT(token);
-            customUserDetailsService.setRole(Role.valueOf(role));
+            customUserDetailsService.setRole(Role.valueOf(jwtGenerator.getRoleFromJWT(token)));
             UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails,
                     null, userDetails.getAuthorities());
@@ -53,12 +52,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     }
 
-    private String getJWTfromRequest(HttpServletRequest request) {
+    private String getJwtFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if(bearerToken!=null &&  bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7);
-        } else {
-            return null;
         }
+        return null;
     }
 }

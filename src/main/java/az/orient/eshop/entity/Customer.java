@@ -35,7 +35,7 @@ public class Customer {
     private String phone;
     @Column(nullable = false, length = 200)
     private String address;
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 200)
     private String password;
     private Float height;
     private Float weight;

@@ -23,4 +23,5 @@ public final class ExceptionConstants {
     public static final Integer OUT_OF_STOCK = 119;
     public static final Integer CART_IS_EMPTY = 120;
     public static final Integer PRODUCT_IS_NOT_IN_CART = 121;
+    public static final Integer USERNAME_OR_PASSWORD_ARE_INCORRECT = 122;
 }

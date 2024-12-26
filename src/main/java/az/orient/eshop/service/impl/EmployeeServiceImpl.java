@@ -6,12 +6,17 @@ import az.orient.eshop.dto.response.RespStatus;
 import az.orient.eshop.dto.response.Response;
 import az.orient.eshop.entity.Employee;
 import az.orient.eshop.enums.EnumAvailableStatus;
+import az.orient.eshop.enums.Role;
 import az.orient.eshop.exception.EshopException;
 import az.orient.eshop.exception.ExceptionConstants;
 import az.orient.eshop.mapper.EmployeeMapper;
 import az.orient.eshop.repository.EmployeeRepository;
+import az.orient.eshop.security.JwtGenerator;
 import az.orient.eshop.service.EmployeeService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,15 +26,28 @@ import java.util.List;
 public class EmployeeServiceImpl implements EmployeeService {
     private final EmployeeRepository employeeRepository;
     private final EmployeeMapper employeeMapper;
+    private final JwtGenerator jwtGenerator;
 
     @Override
-    public Response<RespEmployee> addEmployee(ReqEmployee reqEmployee) {
+    public Response<RespEmployee> addEmployee(ReqEmployee reqEmployee, HttpServletRequest httpServletRequest) {
         Response<RespEmployee> response = new Response<>();
+        String token = httpServletRequest.getHeader("Authorization");
+        if (token != null && token.startsWith("Bearer ")) {
+            token = token.substring(7);
+        }
+        Long id = jwtGenerator.getId(token);
+        Employee userEmployee = employeeRepository.findEmployeeByIdAndActive(id,EnumAvailableStatus.ACTIVE.getValue());
+        if ((reqEmployee.getRole() == Role.ADMIN || reqEmployee.getRole() == Role.SUPER_ADMIN ) && userEmployee.getRole() == Role.ADMIN){
+            throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA,"You do not have permission to create employee in this role.");
+        }
         boolean uniqueEmail = employeeRepository.existsEmployeeByEmailIgnoreCaseAndActive(reqEmployee.getEmail(), EnumAvailableStatus.ACTIVE.getValue());
         boolean uniquePhone = employeeRepository.existsEmployeeByPhoneIgnoreCaseAndActive(reqEmployee.getPhone(), EnumAvailableStatus.ACTIVE.getValue());
         if (uniquePhone || uniqueEmail) {
             throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Email or phone number available in the database");
         }
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String encodedPassword = passwordEncoder.encode(reqEmployee.getPassword());
+        reqEmployee.setPassword(encodedPassword);
         Employee employee = employeeMapper.toEmployee(reqEmployee);
         employeeRepository.save(employee);
         response.setT(employeeMapper.toRespEmployee(employee));
@@ -67,6 +85,9 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (uniqueEmail || uniquePhone) {
             throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Email or phone number available in the database");
         }
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String encodedPassword = passwordEncoder.encode(reqEmployee.getPassword());
+        reqEmployee.setPassword(encodedPassword);
         employeeMapper.updateEmployeeFromReqEmployee(employee, reqEmployee);
         employeeRepository.save(employee);
         response.setT(employeeMapper.toRespEmployee(employee));
