@@ -65,7 +65,7 @@ src
 └── test
 └── java
 └── az.orient.eshop        # Unit və inteqrasiya testləri üçün siniflər.
-```
+
 Entity-lər:
 Employee, Customer, Product, Order, ProductImage, Brand, Cart, Category, Color, OrderStatus, Payment, ProductDetails,
 ProductVideo, Shelf, ShelfProductDetails, Size, Subcategory,Warehouse, WarehouseWork, Wishlist siniflərindən ibarətdir.
