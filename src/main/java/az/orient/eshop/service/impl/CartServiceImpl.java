@@ -1,10 +1,5 @@
 package az.orient.eshop.service.impl;
-
-import az.orient.eshop.dto.request.ReqCart;
-import az.orient.eshop.dto.response.RespCart;
-import az.orient.eshop.dto.response.RespProductDetails;
-import az.orient.eshop.dto.response.RespStatus;
-import az.orient.eshop.dto.response.Response;
+import az.orient.eshop.dto.response.*;
 import az.orient.eshop.entity.Cart;
 import az.orient.eshop.entity.ProductDetails;
 import az.orient.eshop.enums.EnumAvailableStatus;
@@ -13,7 +8,9 @@ import az.orient.eshop.exception.ExceptionConstants;
 import az.orient.eshop.mapper.ProductDetailsMapper;
 import az.orient.eshop.repository.CartRepository;
 import az.orient.eshop.repository.ProductDetailsRepository;
+import az.orient.eshop.security.JwtGenerator;
 import az.orient.eshop.service.CartService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -25,11 +22,12 @@ public class CartServiceImpl implements CartService {
     private final CartRepository cartRepository;
     private final ProductDetailsRepository productDetailsRepository;
     private final ProductDetailsMapper productDetailsMapper;
+    private final JwtGenerator jwtGenerator;
 
     @Override
-    public RespStatus addCart(ReqCart reqCart) {
-        ProductDetails productDetails = getProductDetails(reqCart.getProductDetailsId());
-        Cart cart = getCart(reqCart.getCustomerId());
+    public RespStatus addCart(Long productDetailsId, HttpServletRequest httpServletRequest) {
+        ProductDetails productDetails = getProductDetails(productDetailsId);
+        Cart cart = getCart(customerId(httpServletRequest));
         cart.getProductDetailsList().add(productDetails);
         cart.setAmount(cart.getAmount().add(productDetails.getPrice()));
         cartRepository.save(cart);
@@ -37,9 +35,9 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public RespStatus deleteCart(ReqCart reqCart) {
-        ProductDetails productDetails = getProductDetails(reqCart.getProductDetailsId());
-        Cart cart = getCart(reqCart.getCustomerId());
+    public RespStatus deleteCart(Long productDetailsId, HttpServletRequest httpServletRequest) {
+        ProductDetails productDetails = getProductDetails(productDetailsId);
+        Cart cart = getCart(customerId(httpServletRequest));
         List<ProductDetails> productDetailsList = cart.getProductDetailsList();
         if (productDetailsList.isEmpty()) {
             throw new EshopException(ExceptionConstants.PRODUCT_IS_NOT_IN_CART, "The product is not in the cart");
@@ -52,9 +50,12 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public Response<RespCart> listByCustomerId(Long customerId) {
+    public Response<RespCart> listByCustomerId(HttpServletRequest httpServletRequest) {
         Response<RespCart> response = new Response<>();
-        Cart cart = getCart(customerId);
+        Cart cart = getCart(customerId(httpServletRequest));
+        if (cart.getProductDetailsList().isEmpty()){
+            throw new EshopException(ExceptionConstants.CART_IS_EMPTY, "Cart is empty");
+        }
         List<RespProductDetails> respProductDetailsList = productDetailsMapper.toRespProductDetailsList(cart.getProductDetailsList());
         RespCart respCart = RespCart.builder()
                 .respProductDetailsList(respProductDetailsList)
@@ -63,6 +64,14 @@ public class CartServiceImpl implements CartService {
         response.setT(respCart);
         response.setStatus(RespStatus.getSuccessMessage());
         return response;
+    }
+    private Long customerId(HttpServletRequest httpServletRequest){
+        String token = httpServletRequest.getHeader("Authorization");
+        if (token != null && token.startsWith("Bearer ")) {
+            token = token.substring(7);
+            return jwtGenerator.getId(token);
+        }
+        throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA,"cer");
     }
 
     private Cart getCart(Long customerId) {

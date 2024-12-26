@@ -10,6 +10,7 @@ import az.orient.eshop.service.ProductService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public class ProductController {
 
     private final ProductService productService;
 
+    @PreAuthorize("hasAuthority('SUPER_ADMIN') or hasAuthority('ADMIN')or hasAuthority('OPERATOR')")
     @PostMapping
     public Response<RespProduct> addProduct(@RequestBody @Valid ReqProductAndProductDetailsList reqProductAndProductDetailsList){
         return productService.addProduct(reqProductAndProductDetailsList.getReqProduct(),reqProductAndProductDetailsList.getReqProductDetailsList());
@@ -36,11 +38,13 @@ public class ProductController {
         return productService.getProductById(id);
     }
 
+    @PreAuthorize("hasAuthority('SUPER_ADMIN') or hasAuthority('ADMIN')or hasAuthority('OPERATOR')")
     @PutMapping("/{id}")
     public Response<RespProduct> updateProduct(@PathVariable @NotNull(message = "Id is required") Long id,@RequestBody @Valid ReqProduct reqProduct){
         return productService.updateProduct(id,reqProduct);
     }
 
+    @PreAuthorize("hasAuthority('SUPER_ADMIN') or hasAuthority('ADMIN')")
     @DeleteMapping("/{id}")
     public RespStatus deleteProduct(@PathVariable @NotNull(message = "Id is required") Long id){
         return productService.deleteProduct(id);

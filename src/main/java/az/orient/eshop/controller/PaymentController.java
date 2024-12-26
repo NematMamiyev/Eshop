@@ -1,24 +1,29 @@
 package az.orient.eshop.controller;
 
-import az.orient.eshop.dto.request.ReqPayment;
 import az.orient.eshop.dto.response.RespStatus;
-import az.orient.eshop.dto.response.Response;
+import az.orient.eshop.enums.PaymentMethod;
 import az.orient.eshop.service.PaymentService;
-import jakarta.validation.Valid;
+import az.orient.eshop.validation.ValidPaymentMethod;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("payment")
-public class  PaymentController {
+public class PaymentController {
 
     private final PaymentService paymentService;
-    @PostMapping
-    public RespStatus payment(@RequestBody @Valid ReqPayment reqPayment){
-        return paymentService.payment(reqPayment);
+
+    @PreAuthorize("hasAuthority('CUSTOMER')")
+    @PostMapping("{paymentMethod}")
+    public RespStatus payment(@PathVariable @NotNull(message = "Payment method is required")
+                              @ValidPaymentMethod PaymentMethod paymentMethod, HttpServletRequest httpServletRequest) {
+        return paymentService.payment(paymentMethod, httpServletRequest);
     }
 }

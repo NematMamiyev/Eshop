@@ -32,7 +32,7 @@ public class Employee {
     private String phone;
     @Enumerated(EnumType.STRING)
     private Role role;
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 200)
     private String password;
     @CreationTimestamp
     private Date dataDate;

@@ -8,6 +8,7 @@ import az.orient.eshop.service.SizeService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,6 +20,7 @@ public class SizeController {
 
     private final SizeService sizeService;
 
+    @PreAuthorize("hasAuthority('SUPER_ADMIN') or hasAuthority('ADMIN')or hasAuthority('OPERATOR')")
     @PostMapping
     public Response<RespSize> addSize(@RequestBody @Valid ReqSize reqSize){
         return sizeService.addSize(reqSize);
@@ -34,11 +36,13 @@ public class SizeController {
         return sizeService.getSizeById(id);
     }
 
+    @PreAuthorize("hasAuthority('SUPER_ADMIN') or hasAuthority('ADMIN')or hasAuthority('OPERATOR')")
     @PutMapping("/{id}")
     public Response<RespSize> updateSize(@PathVariable @NotNull(message = "Id is required") Long id,@RequestBody @Valid ReqSize reqSize){
         return sizeService.updateSize(id, reqSize);
     }
 
+    @PreAuthorize("hasAuthority('SUPER_ADMIN') or hasAuthority('ADMIN')")
     @DeleteMapping("/{id}")
     public RespStatus deleteSize(@PathVariable @NotNull(message = "Id is required") Long id){
         return sizeService.deleteSize(id);

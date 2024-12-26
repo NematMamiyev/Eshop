@@ -10,7 +10,9 @@ import az.orient.eshop.exception.EshopException;
 import az.orient.eshop.exception.ExceptionConstants;
 import az.orient.eshop.mapper.BrandMapper;
 import az.orient.eshop.repository.BrandRepository;
+import az.orient.eshop.security.JwtGenerator;
 import az.orient.eshop.service.BrandService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +23,7 @@ import java.util.List;
 public class BrandServiceImpl implements BrandService {
     private final BrandRepository brandRepository;
     private final BrandMapper brandMapper;
+    private final JwtGenerator jwtGenerator;
 
     @Override
     public Response<RespBrand> getBrandById(Long id) {

@@ -1,16 +1,14 @@
 package az.orient.eshop.controller;
-
-import az.orient.eshop.dto.request.ReqCart;
 import az.orient.eshop.dto.response.RespCart;
 import az.orient.eshop.dto.response.RespStatus;
 import az.orient.eshop.dto.response.Response;
 import az.orient.eshop.service.CartService;
-import jakarta.validation.Valid;
+import az.orient.eshop.validation.ProductDetailsActive;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,19 +16,21 @@ import java.util.List;
 public class CartController {
     private final CartService cartService;
 
-    @GetMapping("/{customerId}")
-    public Response<RespCart> listByCustomerId(@PathVariable @NotNull(message = "Id is required") Long customerId){
-        return cartService.listByCustomerId(customerId);
+    @PreAuthorize("hasAuthority('CUSTOMER')")
+    @GetMapping()
+    public Response<RespCart> listByCustomerId(HttpServletRequest httpServletRequest){
+        return cartService.listByCustomerId(httpServletRequest);
+    }
+    @PreAuthorize("hasAuthority('CUSTOMER')")
+    @PostMapping("/add/{productDetailsId}")
+    public RespStatus addCart(@PathVariable @NotNull(message = "Id is required") @ProductDetailsActive Long productDetailsId, HttpServletRequest httpServletRequest ){
+        return cartService.addCart(productDetailsId,httpServletRequest);
     }
 
-    @PostMapping("/add")
-    public RespStatus addCart(@RequestBody @Valid ReqCart reqCart){
-        return cartService.addCart(reqCart);
-    }
-
-    @DeleteMapping("delete")
-    public RespStatus deleteCart(@RequestBody @Valid ReqCart reqCart){
-        return cartService.deleteCart(reqCart);
+    @PreAuthorize("hasAuthority('CUSTOMER')")
+    @DeleteMapping("/delete/{productDetailsId}")
+    public RespStatus deleteCart(@PathVariable @NotNull(message = "Id is required") @ProductDetailsActive Long productDetailsId, HttpServletRequest httpServletRequest){
+        return cartService.deleteCart(productDetailsId,httpServletRequest);
     }
 
 }
