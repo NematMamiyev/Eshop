@@ -40,7 +40,8 @@ SpringDoc OpenAPI: API sənədləşdirməsi üçün.
 Log4j2: Loglama.
 Oracle JDBC (ojdbc11): Oracle verilənlər bazası ilə əlaqə üçün.
 
-**Modul Dizaynı
+**Modul Dizaynı**
+```
 src
 ├── main
 │   ├── java
@@ -63,7 +64,7 @@ src
 │       └── log4j2.xml             # Tətbiqin loqlarını idarə etmək üçün log4j konfiqurasiyası..
 └── test
 └── java
-└── az.orient.eshop        # Unit və inteqrasiya testləri üçün siniflər.**
+└── az.orient.eshop        # Unit və inteqrasiya testləri üçün siniflər. 
 
 Entity-lər:
 Employee, Customer, Product, Order, ProductImage, Brand, Cart, Category, Color, OrderStatus, Payment, ProductDetails,
