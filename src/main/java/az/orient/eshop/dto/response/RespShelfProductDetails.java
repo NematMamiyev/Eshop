@@ -13,5 +13,4 @@ public class RespShelfProductDetails {
     private Long id;
     private RespShelf respShelf;
     private RespProductDetails respProductDetails;
-    private RespWarehouse respWarehouse;
 }

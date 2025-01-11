@@ -58,7 +58,7 @@ public class WarehouseWorkServiceImpl implements WarehouseWorkService {
             response.setT(respWareHouseWork);
             response.setStatus(RespStatus.getSuccessMessage());
             warehouseWork.setActive(EnumAvailableStatus.DEACTIVATED.getValue());
-            emailService.sendSimpleEmail(warehouseWork.getOrder().getCustomer().getEmail(), "Mehsul", Email.CONFIRMED.getDescription());
+           // emailService.sendSimpleEmail(warehouseWork.getOrder().getCustomer().getEmail(), "Mehsul", Email.CONFIRMED.getDescription());
         return response;
     }
 }

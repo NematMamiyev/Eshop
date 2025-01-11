@@ -34,25 +34,26 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        if(role==Role.ADMIN) {
+        if(role==Role.ADMIN|| role == Role.SUPER_ADMIN || role ==Role.OPERATOR) {
             Employee employee =employeeRepository.findByEmailAndActive(username,EnumAvailableStatus.ACTIVE.getValue());
             if (employee == null){
                 throw new UsernameNotFoundException("Admin Username "+ username+ "not found");
             }
-            Collection<GrantedAuthority> authorities = new ArrayList<>();
-            authorities.add(new SimpleGrantedAuthority(Role.ADMIN.toString()));
-            return new User(employee.getEmail(), employee.getPassword(), authorities);
+            return createUserDetails(employee.getEmail(),employee.getPassword(),role);
         } else if(role == Role.CUSTOMER) {
             Customer customer = customerRepository.findByEmailAndActive(username,EnumAvailableStatus.ACTIVE.getValue());
             if (customer == null){
                 throw new UsernameNotFoundException("Customer Email "+ username+ "not found");
             }
-            SimpleGrantedAuthority customerAuthority = new SimpleGrantedAuthority(Role.CUSTOMER.toString());
-            Collection<GrantedAuthority> authorities = new ArrayList<>();
-            authorities.add(customerAuthority);
-            return new User(customer.getEmail(), customer.getPassword(), authorities);
+            return createUserDetails(customer.getEmail(),customer.getPassword(),role);
         }
-        return null;
+        throw new EshopException(ExceptionConstants.USERNAME_OR_PASSWORD_ARE_INCORRECT,"Username or Email " + username + " not found");
+    }
+
+    private UserDetails createUserDetails(String email, String password, Role role) {
+        Collection<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority(role.toString()));
+        return new User(email, password, authorities);
     }
 
 }

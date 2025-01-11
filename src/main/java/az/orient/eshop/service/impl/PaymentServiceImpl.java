@@ -42,7 +42,7 @@ public class PaymentServiceImpl implements PaymentService {
         Long customerId = jwtGenerator.getId(token);
         Cart cart = cartRepository.findCartByCustomerIdAndActive(customerId, EnumAvailableStatus.ACTIVE.getValue());
         if (cart == null) {
-            throw new EshopException(ExceptionConstants.CART_NOT_FOUND, "Cart is empty");
+            throw new EshopException(ExceptionConstants.CART_NOT_FOUND, "Cart not found");
         }
         if (cart.getProductDetailsList().isEmpty()) {
             throw new EshopException(ExceptionConstants.CART_IS_EMPTY, "Cart is empty");
@@ -70,15 +70,17 @@ public class PaymentServiceImpl implements PaymentService {
         Order order = Order.builder()
                 .customer(customer)
                 .amount(cart.getAmount())
-                .productDetailsList(productDetailsList)
                 .build();
         orderRepository.save(order);
+        for (ProductDetails productDetails : productDetailsList) {
+            order.getProductDetailsList().add(productDetails);
+        }
         OrderStatus orderStatus = OrderStatus.builder()
                 .status(Status.ORDERED)
                 .order(order)
                 .build();
         orderStatusRepository.save(orderStatus);
-        emailService.sendSimpleEmail(customer.getEmail(), "Mehsul", Email.ORDERED.getDescription());
+       // emailService.sendSimpleEmail(customer.getEmail(), "Mehsul", Email.ORDERED.getDescription());
         cart.getProductDetailsList().clear();
         cart.setAmount(BigDecimal.ZERO);
         WarehouseWork warehouseWork = WarehouseWork.builder()

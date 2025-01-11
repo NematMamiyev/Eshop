@@ -14,6 +14,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(EshopException.class)
     public ResponseEntity<ExceptionResponse> handleException(EshopException ex){
+        ex.printStackTrace();
         ExceptionResponse exceptionResponse = ExceptionResponse.builder()
                 .code(ex.getCode())
                 .message(ex.getMessage())
@@ -22,6 +23,7 @@ public class GlobalExceptionHandler {
     }
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ExceptionResponse> handleException(MethodArgumentNotValidException ex){
+        ex.printStackTrace();
         var fieldErrors= ex.getFieldErrors().stream()
                 .map(f->FieldError.builder()
                         .fieldName(f.getField())
@@ -36,6 +38,7 @@ public class GlobalExceptionHandler {
     }
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ExceptionResponse> handleException(Exception ex){
+        ex.printStackTrace();
         ExceptionResponse exceptionResponse = ExceptionResponse.builder()
                 .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .message(ex.getMessage())

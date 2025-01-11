@@ -13,6 +13,7 @@ import az.orient.eshop.exception.ExceptionConstants;
 import az.orient.eshop.mapper.CustomerMapper;
 import az.orient.eshop.repository.CartRepository;
 import az.orient.eshop.repository.CustomerRepository;
+import az.orient.eshop.repository.OrderRepository;
 import az.orient.eshop.repository.WishlistRepository;
 import az.orient.eshop.service.CustomerService;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,7 @@ public class CustomerServiceImpl implements CustomerService {
     private final CartRepository cartRepository;
     private final WishlistRepository wishlistRepository;
     private final CustomerMapper customerMapper;
+    private final OrderRepository orderRepository;
 
     @Override
     public Response<RespCustomer> register(ReqCustomer reqCustomer) {

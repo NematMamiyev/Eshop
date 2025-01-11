@@ -56,6 +56,7 @@ public class SecurityConfiguration {
                                         "/webjars/**",
                                         "/swagger-ui.html").permitAll()
                                 .requestMatchers("/customers/register").permitAll()
+                                .requestMatchers("/employees").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .httpBasic(withDefaults());

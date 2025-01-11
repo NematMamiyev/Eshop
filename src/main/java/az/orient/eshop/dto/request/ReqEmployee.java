@@ -22,7 +22,7 @@ public class ReqEmployee {
     @ValidRole
     @NotNull(message = "Role is required")
     private Role role;
-    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?]).{8,20}$",
-            message = "Password must be 8-20 characters long, contain at least one digit, one lowercase letter, one uppercase letter, and one special character.")
+    //@Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?]).{8,20}$",
+  //          message = "Password must be 8-20 characters long, contain at least one digit, one lowercase letter, one uppercase letter, and one special character.")
     private String password;
 }

@@ -14,9 +14,11 @@ public interface ShelfProductRepository extends JpaRepository<ShelfProductDetail
         FROM ShelfProductDetails spd
         WHERE spd.productDetails.id = :productDetailsId
           AND spd.shelf.warehouse.id = :warehouseId
+          AND spd.active = :active
     """)
     boolean existsByProductDetailsInWarehouse(
             @Param("productDetailsId") Long productDetailsId,
-            @Param("warehouseId") Long warehouseId
+            @Param("warehouseId") Long warehouseId,
+            @Param("active") Integer active
     );
 }
