@@ -15,5 +15,6 @@ public interface ShelfProductDetailsMapper {
 
     @Mapping(source = "shelf",target = "respShelf")
     @Mapping(source = "productDetails",target = "respProductDetails")
+    @Mapping(source = "shelf.warehouse",target = "respShelf.respWarehouse")
     RespShelfProductDetails toRespShelfProductDetails(ShelfProductDetails shelfProductDetails);
 }

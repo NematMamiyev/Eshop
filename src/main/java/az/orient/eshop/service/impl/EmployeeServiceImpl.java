@@ -31,7 +31,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public Response<RespEmployee> addEmployee(ReqEmployee reqEmployee, HttpServletRequest httpServletRequest) {
         Response<RespEmployee> response = new Response<>();
-        String token = httpServletRequest.getHeader("Authorization");
+       /* String token = httpServletRequest.getHeader("Authorization");
         if (token != null && token.startsWith("Bearer ")) {
             token = token.substring(7);
         }
@@ -39,7 +39,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee userEmployee = employeeRepository.findEmployeeByIdAndActive(id,EnumAvailableStatus.ACTIVE.getValue());
         if ((reqEmployee.getRole() == Role.ADMIN || reqEmployee.getRole() == Role.SUPER_ADMIN ) && userEmployee.getRole() == Role.ADMIN){
             throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA,"You do not have permission to create employee in this role.");
-        }
+        }*/
         boolean uniqueEmail = employeeRepository.existsEmployeeByEmailIgnoreCaseAndActive(reqEmployee.getEmail(), EnumAvailableStatus.ACTIVE.getValue());
         boolean uniquePhone = employeeRepository.existsEmployeeByPhoneIgnoreCaseAndActive(reqEmployee.getPhone(), EnumAvailableStatus.ACTIVE.getValue());
         if (uniquePhone || uniqueEmail) {

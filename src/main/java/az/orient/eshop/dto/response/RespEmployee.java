@@ -17,5 +17,4 @@ public class RespEmployee {
     private String email;
     private String phone;
     private Role role;
-    private String password;
 }

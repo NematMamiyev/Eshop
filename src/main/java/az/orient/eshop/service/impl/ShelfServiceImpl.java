@@ -10,6 +10,7 @@ import az.orient.eshop.exception.EshopException;
 import az.orient.eshop.exception.ExceptionConstants;
 import az.orient.eshop.mapper.ShelfMapper;
 import az.orient.eshop.repository.ShelfRepository;
+import az.orient.eshop.repository.WarehouseRepository;
 import az.orient.eshop.service.ShelfService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,8 +29,7 @@ public class ShelfServiceImpl implements ShelfService {
         if (shelfRepository.existsShelfByNameAndActive(reqShelf.getName(), EnumAvailableStatus.ACTIVE.getValue())) {
             throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Name available in the database");
         }
-        Shelf shelf = shelfMapper.toShelf(reqShelf);
-        shelfRepository.save(shelfMapper.toShelf(reqShelf));
+        Shelf shelf = shelfRepository.save(shelfMapper.toShelf(reqShelf));
         response.setT(shelfMapper.toRespShelf(shelf));
         response.setStatus(RespStatus.getSuccessMessage());
         return response;

@@ -28,7 +28,7 @@ public class ShelfProductDetailsServiceImpl implements ShelfProductDetailsServic
     public Response<RespShelfProductDetails> addProductInShelf(ReqShelfProductDetails reqShelfProductDetails) {
         Response<RespShelfProductDetails> response = new Response<>();
         Shelf shelf = shelfRepository.findByIdAndActive(reqShelfProductDetails.getShelfId(), EnumAvailableStatus.ACTIVE.getValue());
-        if (shelfProductRepository.existsByProductDetailsInWarehouse(reqShelfProductDetails.getProductDetailsId(), shelf.getWarehouse().getId())) {
+        if (shelfProductRepository.existsByProductDetailsInWarehouse(reqShelfProductDetails.getProductDetailsId(), shelf.getWarehouse().getId(),EnumAvailableStatus.ACTIVE.getValue())) {
             throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Product already added to shelf");
         }
         ShelfProductDetails shelfProductDetails = shelfProductDetailsMapper.toShelfProductDetails(reqShelfProductDetails);

@@ -45,7 +45,7 @@ public class ColorServiceImpl implements ColorService {
         Response<List<RespColor>> response = new Response<>();
         List<Color> colorList = colorRepository.findAllByActive(EnumAvailableStatus.ACTIVE.getValue());
         if (colorList.isEmpty()) {
-            throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Invalid request data");
+            throw new EshopException(ExceptionConstants.COLOR_NOT_FOUND, "Color not found");
         }
         response.setT(colorMapper.toRespColorList(colorList));
         response.setStatus(RespStatus.getSuccessMessage());

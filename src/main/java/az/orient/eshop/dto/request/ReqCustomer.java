@@ -25,8 +25,8 @@ public class ReqCustomer {
     private String phone;
     @Size(min = 15, max = 150, message = "Address is required")
     private String address;
-    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?]).{8,20}$",
-            message = "Password must be 8-20 characters long, contain at least one digit, one lowercase letter, one uppercase letter, and one special character.")
+  //  @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?]).{8,20}$",
+  //         message = "Password must be 8-20 characters long, contain at least one digit, one lowercase letter, one uppercase letter, and one special character.")
     private String password;
     private Float height;
     private Float weight;
