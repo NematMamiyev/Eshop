@@ -1,7 +1,6 @@
 package az.orient.eshop.enums;
 
-import az.orient.eshop.exception.EshopException;
-import az.orient.eshop.exception.ExceptionConstants;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

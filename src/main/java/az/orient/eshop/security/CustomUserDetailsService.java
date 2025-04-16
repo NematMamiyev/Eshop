@@ -40,6 +40,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                 throw new UsernameNotFoundException("Admin Username "+ username+ "not found");
             }
             return createUserDetails(employee.getEmail(),employee.getPassword(),role);
+
         } else if(role == Role.CUSTOMER) {
             Customer customer = customerRepository.findByEmailAndActive(username,EnumAvailableStatus.ACTIVE.getValue());
             if (customer == null){

@@ -29,15 +29,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private CustomUserDetailsService customUserDetailsService;
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
+    
 
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain)
             throws ServletException, IOException {
         String token = getJwtFromRequest(request);
-        if (token != null && redisTemplate.opsForValue().get(token) != null) {
+        /*if (token != null && redisTemplate.opsForValue().get(token) != null) {
             throw new EshopException(ExceptionConstants.INVALID_REQUEST_DATA, "Profile logged out");
-        }
+        }*/
         if (token != null && jwtGenerator.validateToken(token)) {
             String username = jwtGenerator.getUsernameFromJWT(token);
             customUserDetailsService.setRole(Role.valueOf(jwtGenerator.getRoleFromJWT(token)));

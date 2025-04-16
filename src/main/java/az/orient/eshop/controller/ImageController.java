@@ -1,7 +1,6 @@
 package az.orient.eshop.controller;
 
 import az.orient.eshop.dto.response.RespStatus;
-import az.orient.eshop.dto.response.Response;
 import az.orient.eshop.service.ImageService;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/images")
